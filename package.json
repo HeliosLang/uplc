@@ -1,0 +1,17 @@
+{
+  "name": "@helios-lang/uplc",
+  "version": "0.1.0",
+  "description": "Cardano Untyped Plutus Core utility library",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "npx tsc",
+    "clean": "find src/ -name *.d.ts* | xargs rm",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Christian Schmitz",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "typescript": "^5.3.2"
+  }
+}
