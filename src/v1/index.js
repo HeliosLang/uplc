@@ -1,1 +1,1 @@
-export { UplcProgram } from "./UplcProgram"
+export { UplcProgram } from "./program/UplcProgram.js"
