@@ -18,10 +18,6 @@ import { FlatReader, FlatWriter } from "../../flat/index.js"
  */
 
 /**
- * @typedef {import("../eterms/Site.js").Site} Site
- */
-
-/**
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
  */
 

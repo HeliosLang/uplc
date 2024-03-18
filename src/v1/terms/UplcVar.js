@@ -2,21 +2,8 @@ import { FlatReader, FlatWriter } from "../../flat/index.js"
 
 /**
  * @typedef {import("../cek/index.js").CekContext} CekContext
- */
-
-/**
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
- */
-
-/**
  * @typedef {import("../cek/index.js").CekValue} CekValue
- */
-
-/**
- * @typedef {import("../eterms/Site.js").Site} Site
- */
-
-/**
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
  */
 

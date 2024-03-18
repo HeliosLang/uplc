@@ -1,14 +1,7 @@
-import { getBuiltin } from "../builtins/index.js"
-
 /**
+ * @typedef {import("./CekContext.js").CekContext} CekContext
  * @typedef {import("./types.js").CekFrame} CekFrame
- */
-
-/**
  * @typedef {import("./types.js").CekValue} CekValue
- */
-
-/**
  * @typedef {import("./types.js").CekStateChange} CekStateChange
  */
 
@@ -18,9 +11,10 @@ import { getBuiltin } from "../builtins/index.js"
 export class ForceFrame {
     /**
      * @param {CekValue} value
+     * @param {CekContext} ctx
      * @returns {CekStateChange}
      */
-    reduce(value) {
+    reduce(value, ctx) {
         if ("delay" in value) {
             return {
                 state: {
@@ -28,7 +22,7 @@ export class ForceFrame {
                 }
             }
         } else if ("builtin" in value) {
-            const b = getBuiltin(value.builtin.id)
+            const b = ctx.getBuiltin(value.builtin.id)
 
             if (!b) {
                 return {

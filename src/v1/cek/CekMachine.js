@@ -7,33 +7,12 @@ import {
 
 /**
  * @typedef {import("../builtins/index.js").Builtin} Builtin
- */
-
-/**
  * @typedef {import("../costmodel/index.js").Cost} Cost
- */
-
-/**
  * @typedef {import("../costmodel/index.js").CostModelParams} CostModelParams
- */
-
-/**
  * @typedef {import("../values/index.js").UplcValue} UplcValue
- */
-
-/**
  * @typedef {import("./CekContext.js").CekContext} CekContext
- */
-
-/**
  * @typedef {import("./types.js").CekFrame} CekFrame
- */
-
-/**
  * @typedef {import("./types.js").CekState} CekState
- */
-
-/**
  * @typedef {import("./types.js").CekTerm} CekTerm
  */
 
