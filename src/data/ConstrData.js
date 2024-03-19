@@ -1,6 +1,11 @@
 import { decodeConstr, encodeConstr } from "@helios-lang/cbor"
 import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
-import { ByteStream } from "@helios-lang/codec-utils"
+import { ByteStream, isSome, None } from "@helios-lang/codec-utils"
+
+/**
+ * @template T
+ * @typedef {import("@helios-lang/codec-utils").Option<T>} Option
+ */
 
 /**
  * @typedef {import("./UplcData.js").UplcData} UplcData
@@ -30,6 +35,30 @@ export class ConstrData {
     constructor(tag, fields) {
         this.tag = tag
         this.fields = fields
+    }
+
+    /**
+     * @param {UplcData} data
+     * @param {Option<number>} tag
+     * @param {Option<number>} nFields
+     * @returns {asserts data is ConstrData}
+     */
+    static assert(data, tag = None, nFields = None) {
+        if (data instanceof ConstrData) {
+            if (isSome(tag) && data.tag != tag) {
+                throw new Error(
+                    `expected ConstrData with tag ${tag}, got tag ${data.tag}`
+                )
+            }
+
+            if (isSome(nFields) && data.length != nFields) {
+                throw new Error(
+                    `expected ConstrData with ${nFields} fields, got ${data.length} fields`
+                )
+            }
+        } else {
+            throw new Error(`expected ConstrData, got ${data.toString()}`)
+        }
     }
 
     /**
