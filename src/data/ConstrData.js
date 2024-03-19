@@ -33,6 +33,18 @@ export class ConstrData {
     }
 
     /**
+     * @param {UplcData} data 
+     * @returns {ConstrData}
+     */
+    static expect(data, msg = `expected ConstrData, got ${data.toString()}`) {
+        if (data instanceof ConstrData) {
+            return data
+        } else {
+            throw new Error(msg)
+        }
+    }
+
+    /**
      * @param {number[] | ByteStream} bytes
      * @param {(bytes: ByteStream) => UplcData} itemDecoder
      * @returns {ConstrData}
@@ -76,6 +88,31 @@ export class ConstrData {
             }
         } else {
             return false
+        }
+    }
+    
+    /**
+     * @param {number} n 
+     * @returns {ConstrData}
+     */
+    expectFields(n, msg = `expected ${n} ConstrData fields, got ${this.length} fields`) {
+        if (n != this.length) {
+            throw new Error(msg)
+        } else {
+            return this
+        }
+    }
+
+    /**
+     * @param {number} tag 
+     * @param {string} msg 
+     * @returns {ConstrData}
+     */
+    expectTag(tag, msg = `expected ConstrData tag ${tag}, got ${this.tag}`) {
+        if (this.tag != tag) {
+            throw new Error(msg)
+        } else {
+            return this
         }
     }
 
