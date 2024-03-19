@@ -24,6 +24,22 @@ export class ByteArrayData {
     }
 
     /**
+     * @param {UplcData} data
+     * @param {string} msg
+     * @returns {ByteArrayData}
+     */
+    static expect(
+        data,
+        msg = `expected ByteArrayData, got ${data.toString()}`
+    ) {
+        if (data instanceof ByteArrayData) {
+            return data
+        } else {
+            throw new Error(msg)
+        }
+    }
+
+    /**
      * @param {number[] | ByteStream} bytes
      * @returns {ByteArrayData}
      */

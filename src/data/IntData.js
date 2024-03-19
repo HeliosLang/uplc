@@ -36,6 +36,19 @@ export class IntData {
     }
 
     /**
+     * @param {UplcData} data
+     * @param {string} msg
+     * @returns {IntData}
+     */
+    static expect(data, msg = `expected IntData, got ${data.toString()}`) {
+        if (data instanceof IntData) {
+            return data
+        } else {
+            throw new Error(msg)
+        }
+    }
+
+    /**
      * @param {number[] | ByteStream} bytes
      * @returns {IntData}
      */

@@ -25,6 +25,19 @@ export class MapData {
     }
 
     /**
+     * @param {UplcData} data
+     * @param {string} msg
+     * @returns {MapData}
+     */
+    static expect(data, msg = `expected MapData, got ${data.toString()}`) {
+        if (data instanceof MapData) {
+            return data
+        } else {
+            throw new Error(msg)
+        }
+    }
+
+    /**
      * @param {number[] | ByteStream} bytes
      * @param {(bytes: ByteStream) => UplcData} itemDecoder
      * @returns {MapData}

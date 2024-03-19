@@ -33,7 +33,7 @@ export class ConstrData {
     }
 
     /**
-     * @param {UplcData} data 
+     * @param {UplcData} data
      * @returns {ConstrData}
      */
     static expect(data, msg = `expected ConstrData, got ${data.toString()}`) {
@@ -90,12 +90,15 @@ export class ConstrData {
             return false
         }
     }
-    
+
     /**
-     * @param {number} n 
+     * @param {number} n
      * @returns {ConstrData}
      */
-    expectFields(n, msg = `expected ${n} ConstrData fields, got ${this.length} fields`) {
+    expectFields(
+        n,
+        msg = `expected ${n} ConstrData fields, got ${this.length} fields`
+    ) {
         if (n != this.length) {
             throw new Error(msg)
         } else {
@@ -104,8 +107,8 @@ export class ConstrData {
     }
 
     /**
-     * @param {number} tag 
-     * @param {string} msg 
+     * @param {number} tag
+     * @param {string} msg
      * @returns {ConstrData}
      */
     expectTag(tag, msg = `expected ConstrData tag ${tag}, got ${this.tag}`) {

@@ -25,6 +25,19 @@ export class ListData {
     }
 
     /**
+     * @param {UplcData} data
+     * @param {string} msg
+     * @returns {ListData}
+     */
+    static expect(data, msg = `expected ListData, got ${data.toString()}`) {
+        if (data instanceof ListData) {
+            return data
+        } else {
+            throw new Error(msg)
+        }
+    }
+
+    /**
      * @param {number[] | ByteStream} bytes
      * @param {(bytes: ByteStream) => UplcData} itemDecoder
      * @returns {ListData}
