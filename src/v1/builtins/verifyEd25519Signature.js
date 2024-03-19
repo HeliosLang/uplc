@@ -37,22 +37,22 @@ export const verifyEd25519Signature = {
             )
         }
 
-        if (publicKey.value.length != 32) {
+        if (publicKey.bytes.length != 32) {
             throw new Error(
-                `expected a publicKey length of 32 in verifyEd25519Signature, got a publicKey of length ${publicKey.value.length}`
+                `expected a publicKey length of 32 in verifyEd25519Signature, got a publicKey of length ${publicKey.bytes.length}`
             )
         }
 
-        if (signature.value.length != 64) {
+        if (signature.bytes.length != 64) {
             throw new Error(
-                `expected a signature length of 64 in verifyEd25519Signature, got a signature of length ${publicKey.value.length}`
+                `expected a signature length of 64 in verifyEd25519Signature, got a signature of length ${publicKey.bytes.length}`
             )
         }
 
         const b = Ed25519.verify(
-            signature.value,
-            message.value,
-            publicKey.value
+            signature.bytes,
+            message.bytes,
+            publicKey.bytes
         )
 
         return asCekValue(new UplcBool(b))

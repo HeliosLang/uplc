@@ -37,7 +37,7 @@ export const sliceByteString = {
             )
         }
 
-        const bytes = c.value
+        const bytes = c.bytes
         const start = Math.max(Number(a.value), 0)
         const end = Math.min(
             Number(a.value) + Number(b.value) - 1,

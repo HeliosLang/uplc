@@ -24,6 +24,6 @@ export const lengthOfByteString = {
             )
         }
 
-        return asCekValue(new UplcInt(a.value.length))
+        return asCekValue(new UplcInt(a.bytes.length))
     }
 }

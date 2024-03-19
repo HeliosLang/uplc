@@ -25,6 +25,6 @@ export const decodeUtf8 = {
             )
         }
 
-        return asCekValue(new UplcString(decode(a.value)))
+        return asCekValue(new UplcString(decode(a.bytes)))
     }
 }

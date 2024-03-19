@@ -25,6 +25,6 @@ export const bData = {
             )
         }
 
-        return asCekValue(new UplcDataValue(new ByteArrayData(a.value)))
+        return asCekValue(new UplcDataValue(new ByteArrayData(a.bytes)))
     }
 }

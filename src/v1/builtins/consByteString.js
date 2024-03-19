@@ -31,7 +31,7 @@ export const consByteString = {
         }
 
         return asCekValue(
-            new UplcByteArray([Number(a.value % 256n)].concat(b.value))
+            new UplcByteArray([Number(a.value % 256n)].concat(b.bytes))
         )
     }
 }

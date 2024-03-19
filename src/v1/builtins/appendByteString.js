@@ -30,6 +30,6 @@ export const appendByteString = {
             )
         }
 
-        return asCekValue(new UplcByteArray(a.value.concat(b.value)))
+        return asCekValue(new UplcByteArray(a.bytes.concat(b.bytes)))
     }
 }

@@ -25,6 +25,6 @@ export const sha2_256 = {
             )
         }
 
-        return asCekValue(new UplcByteArray(hash(a.value)))
+        return asCekValue(new UplcByteArray(hash(a.bytes)))
     }
 }

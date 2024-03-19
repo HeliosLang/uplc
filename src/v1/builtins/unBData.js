@@ -33,6 +33,6 @@ export const unBData = {
             )
         }
 
-        return asCekValue(new UplcByteArray(data.value))
+        return asCekValue(new UplcByteArray(data.bytes))
     }
 }

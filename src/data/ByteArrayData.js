@@ -14,13 +14,13 @@ export class ByteArrayData {
      * @readonly
      * @type {number[]}
      */
-    value
+    bytes
 
     /**
-     * @param {number[]} value
+     * @param {number[]} bytes
      */
-    constructor(value) {
-        this.value = value
+    constructor(bytes) {
+        this.bytes = bytes
     }
 
     /**
@@ -72,19 +72,11 @@ export class ByteArrayData {
     }
 
     /**
-     * Returns a copy of the underlying bytes.
-     * @type {number[]}
-     */
-    get bytes() {
-        return this.value.slice()
-    }
-
-    /**
      * @type {number}
      */
     get memSize() {
         return (
-            UPLC_DATA_NODE_MEM_SIZE + ByteArrayData.memSizeInternal(this.value)
+            UPLC_DATA_NODE_MEM_SIZE + ByteArrayData.memSizeInternal(this.bytes)
         )
     }
 
@@ -92,7 +84,7 @@ export class ByteArrayData {
      * @returns {string}
      */
     toHex() {
-        return bytesToHex(this.value)
+        return bytesToHex(this.bytes)
     }
 
     /**
@@ -120,7 +112,7 @@ export class ByteArrayData {
      * @returns {number[]}
      */
     toCbor() {
-        return encodeBytes(this.value, true)
+        return encodeBytes(this.bytes, true)
     }
 
     /**
@@ -129,7 +121,7 @@ export class ByteArrayData {
      */
     equals(other) {
         if (other instanceof ByteArrayData) {
-            return ByteArrayData.compare(this.value, other.value) == 0
+            return ByteArrayData.compare(this.bytes, other.bytes) == 0
         } else {
             return false
         }

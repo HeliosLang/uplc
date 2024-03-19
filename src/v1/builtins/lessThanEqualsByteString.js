@@ -32,7 +32,7 @@ export const lessThanEqualsByteString = {
         }
 
         return asCekValue(
-            new UplcBool(ByteArrayData.compare(a.value, b.value) <= 0)
+            new UplcBool(ByteArrayData.compare(a.bytes, b.bytes) <= 0)
         )
     }
 }

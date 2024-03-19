@@ -30,7 +30,7 @@ export const indexByteString = {
             )
         }
 
-        const bytes = a.value
+        const bytes = a.bytes
         const i = Number(b.value)
 
         if (i < 0 || i >= bytes.length) {

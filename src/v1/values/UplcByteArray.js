@@ -15,13 +15,13 @@ export class UplcByteArray {
      * @readonly
      * @type {number[]}
      */
-    value
+    bytes
 
     /**
      * @param {number[]} bytes
      */
     constructor(bytes) {
-        this.value = bytes
+        this.bytes = bytes
     }
 
     /**
@@ -36,7 +36,7 @@ export class UplcByteArray {
      * @type {number}
      */
     get memSize() {
-        return ByteArrayData.memSizeInternal(this.value)
+        return ByteArrayData.memSizeInternal(this.bytes)
     }
 
     /**
@@ -44,7 +44,7 @@ export class UplcByteArray {
      * @type {number}
      */
     get flatSize() {
-        return bytesFlatSize(this.value)
+        return bytesFlatSize(this.bytes)
     }
 
     /**
@@ -59,13 +59,13 @@ export class UplcByteArray {
      * @returns {string}
      */
     toString() {
-        return `#${bytesToHex(this.value)}`
+        return `#${bytesToHex(this.bytes)}`
     }
 
     /**
      * @param {FlatWriter} w
      */
     toFlat(w) {
-        w.writeBytes(this.value)
+        w.writeBytes(this.bytes)
     }
 }
