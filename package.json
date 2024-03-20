@@ -3,6 +3,11 @@
     "version": "0.1.7",
     "description": "Cardano Untyped Plutus Core utility library",
     "main": "src/index.js",
+    "exports": {
+        "./v1": "./src/v1/index.js",
+        "./v2": "./src/v2/index.js",
+        "./v3": "./src/v3/index.js"
+    },
     "type": "module",
     "scripts": {
         "build": "npm test",
