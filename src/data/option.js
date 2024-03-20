@@ -1,10 +1,5 @@
-import { None } from "@helios-lang/codec-utils"
+import { None } from "@helios-lang/type-utils"
 import { ConstrData } from "./ConstrData.js"
-
-/**
- * @template T
- * @typedef {import("@helios-lang/codec-utils").Option<T>} Option
- */
 
 /**
  * @typedef {import("./UplcData.js").UplcData} UplcData

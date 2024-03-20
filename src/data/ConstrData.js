@@ -1,11 +1,7 @@
 import { decodeConstr, encodeConstr } from "@helios-lang/cbor"
+import { ByteStream } from "@helios-lang/codec-utils"
+import { isSome, None } from "@helios-lang/type-utils"
 import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
-import { ByteStream, isSome, None } from "@helios-lang/codec-utils"
-
-/**
- * @template T
- * @typedef {import("@helios-lang/codec-utils").Option<T>} Option
- */
 
 /**
  * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
