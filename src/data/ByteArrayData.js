@@ -26,6 +26,16 @@ export class ByteArrayData {
 
     /**
      * @param {UplcData} data
+     * @returns {asserts data is ByteArrayData}
+     */
+    static assert(data) {
+        if (!(data instanceof ByteArrayData)) {
+            throw new Error(`expected ByteArrayData, got ${data.toString()}`)
+        }
+    }
+
+    /**
+     * @param {UplcData} data
      * @param {string} msg
      * @returns {ByteArrayData}
      */

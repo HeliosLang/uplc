@@ -27,6 +27,16 @@ export class MapData {
 
     /**
      * @param {UplcData} data
+     * @returns {asserts data is MapData}
+     */
+    static assert(data) {
+        if (!(data instanceof MapData)) {
+            throw new Error(`expected MapData, got ${data.toString()}`)
+        }
+    }
+
+    /**
+     * @param {UplcData} data
      * @param {string} msg
      * @returns {MapData}
      */

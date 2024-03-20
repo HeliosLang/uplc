@@ -38,6 +38,16 @@ export class IntData {
 
     /**
      * @param {UplcData} data
+     * @returns {asserts data is IntData}
+     */
+    static assert(data) {
+        if (!(data instanceof IntData)) {
+            throw new Error(`expected IntData, got ${data.toString()}`)
+        }
+    }
+
+    /**
+     * @param {UplcData} data
      * @param {string} msg
      * @returns {IntData}
      */

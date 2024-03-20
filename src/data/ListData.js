@@ -27,6 +27,16 @@ export class ListData {
 
     /**
      * @param {UplcData} data
+     * @returns {asserts data is ListData}
+     */
+    static assert(data) {
+        if (!(data instanceof ListData)) {
+            throw new Error(`expected ListData, got ${data.toString()}`)
+        }
+    }
+
+    /**
+     * @param {UplcData} data
      * @param {string} msg
      * @returns {ListData}
      */
