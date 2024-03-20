@@ -8,6 +8,7 @@ import { ByteStream, isSome, None } from "@helios-lang/codec-utils"
  */
 
 /**
+ * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
 
@@ -74,7 +75,7 @@ export class ConstrData {
     }
 
     /**
-     * @param {number[] | ByteStream} bytes
+     * @param {ByteArrayLike} bytes
      * @param {(bytes: ByteStream) => UplcData} itemDecoder
      * @returns {ConstrData}
      */

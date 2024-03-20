@@ -3,6 +3,7 @@ import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 import { ByteStream } from "@helios-lang/codec-utils"
 
 /**
+ * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
 
@@ -38,7 +39,7 @@ export class MapData {
     }
 
     /**
-     * @param {number[] | ByteStream} bytes
+     * @param {ByteArrayLike} bytes
      * @param {(bytes: ByteStream) => UplcData} itemDecoder
      * @returns {MapData}
      */

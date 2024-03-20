@@ -3,6 +3,7 @@ import { decodeList, encodeList } from "@helios-lang/cbor"
 import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
+ * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
 
@@ -38,7 +39,7 @@ export class ListData {
     }
 
     /**
-     * @param {number[] | ByteStream} bytes
+     * @param {ByteArrayLike} bytes
      * @param {(bytes: ByteStream) => UplcData} itemDecoder
      * @returns {ListData}
      */
@@ -94,6 +95,13 @@ export class ListData {
     }
 
     /**
+     * @returns {number[]}
+     */
+    toCbor() {
+        return encodeList(this.items)
+    }
+
+    /**
      * @returns {string}
      */
     toString() {
@@ -107,12 +115,5 @@ export class ListData {
         return `{"list":[${this.items
             .map((item) => item.toSchemaJson())
             .join(", ")}]}`
-    }
-
-    /**
-     * @returns {number[]}
-     */
-    toCbor() {
-        return encodeList(this.items)
     }
 }

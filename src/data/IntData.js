@@ -3,6 +3,7 @@ import { decodeInt, encodeInt } from "@helios-lang/cbor"
 import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
+ * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
 
@@ -49,7 +50,7 @@ export class IntData {
     }
 
     /**
-     * @param {number[] | ByteStream} bytes
+     * @param {ByteArrayLike} bytes
      * @returns {IntData}
      */
     static fromCbor(bytes) {

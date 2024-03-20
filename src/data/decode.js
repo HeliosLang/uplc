@@ -13,11 +13,15 @@ import { MapData } from "./MapData.js"
 import { ConstrData } from "./ConstrData.js"
 
 /**
+ * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
+ */
+
+/**
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
 
 /**
- * @param {string | number[] | ByteStream} bytes - in cbor format
+ * @param {ByteArrayLike} bytes - in cbor format
  * @returns {UplcData}
  */
 export function decodeUplcData(bytes) {
