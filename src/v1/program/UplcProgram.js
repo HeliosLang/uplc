@@ -1,4 +1,4 @@
-import { hexToBytes } from "@helios-lang/codec-utils"
+import { ByteStream, hexToBytes } from "@helios-lang/codec-utils"
 import { decodeBytes, encodeBytes, isBytes } from "@helios-lang/cbor"
 import { blake2b } from "@helios-lang/crypto"
 import { FlatWriter } from "../../flat/FlatWriter.js"
@@ -6,10 +6,8 @@ import { CekMachine } from "../cek/index.js"
 import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
 
 /**
+ * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
- */
-
-/**
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  */
 
@@ -61,23 +59,23 @@ export class UplcProgram {
     }
 
     /**
-     * @param {number[] | string} bytes
+     * @param {ByteArrayLike} bytes
      * @returns {UplcProgram}
      */
     static fromCbor(bytes) {
-        if (typeof bytes == "string") {
-            return UplcProgram.fromCbor(hexToBytes(bytes))
-        } else {
-            if (isBytes(bytes)) {
-                bytes = decodeBytes(bytes)
-            }
+        const stream = ByteStream.from(bytes)
 
-            if (isBytes(bytes)) {
-                bytes = decodeBytes(bytes)
-            }
-
-            return UplcProgram.fromFlat(bytes)
+        if (!isBytes(stream)) {
+            throw new Error("unexpected")
         }
+
+        let scriptBytes = decodeBytes(stream)
+
+        if (isBytes(scriptBytes)) {
+            scriptBytes = decodeBytes(scriptBytes)
+        }
+
+        return UplcProgram.fromFlat(scriptBytes)
     }
 
     /**
