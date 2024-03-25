@@ -15,16 +15,7 @@ export { DEFAULT_COST_MODEL_PARAMS } from "./CostModelParams.js"
 
 /**
  * @typedef {import("./ArgSizesCost.js").ArgSizesCost} ArgSizesCost
- */
-
-/**
  * @typedef {import("./ArgSizesCost.js").ArgSizesCostClass} ArgSizesCostClass
- */
-
-/**
  * @typedef {import("./Cost.js").Cost} Cost
- */
-
-/**
  * @typedef {import("./CostModelParams.js").CostModelParams} CostModelParams
  */
