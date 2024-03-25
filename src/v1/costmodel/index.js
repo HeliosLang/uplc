@@ -11,7 +11,10 @@ export { ArgSizesThirdCost } from "./ArgSizesThirdCost.js"
 export { decodeCost, encodeCost } from "./Cost.js"
 export { CostModel } from "./CostModel.js"
 export { CostTracker } from "./CostTracker.js"
-export { DEFAULT_COST_MODEL_PARAMS } from "./CostModelParams.js"
+export {
+    DEFAULT_COST_MODEL_PARAMS,
+    ALONZO_GENESIS_COST_MODEL_PARAMS
+} from "./CostModelParams.js"
 
 /**
  * @typedef {import("./ArgSizesCost.js").ArgSizesCost} ArgSizesCost
