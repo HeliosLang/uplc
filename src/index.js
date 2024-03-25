@@ -4,5 +4,9 @@ export * as v2 from "./v2/index.js"
 export * as v3 from "./v3/index.js"
 
 /**
+ * @typedef {import("./v1/costmodel/index.js").Cost} Cost
+ */
+
+/**
  * @typedef {import("./data/index.js").UplcData} UplcData
  */

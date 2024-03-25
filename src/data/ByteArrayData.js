@@ -1,4 +1,9 @@
-import { ByteStream, bytesToHex, encodeUtf8 } from "@helios-lang/codec-utils"
+import {
+    ByteStream,
+    bytesToHex,
+    compareBytes,
+    encodeUtf8
+} from "@helios-lang/codec-utils"
 import { decodeBytes, encodeBytes } from "@helios-lang/cbor"
 import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
@@ -137,27 +142,9 @@ export class ByteArrayData {
      * @param {number[]} a
      * @param {number[]} b
      * @param {boolean} lengthFirst - defaults to false
-     * @returns {-1 | 0 | 1} - `-1` -> lt, `0` -> equals, `1` -> gt
+     * @returns {number} - `-1` -> lt, `0` -> equals, `1` -> gt
      */
     static compare(a, b, lengthFirst = false) {
-        if (a.length != b.length) {
-            if (!lengthFirst) {
-                for (let i = 0; i < Math.min(a.length, b.length); i++) {
-                    if (a[i] != b[i]) {
-                        return a[i] < b[i] ? -1 : 1
-                    }
-                }
-            }
-
-            return a.length < b.length ? -1 : 1
-        } else {
-            for (let i = 0; i < a.length; i++) {
-                if (a[i] != b[i]) {
-                    return a[i] < b[i] ? -1 : 1
-                }
-            }
-
-            return 0
-        }
+        return compareBytes(a, b, lengthFirst)
     }
 }
