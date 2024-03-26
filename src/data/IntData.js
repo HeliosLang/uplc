@@ -93,7 +93,7 @@ export class IntData {
      * @param {UplcData} other
      * @returns {boolean}
      */
-    equals(other) {
+    isEqual(other) {
         return other instanceof IntData && other.value == this.value
     }
 

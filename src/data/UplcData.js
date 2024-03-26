@@ -2,7 +2,7 @@
  * Interface for Plutus-core data classes (not the same as Plutus-core value classes!)
  * @typedef {{
  *   memSize: number
- *   equals: (other: UplcData) => boolean
+ *   isEqual: (other: UplcData) => boolean
  *   toCbor: () => number[]
  *   toSchemaJson: () => string
  *   toString: () => string

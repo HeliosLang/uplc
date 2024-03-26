@@ -31,11 +31,15 @@ export class ByteArrayData {
 
     /**
      * @param {UplcData} data
+     * @param {string} msg
      * @returns {asserts data is ByteArrayData}
      */
-    static assert(data) {
+    static assert(
+        data,
+        msg = `expected ByteArrayData, got ${data.toString()}`
+    ) {
         if (!(data instanceof ByteArrayData)) {
-            throw new Error(`expected ByteArrayData, got ${data.toString()}`)
+            throw new Error(msg)
         }
     }
 
@@ -73,6 +77,18 @@ export class ByteArrayData {
     }
 
     /**
+     * Bytearray comparison, which can be used for sorting bytearrays
+     *   `lengthFirst=true` is used for cbor-specific Bytearray comparison (see https://datatracker.ietf.org/doc/html/rfc7049#section-3.9) in Assets.sort()
+     * @param {number[]} a
+     * @param {number[]} b
+     * @param {boolean} lengthFirst - defaults to false
+     * @returns {number} - `-1` -> lt, `0` -> equals, `1` -> gt
+     */
+    static compare(a, b, lengthFirst = false) {
+        return compareBytes(a, b, lengthFirst)
+    }
+
+    /**
      * Calculates the mem size of a byte array without the DATA_NODE overhead.
      * @param {number[]} bytes
      * @returns {number}
@@ -94,6 +110,18 @@ export class ByteArrayData {
         return (
             UPLC_DATA_NODE_MEM_SIZE + ByteArrayData.memSizeInternal(this.bytes)
         )
+    }
+
+    /**
+     * @param {UplcData} other
+     * @returns {boolean}
+     */
+    isEqual(other) {
+        if (other instanceof ByteArrayData) {
+            return ByteArrayData.compare(this.bytes, other.bytes) == 0
+        } else {
+            return false
+        }
     }
 
     /**
@@ -122,29 +150,5 @@ export class ByteArrayData {
      */
     toSchemaJson() {
         return `{"bytes": "${this.toHex()}"}`
-    }
-
-    /**
-     * @param {UplcData} other
-     * @returns {boolean}
-     */
-    equals(other) {
-        if (other instanceof ByteArrayData) {
-            return ByteArrayData.compare(this.bytes, other.bytes) == 0
-        } else {
-            return false
-        }
-    }
-
-    /**
-     * Bytearray comparison, which can be used for sorting bytearrays
-     *   `lengthFirst=true` is used for cbor-specific Bytearray comparison (see https://datatracker.ietf.org/doc/html/rfc7049#section-3.9) in Assets.sort()
-     * @param {number[]} a
-     * @param {number[]} b
-     * @param {boolean} lengthFirst - defaults to false
-     * @returns {number} - `-1` -> lt, `0` -> equals, `1` -> gt
-     */
-    static compare(a, b, lengthFirst = false) {
-        return compareBytes(a, b, lengthFirst)
     }
 }

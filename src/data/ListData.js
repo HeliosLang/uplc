@@ -90,11 +90,11 @@ export class ListData {
      * @param {UplcData} other
      * @returns {boolean}
      */
-    equals(other) {
+    isEqual(other) {
         if (other instanceof ListData) {
             if (this.length == other.length) {
                 return this.items.every((item, i) =>
-                    item.equals(other.items[i])
+                    item.isEqual(other.items[i])
                 )
             } else {
                 return false

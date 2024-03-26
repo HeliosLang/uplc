@@ -90,12 +90,12 @@ export class MapData {
      * @param {UplcData} other
      * @returns {boolean}
      */
-    equals(other) {
+    isEqual(other) {
         if (other instanceof MapData) {
             if (this.length == other.length) {
                 return this.items.every(([key, value], i) => {
                     const [otherKey, otherValue] = other.items[i]
-                    return key.equals(otherKey) && value.equals(otherValue)
+                    return key.isEqual(otherKey) && value.isEqual(otherValue)
                 })
             } else {
                 return false

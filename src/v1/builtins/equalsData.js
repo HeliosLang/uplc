@@ -30,6 +30,6 @@ export const equalsData = {
             )
         }
 
-        return asCekValue(new UplcBool(a.value.equals(b.value)))
+        return asCekValue(new UplcBool(a.value.isEqual(b.value)))
     }
 }

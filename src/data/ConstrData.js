@@ -105,10 +105,10 @@ export class ConstrData {
      * @param {UplcData} other
      * @returns {boolean}
      */
-    equals(other) {
+    isEqual(other) {
         if (other instanceof ConstrData) {
             if (this.tag == other.tag && this.length == other.length) {
-                return this.fields.every((f, i) => f.equals(other.fields[i]))
+                return this.fields.every((f, i) => f.isEqual(other.fields[i]))
             } else {
                 return false
             }
