@@ -1,0 +1,246 @@
+import { byteToBits } from "@helios-lang/codec-utils"
+
+/**
+ * @typedef {import("./UplcValue.js").UplcValue} UplcValue
+ */
+
+// common type bits
+const INT = "0000"
+const BYTE_ARRAY = "0001"
+const STRING = "0010"
+const UNIT = "0011"
+const BOOL = "0100"
+const LIST = "0101"
+const PAIR = "0110"
+const CONTAINER = "0111"
+const DATA = "1000"
+
+/**
+ * Represents the typeBits of a UPLC primitive.
+ */
+export class UplcType {
+    #typeBits
+
+    /**
+     * @param {string} typeBits
+     */
+    constructor(typeBits) {
+        this.#typeBits = typeBits
+    }
+
+    /**
+     * @returns {UplcType}
+     */
+    static bool() {
+        return new UplcType(BOOL)
+    }
+
+    /**
+     * @returns {UplcType}
+     */
+    static byteArray() {
+        return new UplcType(BYTE_ARRAY)
+    }
+
+    /**
+     * @returns {UplcType}
+     */
+    static data() {
+        return new UplcType(DATA)
+    }
+
+    /**
+     * @returns {UplcType}
+     */
+    static dataPair() {
+        return UplcType.pair(UplcType.data(), UplcType.data())
+    }
+
+    /**
+     * @returns {UplcType}
+     */
+    static int() {
+        return new UplcType(INT)
+    }
+
+    /**
+     * @param {UplcType} itemType
+     * @returns {UplcType}
+     */
+    static list(itemType) {
+        return new UplcType([CONTAINER, LIST, itemType.typeBits].join("1"))
+    }
+
+    /**
+     * @param {UplcType} firstType
+     * @param {UplcType} secondType
+     * @returns {UplcType}
+     */
+    static pair(firstType, secondType) {
+        return new UplcType(
+            [
+                CONTAINER,
+                CONTAINER,
+                PAIR,
+                firstType.typeBits,
+                secondType.typeBits
+            ].join("1")
+        )
+    }
+
+    /**
+     * @returns {UplcType}
+     */
+    static string() {
+        return new UplcType(STRING)
+    }
+
+    /**
+     * @returns {UplcType}
+     */
+    static unit() {
+        return new UplcType(UNIT)
+    }
+
+    /**
+     * @param {number[]} lst
+     * @returns {UplcType}
+     */
+    static fromNumbers(lst) {
+        return new UplcType(lst.map((x) => byteToBits(x, 4, false)).join("1"))
+    }
+
+    /**
+     * @type {string}
+     */
+    get typeBits() {
+        return this.#typeBits
+    }
+
+    /**
+     * @param {UplcType} value
+     * @returns {boolean}
+     */
+    isEqual(value) {
+        return this.#typeBits == value.typeBits
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    isData() {
+        return this.#typeBits == UplcType.data().#typeBits
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    isDataPair() {
+        return this.#typeBits == UplcType.dataPair().#typeBits
+    }
+
+    toString() {
+        let typeBits = this.#typeBits
+
+        /**
+         * @type {string[]}
+         */
+        const stack = []
+
+        function popBits() {
+            const b = typeBits.slice(0, 4)
+            typeBits = typeBits.slice(5)
+            return b
+        }
+
+        while (typeBits.length > 0) {
+            let b = popBits()
+
+            switch (b) {
+                case INT:
+                    stack.push("integer")
+                    break
+                case BYTE_ARRAY:
+                    stack.push("bytestring")
+                    break
+                case STRING:
+                    stack.push("string")
+                    break
+                case UNIT:
+                    stack.push("unit")
+                    break
+                case BOOL:
+                    stack.push("bool")
+                    break
+                case DATA:
+                    stack.push("data")
+                    break
+                case CONTAINER: {
+                    b = popBits()
+
+                    switch (b) {
+                        case CONTAINER: {
+                            b = popBits()
+
+                            if (b != PAIR) {
+                                throw new Error("invalid UplcType")
+                            } else {
+                                stack.push("pair")
+                            }
+                            break
+                        }
+                        case LIST:
+                            stack.push("list")
+                            break
+                        default:
+                            throw new Error(
+                                `invalid UplcType ${this.#typeBits}`
+                            )
+                    }
+                    break
+                }
+                default:
+                    throw new Error("invalid UplcType")
+            }
+        }
+
+        /**
+         * @param {string[]} stack
+         * @returns {[string, string[]]}
+         */
+        function stackToString(stack) {
+            const head = stack[0]
+            const tail = stack.slice(1)
+
+            switch (head) {
+                case "integer":
+                case "bytestring":
+                case "string":
+                case "unit":
+                case "bool":
+                case "data":
+                    return [head, tail]
+                case "list": {
+                    const [item, rest] = stackToString(tail)
+                    return [`(list ${item})`, rest]
+                }
+                case "pair": {
+                    const [first, rest1] = stackToString(tail)
+                    const [second, rest2] = stackToString(rest1)
+
+                    return [`(pair ${first} ${second})`, rest2]
+                }
+                default:
+                    throw new Error(`unhandled UplcType ${head}`)
+            }
+        }
+
+        const [result, rest] = stackToString(stack)
+
+        if (rest.length != 0) {
+            throw new Error("invalid UplcType")
+        }
+
+        return result
+    }
+}

@@ -26,14 +26,14 @@ export class FlatReader extends BitReader {
     /**
      * @private
      * @readonly
-     * @type {(r: FlatReader, typeList: number[]) => ValueReader<TValue>}
+     * @type {(r: FlatReader<any, any>, typeList: number[]) => ValueReader<TValue>}
      */
     dispatchValueReader
 
     /**
      * @param {number[] | Uint8Array} bytes
-     * @param {(r: FlatReader) => TExpr} readExpr
-     * @param {(r: FlatReader, typeList: number[]) => ValueReader<TValue>} dispatchValueReader
+     * @param {(r: FlatReader<any, any>) => TExpr} readExpr
+     * @param {(r: FlatReader<any, any>, typeList: number[]) => ValueReader<TValue>} dispatchValueReader
      */
     constructor(bytes, readExpr, dispatchValueReader) {
         super(bytes)

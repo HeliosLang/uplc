@@ -26,11 +26,11 @@ export class ConstrData {
     fields
 
     /**
-     * @param {number} tag
+     * @param {number | bigint} tag
      * @param {UplcData[]} fields
      */
     constructor(tag, fields) {
-        this.tag = tag
+        this.tag = Number(tag)
         this.fields = fields
     }
 

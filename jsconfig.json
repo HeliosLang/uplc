@@ -5,6 +5,7 @@
         "declarationMap": true,
         "skipLibCheck": true,
         "noImplicitThis": true,
+        "noImplicitAny": true,
         "strictNullChecks": true,
         "moduleResolution": "nodenext",
         "module": "nodenext",

@@ -1,14 +1,11 @@
 export * from "./data/index.js"
-export * as v1 from "./v1/index.js"
-export * as v2 from "./v2/index.js"
-export * as v3 from "./v3/index.js"
-
-export { decodeCost, encodeCost } from "./v1/costmodel/index.js"
-
-/**
- * @typedef {import("./v1/costmodel/index.js").Cost} Cost
- */
+export * from "./program/index.js"
+export * from "./terms/index.js"
+export * from "./values/index.js"
 
 /**
  * @typedef {import("./data/index.js").UplcData} UplcData
+ * @typedef {import("./costmodel/index.js").Cost} Cost
+ * @typedef {import("./costmodel/index.js").CostBreakdown} CostBreakdown
+ * @typedef {import("./values/index.js").UplcValue} UplcValue
  */

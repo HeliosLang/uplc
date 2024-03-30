@@ -1,8 +1,8 @@
 import {
-    ByteStream,
     bytesToHex,
     compareBytes,
-    encodeUtf8
+    encodeUtf8,
+    toBytes
 } from "@helios-lang/codec-utils"
 import { decodeBytes, encodeBytes } from "@helios-lang/cbor"
 import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
@@ -23,10 +23,10 @@ export class ByteArrayData {
     bytes
 
     /**
-     * @param {number[]} bytes
+     * @param {ByteArrayLike} bytes
      */
     constructor(bytes) {
-        this.bytes = bytes
+        this.bytes = toBytes(bytes)
     }
 
     /**
