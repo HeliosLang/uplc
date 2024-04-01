@@ -3,18 +3,13 @@
     "version": "0.1.19",
     "description": "Cardano Untyped Plutus Core utility library",
     "main": "src/index.js",
-    "exports": {
-        ".": "./src/index.js",
-        "./v1": "./src/v1/index.js",
-        "./v2": "./src/v2/index.js",
-        "./v3": "./src/v3/index.js"
-    },
+    "types": "types/index.d.ts",
     "type": "module",
     "scripts": {
         "build": "npm test",
         "clean": "find src/ -name *.d.ts* | xargs rm -f",
         "postpublish": "npm run clean",
-        "prebuild": "npm run clean && npx tsc -p jsconfig.json --noEmit false --emitDeclarationOnly",
+        "prebuild": "npx tsc -p jsconfig.json --noEmit false --emitDeclarationOnly",
         "prepare": "npm run build",
         "prettify": "npx prettier . --write",
         "test": "npm run test:pretty && npm run test:types && npm run test:suite",

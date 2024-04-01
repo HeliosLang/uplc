@@ -34,10 +34,11 @@ export const divideInteger = {
             throw new Error(`division by 0`)
         }
 
+        const x = a.value
+        const y = b.value
+
         return asCekValue(
-            new UplcInt(
-                a.value / b.value - (a.value < 0n != b.value < 0n ? 1n : 0n)
-            )
+            new UplcInt(x / y - (x % y != 0n && x < 0n != y < 0n ? 1n : 0n))
         )
     }
 }
