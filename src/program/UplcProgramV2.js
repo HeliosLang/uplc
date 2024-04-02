@@ -1,3 +1,4 @@
+import { None } from "@helios-lang/type-utils"
 import { builtinsV2 } from "../builtins/index.js"
 import { CostModel, DEFAULT_COST_MODEL_PARAMS_V2 } from "../costmodel/index.js"
 import { apply } from "../terms/index.js"
@@ -34,10 +35,18 @@ export class UplcProgramV2 {
     expr
 
     /**
-     * @param {UplcTerm} expr
+     * @readonly
+     * @type {Option<UplcProgramV2>}
      */
-    constructor(expr) {
+    alt
+
+    /**
+     * @param {UplcTerm} expr
+     * @param {Option<UplcProgramV2>} alt
+     */
+    constructor(expr, alt = None) {
         this.expr = expr
+        this.alt = alt
     }
 
     /**
@@ -137,5 +146,13 @@ export class UplcProgramV2 {
      */
     toString() {
         return this.expr.toString()
+    }
+
+    /**
+     * @param {UplcProgramV2} alt
+     * @returns {UplcProgramV2}
+     */
+    withAlt(alt) {
+        return new UplcProgramV2(this.expr, alt)
     }
 }
