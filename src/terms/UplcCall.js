@@ -108,7 +108,10 @@ export class UplcCall {
                     stack: stack
                 }
             },
-            frame: new PreCallFrame(this.arg, stack)
+            frame: new PreCallFrame(this.arg, {
+                values: stack.values,
+                callSites: stack.callSites.concat(this.site ? [this.site] : [])
+            })
         }
     }
 }

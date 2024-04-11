@@ -1,6 +1,7 @@
 /**
  * @typedef {import("./CekContext.js").CekContext} CekContext
  * @typedef {import("./types.js").CekFrame} CekFrame
+ * @typedef {import("./types.js").CekStack} CekStack
  * @typedef {import("./types.js").CekValue} CekValue
  * @typedef {import("./types.js").CekStateChange} CekStateChange
  */
@@ -10,15 +11,37 @@
  */
 export class ForceFrame {
     /**
+     * Used for the callsites
+     * @readonly
+     * @type {CekStack}
+     */
+    stack
+
+    /**
+     * @param {CekStack} stack
+     */
+    constructor(stack) {
+        this.stack = stack
+    }
+
+    /**
      * @param {CekValue} value
      * @param {CekContext} ctx
      * @returns {CekStateChange}
      */
     reduce(value, ctx) {
         if ("delay" in value) {
+            const delay = value.delay
+
             return {
                 state: {
-                    computing: value.delay
+                    computing: {
+                        term: delay.term,
+                        stack: {
+                            values: delay.stack.values,
+                            callSites: this.stack.callSites
+                        }
+                    }
                 }
             }
         } else if ("builtin" in value) {

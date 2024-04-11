@@ -58,7 +58,8 @@ export class CekMachine {
             computing: {
                 term,
                 stack: {
-                    values: []
+                    values: [],
+                    callSites: []
                 }
             }
         }

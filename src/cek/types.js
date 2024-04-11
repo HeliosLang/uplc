@@ -18,6 +18,7 @@
 /**
  * @typedef {{
  *   values: CekValue[]
+ *   callSites: Site[]
  * }} CekStack
  */
 

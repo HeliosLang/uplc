@@ -42,7 +42,8 @@ export class LambdaCallFrame {
                 computing: {
                     term: this.term,
                     stack: {
-                        values: this.stack.values.concat([value])
+                        values: this.stack.values.concat([value]),
+                        callSites: this.stack.callSites
                     }
                 }
             }
