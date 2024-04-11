@@ -5,6 +5,7 @@ import { ForceFrame } from "../cek/index.js"
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
  * @typedef {import("../cek/index.js").CekContext} CekContext
+ * @typedef {import("../cek/index.js").CekStack} CekStack
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
  * @typedef {import("../cek/index.js").CekValue} CekValue
  * @typedef {import("../values/index.js").UplcValue} UplcValue
@@ -67,7 +68,7 @@ export class UplcForce {
 
     /**
      *
-     * @param {CekValue[]} stack
+     * @param {CekStack} stack
      * @param {CekContext} ctx
      * @returns {CekStateChange}
      */

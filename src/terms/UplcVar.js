@@ -4,6 +4,7 @@ import { FlatReader, FlatWriter } from "../flat/index.js"
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
  * @typedef {import("../cek/index.js").CekContext} CekContext
+ * @typedef {import("../cek/index.js").CekStack} CekStack
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
  * @typedef {import("../cek/index.js").CekValue} CekValue
  * @typedef {import("../values/index.js").UplcValue} UplcValue
@@ -56,15 +57,15 @@ export class UplcVar {
     }
 
     /**
-     * @param {CekValue[]} stack
+     * @param {CekStack} stack
      * @param {CekContext} ctx
      * @returns {CekStateChange}
      */
     compute(stack, ctx) {
         ctx.cost.incrVarCost()
 
-        const i = stack.length - this.index
-        const v = stack[i]
+        const i = stack.values.length - this.index
+        const v = stack.values[i]
 
         if (!v) {
             throw new Error(
@@ -76,7 +77,7 @@ export class UplcVar {
 
         return {
             state: {
-                reducing: stack[i]
+                reducing: v
             }
         }
     }

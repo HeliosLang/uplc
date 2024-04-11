@@ -57,7 +57,9 @@ export class CekMachine {
         this.state = {
             computing: {
                 term,
-                stack: []
+                stack: {
+                    values: []
+                }
             }
         }
     }

@@ -3,6 +3,7 @@ import { FlatWriter } from "../flat/index.js"
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
+ * @typedef {import("../cek/index.js").CekStack} CekStack
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
  * @typedef {import("../cek/index.js").CekValue} CekValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
@@ -54,7 +55,7 @@ export class UplcError {
     }
 
     /**
-     * @param {CekValue[]} stack
+     * @param {CekStack} stack
      * @returns {CekStateChange}
      */
     compute(stack) {

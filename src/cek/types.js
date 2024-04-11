@@ -17,9 +17,15 @@
 
 /**
  * @typedef {{
+ *   values: CekValue[]
+ * }} CekStack
+ */
+
+/**
+ * @typedef {{
  *   computing: {
  *     term: CekTerm
- *     stack: CekValue[]
+ *     stack: CekStack
  *   }
  * } | {
  *   reducing: CekValue
@@ -39,7 +45,7 @@
 
 /**
  * @typedef {{
- *   compute: (stack: CekValue[], ctx: CekContext) => CekStateChange
+ *   compute: (stack: CekStack, ctx: CekContext) => CekStateChange
  *   site: Option<Site>
  *   toString: () => string
  * }} CekTerm
@@ -52,13 +58,13 @@
  * } | {
  *   delay: {
  *     term: CekTerm
- *     stack: CekValue[]
+ *     stack: CekStack
  *   }
  * } | {
  *   lambda: {
  *     term: CekTerm
  *     argName?: string
- *     stack: CekValue[]
+ *     stack: CekStack
  *   }
  * } | {
  *   builtin: {

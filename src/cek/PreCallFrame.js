@@ -4,6 +4,7 @@ import { LambdaCallFrame } from "./LambdaCallFrame.js"
 /**
  * @typedef {import("./CekContext.js").CekContext} CekContext
  * @typedef {import("./types.js").CekFrame} CekFrame
+ * @typedef {import("./types.js").CekStack} CekStack
  * @typedef {import("./types.js").CekStateChange} CekStateChange
  * @typedef {import("./types.js").CekTerm} CekTerm
  * @typedef {import("./types.js").CekValue} CekValue
@@ -23,13 +24,13 @@ export class PreCallFrame {
     /**
      * @private
      * @readonly
-     * @type {CekValue[]}
+     * @type {CekStack}
      */
     stack
 
     /**
      * @param {CekTerm} arg
-     * @param {CekValue[]} stack
+     * @param {CekStack} stack
      */
     constructor(arg, stack) {
         this.arg = arg
