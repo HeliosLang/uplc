@@ -4,6 +4,7 @@ import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
+ * @typedef {import("@helios-lang/codec-utils").IntLike} IntLike
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
 
@@ -20,7 +21,7 @@ export class IntData {
     value
 
     /**
-     * @param {number | bigint} value
+     * @param {IntLike} value
      */
     constructor(value) {
         if (typeof value == "number") {

@@ -1,10 +1,11 @@
 import { decodeConstr, encodeConstr } from "@helios-lang/cbor"
-import { ByteStream } from "@helios-lang/codec-utils"
+import { ByteStream, toInt } from "@helios-lang/codec-utils"
 import { isSome, None } from "@helios-lang/type-utils"
 import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
+ * @typedef {import("@helios-lang/codec-utils").IntLike} IntLike
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
 
@@ -26,11 +27,11 @@ export class ConstrData {
     fields
 
     /**
-     * @param {number | bigint} tag
+     * @param {IntLike} tag
      * @param {UplcData[]} fields
      */
     constructor(tag, fields) {
-        this.tag = Number(tag)
+        this.tag = toInt(tag)
         this.fields = fields
     }
 

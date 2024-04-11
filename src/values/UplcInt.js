@@ -4,6 +4,7 @@ import { FlatReader, FlatWriter } from "../flat/index.js"
 import { UplcType } from "./UplcType.js"
 
 /**
+ * @typedef {import("@helios-lang/codec-utils").IntLike} IntLike
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
@@ -26,7 +27,7 @@ export class UplcInt {
     signed
 
     /**
-     * @param {number | bigint} value
+     * @param {IntLike} value
      * @param {boolean} signed - unsigned is only for internal use
      */
     constructor(value, signed = true) {

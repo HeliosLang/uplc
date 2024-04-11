@@ -1,7 +1,9 @@
+import { toInt } from "@helios-lang/codec-utils"
 import { None } from "@helios-lang/type-utils"
 import { FlatReader, FlatWriter } from "../flat/index.js"
 
 /**
+ * @typedef {import("@helios-lang/codec-utils").IntLike} IntLike
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
  * @typedef {import("../cek/index.js").CekContext} CekContext
  * @typedef {import("../cek/index.js").CekStack} CekStack
@@ -33,11 +35,11 @@ export class UplcBuiltin {
     site
 
     /**
-     * @param {number | bigint} id
+     * @param {IntLike} id
      * @param {Option<Site>} site
      */
     constructor(id, site = None) {
-        this.id = Number(id)
+        this.id = toInt(id)
         this.site = site
     }
 
