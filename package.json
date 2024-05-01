@@ -23,7 +23,7 @@
         "typescript": "^5.3.2"
     },
     "dependencies": {
-        "@helios-lang/cbor": "^0.1.19",
+        "@helios-lang/cbor": "^0.1.20",
         "@helios-lang/codec-utils": "^0.1.29",
         "@helios-lang/compiler-utils": "^0.1.24",
         "@helios-lang/crypto": "^0.1.8",
