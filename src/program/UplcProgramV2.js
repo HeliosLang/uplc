@@ -41,12 +41,18 @@ export class UplcProgramV2 {
     alt
 
     /**
+     * @type {Option<number[]>}
+     */
+    #cachedHash
+
+    /**
      * @param {UplcTerm} expr
      * @param {Option<UplcProgramV2>} alt
      */
     constructor(expr, alt = None) {
         this.expr = expr
         this.alt = alt
+        this.#cachedHash = None
     }
 
     /**
@@ -123,7 +129,11 @@ export class UplcProgramV2 {
      * @returns {number[]} - 28 byte hash
      */
     hash() {
-        return hashProgram(this)
+        if (!this.#cachedHash) {
+            this.#cachedHash = hashProgram(this)
+        }
+
+        return this.#cachedHash
     }
 
     /**
