@@ -69,9 +69,7 @@ export class UplcVar {
 
         if (!v) {
             throw new Error(
-                `${i} ${this.index} out of range in stack ${JSON.stringify(
-                    stack
-                )}`
+                `${i} ${this.index} out of stack range (stack has ${stack.values.length} values)`
             )
         }
 
