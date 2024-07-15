@@ -6,6 +6,7 @@ export * from "./terms/index.js"
 export * from "./values/index.js"
 
 /**
+ * @typedef {import("./cek/index.js").CekResult} CekResult
  * @typedef {import("./data/index.js").UplcData} UplcData
  * @typedef {import("./costmodel/index.js").Cost} Cost
  * @typedef {import("./costmodel/index.js").CostBreakdown} CostBreakdown
