@@ -123,3 +123,8 @@ export const builtinsV2 = builtinsV1.concat([
     verifyEcdsaSecp256k1Signature, // 52
     verifySchnorrSecp256k1Signature //53
 ])
+
+/**
+ * @type {Map<string, Builtin>}
+ */
+export const builtinsV2Map = new Map(builtinsV2.map((bi) => [bi.name, bi]))
