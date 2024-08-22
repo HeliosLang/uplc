@@ -37,7 +37,7 @@ export class UplcProgramV1 {
 
     /**
      * @readonly
-     * @type {Option<UplcProgramV1>}
+     * @type {Option<UplcProgram>}
      */
     alt
 
@@ -48,7 +48,7 @@ export class UplcProgramV1 {
 
     /**
      * @param {UplcTerm} expr
-     * @param {Option<UplcProgramV1>} alt
+     * @param {Option<UplcProgram>} alt
      */
     constructor(expr, alt = None) {
         this.expr = expr
@@ -169,7 +169,7 @@ export class UplcProgramV1 {
     }
 
     /**
-     * @param {UplcProgramV1} alt
+     * @param {UplcProgram} alt
      * @returns {UplcProgramV1}
      */
     withAlt(alt) {

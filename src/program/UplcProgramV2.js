@@ -17,7 +17,7 @@ import { parseProgram } from "./parse.js"
  * @typedef {import("../cek/index.js").CekResult} CekResult
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
  * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./UplcProgram.js").UplcProgram} UplcProgramI
+ * @typedef {import("./UplcProgram.js").UplcProgram} UplcProgram
  */
 
 const PLUTUS_VERSION = "PlutusScriptV2"
@@ -25,7 +25,7 @@ const PLUTUS_VERSION_TAG = 2
 const UPLC_VERSION = "1.0.0"
 
 /**
- * @implements {UplcProgramI}
+ * @implements {UplcProgram}
  */
 export class UplcProgramV2 {
     /**
@@ -36,7 +36,7 @@ export class UplcProgramV2 {
 
     /**
      * @readonly
-     * @type {Option<UplcProgramV2>}
+     * @type {Option<UplcProgram>}
      */
     alt
 
@@ -47,7 +47,7 @@ export class UplcProgramV2 {
 
     /**
      * @param {UplcTerm} expr
-     * @param {Option<UplcProgramV2>} alt
+     * @param {Option<UplcProgram>} alt
      */
     constructor(expr, alt = None) {
         this.expr = expr
@@ -159,7 +159,7 @@ export class UplcProgramV2 {
     }
 
     /**
-     * @param {UplcProgramV2} alt
+     * @param {UplcProgram} alt
      * @returns {UplcProgramV2}
      */
     withAlt(alt) {

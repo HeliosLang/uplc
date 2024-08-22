@@ -22,14 +22,16 @@ import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
 
 /**
  * @typedef {{
- *   uplcVersion: UplcVersion
+ *   alt: Option<UplcProgram>
  *   plutusVersion: PlutusVersion
  *   plutusVersionTag: PlutusVersionTag
+ *   uplcVersion: UplcVersion
  *   eval: (args: undefined | UplcValue[]) => CekResult
  *   hash: () => number[]
  *   toCbor: () => number[]
  *   toFlat: () => number[]
  *   toString: () => string
+ *   withAlt: (alt: UplcProgram) => UplcProgram
  * }} UplcProgram
  */
 
