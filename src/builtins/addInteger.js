@@ -13,8 +13,8 @@ export const addInteger = {
     name: "addInteger",
     forceCount: 0,
     nArgs: 2,
-    CpuModel: ArgSizesMaxCost,
-    MemModel: ArgSizesMaxCost,
+    cpuModel: (params) => new ArgSizesMaxCost(params.get(1), params.get(0)),
+    memModel: (params) => new ArgSizesMaxCost(params.get(3), params.get(2)),
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 

@@ -14,8 +14,9 @@ export const verifySchnorrSecp256k1Signature = {
     name: "verifySchnorrSecp256k1Signature",
     forceCount: 0,
     nArgs: 3,
-    CpuModel: ArgSizesThirdCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) =>
+        new ArgSizesThirdCost(params.get(191), params.get(190)),
+    memModel: (params) => new ArgSizesConstCost(params.get(192)),
     call: (args, ctx) => {
         const [publicKey, message, signature] = asUplcValues(args)
 

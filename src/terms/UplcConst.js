@@ -1,6 +1,15 @@
-import { None } from "@helios-lang/type-utils"
-import { UplcInt } from "../values/index.js"
+import { None, expectSome } from "@helios-lang/type-utils"
+import { builtinsV3, builtinsV3Map } from "../builtins/index.js"
 import { FlatReader, FlatWriter } from "../flat/index.js"
+import {
+    Bls12_381_G1_element,
+    Bls12_381_G2_element,
+    Bls12_381_MlResult,
+    UplcByteArray,
+    UplcInt
+} from "../values/index.js"
+import { UplcCall } from "./UplcCall.js"
+import { UplcBuiltin } from "./UplcBuiltin.js"
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
@@ -61,6 +70,37 @@ export class UplcConst {
     }
 
     /**
+     * @type {UplcTerm}
+     */
+    get serializableTerm() {
+        const v = this.value
+
+        if (v instanceof Bls12_381_G1_element) {
+            return new UplcCall(
+                new UplcBuiltin(
+                    builtinsV3.findIndex(
+                        (bi) => bi.name == "bls12_381_G1_uncompress"
+                    )
+                ),
+                new UplcConst(new UplcByteArray(v.compress())),
+                this.site
+            )
+        } else if (v instanceof Bls12_381_G2_element) {
+            return new UplcCall(
+                new UplcBuiltin(
+                    builtinsV3.findIndex(
+                        (bi) => bi.name == "bls12_381_G2_uncompress"
+                    )
+                ),
+                new UplcConst(new UplcByteArray(v.compress())),
+                this.site
+            )
+        } else {
+            return this
+        }
+    }
+
+    /**
      * @returns {string}
      */
     toString() {
@@ -71,9 +111,22 @@ export class UplcConst {
      * @param {FlatWriter} w
      */
     toFlat(w) {
-        w.writeTermTag(UPLC_CONST_TAG)
-        w.writeTypeBits(this.value.type.typeBits)
-        this.value.toFlat(w)
+        const v = this.value
+
+        if (
+            v instanceof Bls12_381_G1_element ||
+            v instanceof Bls12_381_G2_element
+        ) {
+            const t = this.serializableTerm
+
+            t.toFlat(w)
+        } else if (v instanceof Bls12_381_MlResult) {
+            throw new Error("Bls12_381_MlResult can't be serialized")
+        } else {
+            w.writeTermTag(UPLC_CONST_TAG)
+            w.writeTypeBits(v.type.typeBits)
+            v.toFlat(w)
+        }
     }
 
     /**

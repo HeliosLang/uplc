@@ -13,8 +13,8 @@ export const mkNilData = {
     name: "mkNilData",
     forceCount: 0,
     nArgs: 1,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(108)),
+    memModel: (params) => new ArgSizesConstCost(params.get(109)),
     call: (args, ctx) => {
         const a = asUplcValue(args[0])
 

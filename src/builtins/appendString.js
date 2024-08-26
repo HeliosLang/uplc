@@ -13,8 +13,8 @@ export const appendString = {
     name: "appendString",
     forceCount: 0,
     nArgs: 2,
-    CpuModel: ArgSizesSumCost,
-    MemModel: ArgSizesSumCost,
+    cpuModel: (params) => new ArgSizesSumCost(params.get(9), params.get(8)),
+    memModel: (params) => new ArgSizesSumCost(params.get(11), params.get(10)),
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 

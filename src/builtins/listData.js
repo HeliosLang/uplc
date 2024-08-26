@@ -14,8 +14,8 @@ export const listData = {
     name: "listData",
     forceCount: 0,
     nArgs: 1,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(102)),
+    memModel: (params) => new ArgSizesConstCost(params.get(103)),
     call: (args, ctx) => {
         const [list] = asUplcValues(args)
 

@@ -14,8 +14,8 @@ export const lessThanByteString = {
     name: "lessThanByteString",
     forceCount: 0,
     nArgs: 2,
-    CpuModel: ArgSizesMinCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesMinCost(params.get(91), params.get(90)),
+    memModel: (params) => new ArgSizesConstCost(params.get(92)),
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 

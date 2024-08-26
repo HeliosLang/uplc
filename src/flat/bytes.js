@@ -64,11 +64,10 @@ export function encodeFlatBytes(writer, bytes, pad = true) {
 }
 
 /**
- * @param {number[]} bytes
+ * Includes type bits
+ * @param {number} n
  * @returns {number}
  */
-export function bytesFlatSize(bytes) {
-    const n = bytes.length
-
+export function bytesFlatSize(n) {
     return 4 + n * 8 + Math.ceil(n / 256) * 8 + 8
 }

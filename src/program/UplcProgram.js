@@ -16,8 +16,8 @@ import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
 
 /**
  * @typedef {"1.0.0" | "1.1.0"} UplcVersion
- * @typedef {"PlutusScriptV1" | "PlutusScriptV2"} PlutusVersion
- * @typedef {1 | 2} PlutusVersionTag
+ * @typedef {"PlutusScriptV1" | "PlutusScriptV2" | "PlutusScriptV3"} PlutusVersion
+ * @typedef {1 | 2 | 3} PlutusVersionTag
  */
 
 /**

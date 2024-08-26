@@ -1,8 +1,5 @@
 import { FlatWriter } from "../flat/index.js"
-
-/**
- * @typedef {import("./UplcType.js").UplcType} UplcType
- */
+import { UplcType } from "./UplcType.js"
 
 /**
  * UplcValue instances are passed around by Uplc terms.

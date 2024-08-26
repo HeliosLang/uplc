@@ -14,8 +14,8 @@ export const unMapData = {
     name: "unMapData",
     forceCount: 0,
     nArgs: 1,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(183)),
+    memModel: (params) => new ArgSizesConstCost(params.get(184)),
     call: (args, ctx) => {
         const [dataValue] = asUplcValues(args)
 

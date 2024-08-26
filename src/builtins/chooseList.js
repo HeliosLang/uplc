@@ -13,8 +13,8 @@ export const chooseList = {
     name: "chooseList",
     forceCount: 2,
     nArgs: 3,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(35)),
+    memModel: (params) => new ArgSizesConstCost(params.get(36)),
     call: (args, ctx) => {
         const list = asUplcValue(args[0])
 

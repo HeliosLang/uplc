@@ -1,7 +1,7 @@
+import { deepEqual } from "node:assert"
 import { describe, it } from "node:test"
 import { decodeBytes } from "@helios-lang/cbor"
 import { UplcReader } from "./UplcReader.js"
-import { deepEqual } from "node:assert"
 
 const raw = "47460b1621480581"
 describe(UplcReader.name, () => {

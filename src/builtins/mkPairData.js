@@ -14,8 +14,8 @@ export const mkPairData = {
     name: "mkPairData",
     forceCount: 0,
     nArgs: 2,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(112)),
+    memModel: (params) => new ArgSizesConstCost(params.get(113)),
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 

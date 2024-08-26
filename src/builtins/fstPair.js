@@ -13,8 +13,8 @@ export const fstPair = {
     name: "fstPair",
     forceCount: 2,
     nArgs: 1,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(78)),
+    memModel: (params) => new ArgSizesConstCost(params.get(79)),
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 

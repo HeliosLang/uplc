@@ -9,14 +9,34 @@ import { CostModelParamsProxy } from "./CostModelParamsProxy.js"
  */
 export class ArgSizesDiagCost {
     /**
-     *
-     * @param {CostModelParamsProxy} params
-     * @param {string} key
+     * Slope
+     * @readonly
+     * @type {bigint}
      */
-    constructor(params, key) {
-        this.a = params.get(`${key}-slope`)
-        this.b = params.get(`${key}-intercept`)
-        this.constant = params.get(`${key}-constant`)
+    a
+
+    /**
+     * Intercept
+     * @readonly
+     * @type {bigint}
+     */
+    b
+
+    /**
+     * @readonly
+     * @type {bigint}
+     */
+    constant
+
+    /**
+     * @param {bigint} a - slope
+     * @param {bigint} b - intercept
+     * @param {bigint} constant
+     */
+    constructor(a, b, constant) {
+        this.a = a
+        this.b = b
+        this.constant = constant
     }
 
     /**

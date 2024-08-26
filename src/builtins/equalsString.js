@@ -13,8 +13,9 @@ export const equalsString = {
     name: "equalsString",
     forceCount: 0,
     nArgs: 2,
-    CpuModel: ArgSizesDiagCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) =>
+        new ArgSizesDiagCost(params.get(76), params.get(75), params.get(74)),
+    memModel: (params) => new ArgSizesConstCost(params.get(77)),
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 

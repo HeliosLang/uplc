@@ -13,8 +13,8 @@ export const indexByteString = {
     name: "indexByteString",
     forceCount: 0,
     nArgs: 2,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(86)),
+    memModel: (params) => new ArgSizesConstCost(params.get(87)),
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 

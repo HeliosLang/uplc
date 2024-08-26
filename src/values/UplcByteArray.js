@@ -51,7 +51,7 @@ export class UplcByteArray {
      * @type {number}
      */
     get flatSize() {
-        return bytesFlatSize(this.bytes)
+        return bytesFlatSize(this.bytes.length)
     }
 
     /**

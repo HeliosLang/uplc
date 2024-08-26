@@ -13,8 +13,8 @@ export const sndPair = {
     name: "sndPair",
     forceCount: 2,
     nArgs: 1,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(165)),
+    memModel: (params) => new ArgSizesConstCost(params.get(166)),
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 

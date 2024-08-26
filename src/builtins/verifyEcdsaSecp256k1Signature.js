@@ -14,8 +14,8 @@ export const verifyEcdsaSecp256k1Signature = {
     name: "verifyEcdsaSecp256k1Signature",
     forceCount: 0,
     nArgs: 3,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(185)),
+    memModel: (params) => new ArgSizesConstCost(params.get(186)),
     call: (args, ctx) => {
         const [publicKey, message, signature] = asUplcValues(args)
 

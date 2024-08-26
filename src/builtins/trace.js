@@ -13,8 +13,8 @@ export const trace = {
     name: "trace",
     forceCount: 1,
     nArgs: 2,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(173)),
+    memModel: (params) => new ArgSizesConstCost(params.get(174)),
     call: (args, ctx) => {
         const message = asUplcValue(args[0])
 

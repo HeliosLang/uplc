@@ -72,6 +72,12 @@ export function dispatchValueReader(r, typeList) {
             }
         case 8:
             return () => UplcDataValue.fromFlat(r)
+        case 9:
+            throw new Error(`Bls12_381_G1_element can't be deserialized`)
+        case 10:
+            throw new Error(`Bls12_381_G2_element can't be deserialized`)
+        case 11:
+            throw new Error(`Bls12_381_MlResult can't be deserialized`)
         default:
             throw new Error(`unhandled value type ${type.toString()}`)
     }

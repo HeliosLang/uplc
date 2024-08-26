@@ -13,8 +13,8 @@ export const equalsData = {
     name: "equalsData",
     forceCount: 0,
     nArgs: 2,
-    CpuModel: ArgSizesMinCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesMinCost(params.get(69), params.get(68)),
+    memModel: (params) => new ArgSizesConstCost(params.get(70)),
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 

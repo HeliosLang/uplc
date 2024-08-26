@@ -13,8 +13,9 @@ export const consByteString = {
     name: "consByteString",
     forceCount: 0,
     nArgs: 2,
-    CpuModel: ArgSizesSecondCost,
-    MemModel: ArgSizesSumCost,
+    cpuModel: (params) =>
+        new ArgSizesSecondCost(params.get(40), params.get(39)),
+    memModel: (params) => new ArgSizesSumCost(params.get(42), params.get(41)),
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 

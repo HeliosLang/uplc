@@ -46,7 +46,7 @@ export class UplcString {
      */
     get flatSize() {
         const bytes = encodeUtf8(this.value)
-        return bytesFlatSize(bytes)
+        return bytesFlatSize(bytes.length)
     }
 
     /**

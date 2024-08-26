@@ -13,8 +13,8 @@ export const chooseUnit = {
     name: "chooseUnit",
     forceCount: 1,
     nArgs: 2,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(37)),
+    memModel: (params) => new ArgSizesConstCost(params.get(38)),
     call: (args, ctx) => {
         const a = asUplcValue(args[0])
 

@@ -14,8 +14,9 @@ export const sha3_256 = {
     name: "sha3_256",
     forceCount: 0,
     nArgs: 1,
-    CpuModel: ArgSizesFirstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) =>
+        new ArgSizesFirstCost(params.get(159), params.get(158)),
+    memModel: (params) => new ArgSizesConstCost(params.get(160)),
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 

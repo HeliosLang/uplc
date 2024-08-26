@@ -13,8 +13,8 @@ export const appendByteString = {
     name: "appendByteString",
     forceCount: 0,
     nArgs: 2,
-    CpuModel: ArgSizesSumCost,
-    MemModel: ArgSizesSumCost,
+    cpuModel: (params) => new ArgSizesSumCost(params.get(5), params.get(4)),
+    memModel: (params) => new ArgSizesSumCost(params.get(7), params.get(6)),
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 

@@ -9,11 +9,16 @@ import { CostModelParamsProxy } from "./CostModelParamsProxy.js"
  */
 export class ArgSizesConstCost {
     /**
-     * @param {CostModelParamsProxy} params
-     * @param {string} key
+     * @readonly
+     * @type {bigint}
      */
-    constructor(params, key) {
-        this.constant = params.get(key)
+    constant
+
+    /**
+     * @param {bigint} constant
+     */
+    constructor(constant) {
+        this.constant = constant
     }
 
     /**

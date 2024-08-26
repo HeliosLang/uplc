@@ -13,8 +13,8 @@ export const lengthOfByteString = {
     name: "lengthOfByteString",
     forceCount: 0,
     nArgs: 1,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(88)),
+    memModel: (params) => new ArgSizesConstCost(params.get(89)),
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 

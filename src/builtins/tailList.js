@@ -13,8 +13,8 @@ export const tailList = {
     name: "tailList",
     forceCount: 1,
     nArgs: 1,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(171)),
+    memModel: (params) => new ArgSizesConstCost(params.get(172)),
     call: (args, ctx) => {
         const [list] = asUplcValues(args)
 

@@ -14,8 +14,8 @@ export const unListData = {
     name: "unListData",
     forceCount: 0,
     nArgs: 1,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(181)),
+    memModel: (params) => new ArgSizesConstCost(params.get(182)),
     call: (args, ctx) => {
         const [dataValue] = asUplcValues(args)
 

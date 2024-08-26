@@ -13,8 +13,8 @@ export const ifThenElse = {
     name: "ifThenElse",
     forceCount: 1,
     nArgs: 3,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(84)),
+    memModel: (params) => new ArgSizesConstCost(params.get(85)),
     call: (args, ctx) => {
         const cond = asUplcValue(args[0])
 

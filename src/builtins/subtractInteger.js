@@ -13,8 +13,8 @@ export const subtractInteger = {
     name: "subtractInteger",
     forceCount: 0,
     nArgs: 2,
-    CpuModel: ArgSizesMaxCost,
-    MemModel: ArgSizesMaxCost,
+    cpuModel: (params) => new ArgSizesMaxCost(params.get(168), params.get(167)),
+    memModel: (params) => new ArgSizesMaxCost(params.get(170), params.get(169)),
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 

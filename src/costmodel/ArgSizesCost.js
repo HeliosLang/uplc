@@ -3,6 +3,7 @@ import { CostModelParamsProxy } from "./CostModelParamsProxy.js"
 /**
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./Cost.js").Cost} Cost
+ * @typedef {import("./CostModelParamsProxy.js").CostModelParamsProxyI} CostModelParamsProxyI
  */
 
 /**
@@ -12,7 +13,5 @@ import { CostModelParamsProxy } from "./CostModelParamsProxy.js"
  */
 
 /**
- * @typedef {{
- *   new(params: CostModelParamsProxy, key: string): ArgSizesCost
- * }} ArgSizesCostClass
+ * @typedef {(params: CostModelParamsProxyI) => ArgSizesCost} ArgSizesCostClass
  */

@@ -1,5 +1,6 @@
 import { UplcProgramV1 } from "./UplcProgramV1.js"
 import { UplcProgramV2 } from "./UplcProgramV2.js"
+import { UplcProgramV3 } from "./UplcProgramV3.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
@@ -13,11 +14,14 @@ import { UplcProgramV2 } from "./UplcProgramV2.js"
  * @returns {UplcProgram}
  */
 export function restoreUplcProgram(version, cbor) {
-    if (version == "PlutusScriptV1") {
-        return UplcProgramV1.fromCbor(cbor)
-    } else if (version == "PlutusScriptV2") {
-        return UplcProgramV2.fromCbor(cbor)
-    } else {
-        throw new Error(`unhandled PlutusVersion ${version}`)
+    switch (version) {
+        case "PlutusScriptV1":
+            return UplcProgramV1.fromCbor(cbor)
+        case "PlutusScriptV2":
+            return UplcProgramV2.fromCbor(cbor)
+        case "PlutusScriptV3":
+            return UplcProgramV3.fromCbor(cbor)
+        default:
+            throw new Error(`unhandled PlutusVersion ${version}`)
     }
 }

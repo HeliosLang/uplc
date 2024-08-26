@@ -13,8 +13,10 @@ export const serialiseData = {
     name: "serialiseData",
     forceCount: 0,
     nArgs: 1,
-    CpuModel: ArgSizesFirstCost,
-    MemModel: ArgSizesFirstCost,
+    cpuModel: (params) =>
+        new ArgSizesFirstCost(params.get(152), params.get(151)),
+    memModel: (params) =>
+        new ArgSizesFirstCost(params.get(154), params.get(153)),
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 

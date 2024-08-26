@@ -14,8 +14,8 @@ export const encodeUtf8 = {
     name: "encodeUtf8",
     forceCount: 0,
     nArgs: 1,
-    CpuModel: ArgSizesFirstCost,
-    MemModel: ArgSizesFirstCost,
+    cpuModel: (params) => new ArgSizesFirstCost(params.get(61), params.get(60)),
+    memModel: (params) => new ArgSizesFirstCost(params.get(63), params.get(62)),
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 

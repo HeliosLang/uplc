@@ -2,7 +2,26 @@ import { addInteger } from "./addInteger.js"
 import { appendByteString } from "./appendByteString.js"
 import { appendString } from "./appendString.js"
 import { bData } from "./bData.js"
+import { blake2b_224 } from "./blake2b_224.js"
 import { blake2b_256 } from "./blake2b_256.js"
+import { bls12_381_G1_add } from "./bls12_381_G1_add.js"
+import { bls12_381_G1_compress } from "./bls12_381_G1_compress.js"
+import { bls12_381_G1_equal } from "./bls12_381_G1_equal.js"
+import { bls12_381_G1_hashToGroup } from "./bls12_381_G1_hashToGroup.js"
+import { bls12_381_G1_neg } from "./bls12_381_G1_neg.js"
+import { bls12_381_G1_scalarMul } from "./bls12_381_G1_scalarMul.js"
+import { bls12_381_G1_uncompress } from "./bls12_381_G1_uncompress.js"
+import { bls12_381_G2_add } from "./bls12_381_G2_add.js"
+import { bls12_381_G2_compress } from "./bls12_381_G2_compress.js"
+import { bls12_381_G2_equal } from "./bls12_381_G2_equal.js"
+import { bls12_381_G2_hashToGroup } from "./bls12_381_G2_hashToGroup.js"
+import { bls12_381_G2_neg } from "./bls12_381_G2_neg.js"
+import { bls12_381_G2_scalarMul } from "./bls12_381_G2_scalarMul.js"
+import { bls12_381_G2_uncompress } from "./bls12_381_G2_uncompress.js"
+import { bls12_381_finalVerify } from "./bls12_381_finalVerify.js"
+import { bls12_381_millerLoop } from "./bls12_381_millerLoop.js"
+import { bls12_381_mulMlResult } from "./bls12_381_mulMlResult.js"
+import { byteStringToInteger } from "./byteStringToInteger.js"
 import { chooseData } from "./chooseData.js"
 import { chooseList } from "./chooseList.js"
 import { chooseUnit } from "./chooseUnit.js"
@@ -10,6 +29,7 @@ import { consByteString } from "./consByteString.js"
 import { constrData } from "./constrData.js"
 import { decodeUtf8 } from "./decodeUtf8.js"
 import { divideInteger } from "./divideInteger.js"
+import { divideIntegerV3 } from "./divideIntegerV3.js"
 import { encodeUtf8 } from "./encodeUtf8.js"
 import { equalsByteString } from "./equalsByteString.js"
 import { equalsData } from "./equalsData.js"
@@ -20,6 +40,8 @@ import { headList } from "./headList.js"
 import { iData } from "./iData.js"
 import { ifThenElse } from "./ifThenElse.js"
 import { indexByteString } from "./indexByteString.js"
+import { integerToByteString } from "./integerToByteString.js"
+import { keccak_256 } from "./keccak_256.js"
 import { lengthOfByteString } from "./lengthOfByteString.js"
 import { lessThanByteString } from "./lessThanByteString.js"
 import { lessThanEqualsByteString } from "./lessThanEqualsByteString.js"
@@ -32,10 +54,13 @@ import { mkNilData } from "./mkNilData.js"
 import { mkNilPairData } from "./mkNilPairData.js"
 import { mkPairData } from "./mkPairData.js"
 import { modInteger } from "./modInteger.js"
+import { modIntegerV3 } from "./modIntegerV3.js"
 import { multiplyInteger } from "./multiplyInteger.js"
 import { nullList } from "./nullList.js"
 import { quotientInteger } from "./quotientInteger.js"
-import { remainederInteger } from "./remainderInteger.js"
+import { quotientIntegerV3 } from "./quotientIntegerV3.js"
+import { remainderInteger } from "./remainderInteger.js"
+import { remainderIntegerV3 } from "./remainderIntegerV3.js"
 import { serialiseData } from "./serialiseData.js"
 import { sha2_256 } from "./sha2_256.js"
 import { sha3_256 } from "./sha3_256.js"
@@ -67,7 +92,7 @@ export const builtinsV1 = [
     multiplyInteger, // 2
     divideInteger, // 3
     quotientInteger, // 4
-    remainederInteger, // 5
+    remainderInteger, // 5
     modInteger, // 6
     equalsInteger, // 7
     lessThanInteger, // 8
@@ -128,3 +153,38 @@ export const builtinsV2 = builtinsV1.concat([
  * @type {Map<string, Builtin>}
  */
 export const builtinsV2Map = new Map(builtinsV2.map((bi) => [bi.name, bi]))
+
+export const builtinsV3 = [
+    ...builtinsV2.slice(0, 3),
+    divideIntegerV3, // 3
+    quotientIntegerV3, // 4
+    remainderIntegerV3, // 5
+    modIntegerV3, // 6
+    ...builtinsV2.slice(7),
+    bls12_381_G1_add, // 54
+    bls12_381_G1_neg, // 55
+    bls12_381_G1_scalarMul, // 56
+    bls12_381_G1_equal, // 57
+    bls12_381_G1_compress, // 58
+    bls12_381_G1_uncompress, // 59
+    bls12_381_G1_hashToGroup, // 60
+    bls12_381_G2_add, // 61
+    bls12_381_G2_neg, // 62
+    bls12_381_G2_scalarMul, // 63
+    bls12_381_G2_equal, // 64
+    bls12_381_G2_compress, // 65
+    bls12_381_G2_uncompress, // 66
+    bls12_381_G2_hashToGroup, // 67
+    bls12_381_millerLoop, // 68
+    bls12_381_mulMlResult, // 69
+    bls12_381_finalVerify, // 70
+    keccak_256, // 71
+    blake2b_224, // 72
+    integerToByteString, // 73
+    byteStringToInteger // 74
+]
+
+/**
+ * @type {Map<string, Builtin>}
+ */
+export const builtinsV3Map = new Map(builtinsV3.map((bi) => [bi.name, bi]))

@@ -17,8 +17,8 @@ export const equalsInteger = {
     name: "equalsInteger",
     forceCount: 0,
     nArgs: 2,
-    CpuModel: ArgSizesMinCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesMinCost(params.get(72), params.get(71)),
+    memModel: (params) => new ArgSizesConstCost(params.get(73)),
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 

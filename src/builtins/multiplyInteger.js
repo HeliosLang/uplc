@@ -13,8 +13,8 @@ export const multiplyInteger = {
     name: "multiplyInteger",
     forceCount: 0,
     nArgs: 2,
-    CpuModel: ArgSizesSumCost,
-    MemModel: ArgSizesSumCost,
+    cpuModel: (params) => new ArgSizesSumCost(params.get(125), params.get(124)),
+    memModel: (params) => new ArgSizesSumCost(params.get(127), params.get(126)),
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 

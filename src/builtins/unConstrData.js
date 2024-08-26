@@ -20,8 +20,8 @@ export const unConstrData = {
     name: "unConstrData",
     forceCount: 0,
     nArgs: 1,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(177)),
+    memModel: (params) => new ArgSizesConstCost(params.get(178)),
     call: (args, ctx) => {
         const [dataValue] = asUplcValues(args)
 

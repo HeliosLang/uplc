@@ -20,8 +20,8 @@ export const chooseData = {
     name: "chooseData",
     forceCount: 1,
     nArgs: 6,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(33)),
+    memModel: (params) => new ArgSizesConstCost(params.get(34)),
     call: (args, ctx) => {
         const data = asUplcValue(args[0])
 

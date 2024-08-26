@@ -17,8 +17,8 @@ export const lessThanEqualsInteger = {
     name: "lessThanEqualsInteger",
     forceCount: 0,
     nArgs: 2,
-    CpuModel: ArgSizesMinCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesMinCost(params.get(97), params.get(96)),
+    memModel: (params) => new ArgSizesConstCost(params.get(98)),
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 

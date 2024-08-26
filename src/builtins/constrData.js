@@ -14,8 +14,8 @@ export const constrData = {
     name: "constrData",
     forceCount: 0,
     nArgs: 2,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(43)),
+    memModel: (params) => new ArgSizesConstCost(params.get(44)),
     call: (args, ctx) => {
         const [tag, fields] = asUplcValues(args)
 

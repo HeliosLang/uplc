@@ -58,7 +58,7 @@ export class UplcDataValue {
      */
     get flatSize() {
         const bytes = this.value.toCbor()
-        return bytesFlatSize(bytes)
+        return bytesFlatSize(bytes.length)
     }
 
     /**

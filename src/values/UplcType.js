@@ -14,6 +14,9 @@ const LIST = "0101"
 const PAIR = "0110"
 const CONTAINER = "0111"
 const DATA = "1000"
+const BLS12_381_G1_ELEMENT = "1001"
+const BLS12_381_G2_ELEMENT = "1010"
+const BLS12_381_ML_RESULT = "1011"
 
 /**
  * Represents the typeBits of a UPLC primitive.
@@ -26,6 +29,27 @@ export class UplcType {
      */
     constructor(typeBits) {
         this.#typeBits = typeBits
+    }
+
+    /**
+     * @returns {UplcType}
+     */
+    static bls12_381_G1_element() {
+        return new UplcType(BLS12_381_G1_ELEMENT)
+    }
+
+    /**
+     * @returns {UplcType}
+     */
+    static bls12_381_G2_element() {
+        return new UplcType(BLS12_381_G2_ELEMENT)
+    }
+
+    /**
+     * @returns {UplcType}
+     */
+    static bls12_381_MlResult() {
+        return new UplcType(BLS12_381_ML_RESULT)
     }
 
     /**
@@ -175,6 +199,15 @@ export class UplcType {
                 case DATA:
                     stack.push("data")
                     break
+                case BLS12_381_G1_ELEMENT:
+                    stack.push("bls12_381_G1_element")
+                    break
+                case BLS12_381_G2_ELEMENT:
+                    stack.push("bls12_381_G2_element")
+                    break
+                case BLS12_381_ML_RESULT:
+                    stack.push("bls12_381_mlresult")
+                    break
                 case CONTAINER: {
                     b = popBits()
 
@@ -219,6 +252,9 @@ export class UplcType {
                 case "unit":
                 case "bool":
                 case "data":
+                case "bls12_381_G1_element":
+                case "bls12_381_G2_element":
+                case "bls12_381_mlresult":
                     return [head, tail]
                 case "list": {
                     const [item, rest] = stackToString(tail)

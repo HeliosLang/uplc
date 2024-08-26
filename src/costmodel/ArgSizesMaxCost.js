@@ -1,5 +1,3 @@
-import { CostModelParamsProxy } from "./CostModelParamsProxy.js"
-
 /**
  * @typedef {import("./ArgSizesCost.js").ArgSizesCost} ArgSizesCost
  */
@@ -9,12 +7,26 @@ import { CostModelParamsProxy } from "./CostModelParamsProxy.js"
  */
 export class ArgSizesMaxCost {
     /**
-     * @param {CostModelParamsProxy} params
-     * @param {string} key
+     * Slope
+     * @readonly
+     * @type {bigint}
      */
-    constructor(params, key) {
-        this.a = params.get(`${key}-slope`)
-        this.b = params.get(`${key}-intercept`)
+    a
+
+    /**
+     * Intercept
+     * @readonly
+     * @type {bigint}
+     */
+    b
+
+    /**
+     * @param {bigint} a - slope
+     * @param {bigint} b - intercept
+     */
+    constructor(a, b) {
+        this.a = a
+        this.b = b
     }
 
     /**

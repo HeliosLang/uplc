@@ -14,8 +14,10 @@ export const sliceByteString = {
     name: "sliceByteString",
     forceCount: 0,
     nArgs: 3,
-    CpuModel: ArgSizesThirdCost,
-    MemModel: ArgSizesThirdCost,
+    cpuModel: (params) =>
+        new ArgSizesThirdCost(params.get(162), params.get(161)),
+    memModel: (params) =>
+        new ArgSizesThirdCost(params.get(164), params.get(163)),
     call: (args, ctx) => {
         const [a, b, c] = asUplcValues(args)
 

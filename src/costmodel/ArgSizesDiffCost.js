@@ -9,13 +9,34 @@ import { CostModelParamsProxy } from "./CostModelParamsProxy.js"
  */
 export class ArgSizesDiffCost {
     /**
-     * @param {CostModelParamsProxy} params
-     * @param {string} key
+     * Slope
+     * @readonly
+     * @type {bigint}
      */
-    constructor(params, key) {
-        this.a = params.get(`${key}-slope`)
-        this.b = params.get(`${key}-intercept`)
-        this.min = params.get(`${key}-minimum`)
+    a
+
+    /**
+     * Intercept
+     * @readonly
+     * @type {bigint}
+     */
+    b
+
+    /**
+     * @readonly
+     * @type {bigint}
+     */
+    min
+
+    /**
+     * @param {bigint} a - slope
+     * @param {bigint} b - intercept
+     * @param {bigint} minimum
+     */
+    constructor(a, b, minimum) {
+        this.a = a
+        this.b = b
+        this.min = minimum
     }
 
     /**

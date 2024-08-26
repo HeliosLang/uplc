@@ -14,8 +14,9 @@ export const sha2_256 = {
     name: "sha2_256",
     forceCount: 0,
     nArgs: 1,
-    CpuModel: ArgSizesFirstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) =>
+        new ArgSizesFirstCost(params.get(156), params.get(155)),
+    memModel: (params) => new ArgSizesConstCost(params.get(157)),
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 

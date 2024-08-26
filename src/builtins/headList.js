@@ -13,8 +13,8 @@ export const headList = {
     name: "headList",
     forceCount: 1,
     nArgs: 1,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(80)),
+    memModel: (params) => new ArgSizesConstCost(params.get(81)),
     call: (args, ctx) => {
         const [list] = asUplcValues(args)
 

@@ -14,8 +14,8 @@ export const bData = {
     name: "bData",
     forceCount: 0,
     nArgs: 1,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(12)),
+    memModel: (params) => new ArgSizesConstCost(params.get(13)),
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 

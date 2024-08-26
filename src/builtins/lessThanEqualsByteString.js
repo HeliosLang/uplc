@@ -14,8 +14,8 @@ export const lessThanEqualsByteString = {
     name: "lessThanEqualsByteString",
     forceCount: 0,
     nArgs: 2,
-    CpuModel: ArgSizesMinCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesMinCost(params.get(94), params.get(93)),
+    memModel: (params) => new ArgSizesConstCost(params.get(95)),
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 

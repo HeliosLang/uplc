@@ -24,8 +24,10 @@ import {
     UplcForce,
     UplcLambda,
     UplcVar
-} from "../terms/index.js"
+} from "../terms/index.js" // TODO: implement UplcCase and UplcConstr terms
 import {
+    Bls12_381_G1_element,
+    Bls12_381_G2_element,
     UplcBool,
     UplcByteArray,
     UplcDataValue,
@@ -43,6 +45,7 @@ import {
     ListData,
     MapData
 } from "../index.js"
+import { encodeIntBE, padBytes } from "@helios-lang/codec-utils"
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
@@ -98,7 +101,7 @@ function findVarName(ctx, name) {
 export function parseProgram(s, ctx) {
     const [major, minor, patch] = ctx.uplcVersion.split(".")
 
-    const tokenizer = new Tokenizer(new Source("<na>", s), {
+    const tokenizer = new Tokenizer(new Source(s, { name: "<na>" }), {
         tokenizeReal: false,
         allowLeadingZeroes: true
     })
@@ -300,6 +303,10 @@ function parseTypedValue(r) {
         return [UplcType.int(), parseInt]
     } else if (r.matches(word("string"))) {
         return [UplcType.string(), parseString]
+    } else if (r.matches(word("bls12_381_G1_element"))) {
+        return [UplcType.bls12_381_G1_element(), parseBls12_381_G1_element]
+    } else if (r.matches(word("bls12_381_G2_element"))) {
+        return [UplcType.bls12_381_G2_element(), parseBls12_381_G2_element]
     } else if (r.matches(word("unit"))) {
         return [UplcType.unit(), parseUnit]
     } else if ((m = r.matches(group("(", { length: 1 })))) {
@@ -516,6 +523,40 @@ function parseDataPair(r) {
         const second = parseData(m.fields[1])
 
         return first && second ? [first, second] : None
+    } else {
+        r.endMatch()
+        return None
+    }
+}
+
+/**
+ * @param {TokenReader} r
+ * @returns {Option<Bls12_381_G1_element>}
+ */
+function parseBls12_381_G1_element(r) {
+    let m
+
+    if ((m = r.matches(intlit()))) {
+        const bytes = encodeIntBE(m.value)
+
+        return Bls12_381_G1_element.uncompress(bytes)
+    } else {
+        r.endMatch()
+        return None
+    }
+}
+
+/**
+ * @param {TokenReader} r
+ * @returns {Option<Bls12_381_G2_element>}
+ */
+function parseBls12_381_G2_element(r) {
+    let m
+
+    if ((m = r.matches(intlit()))) {
+        const bytes = encodeIntBE(m.value)
+
+        return Bls12_381_G2_element.uncompress(bytes)
     } else {
         r.endMatch()
         return None

@@ -14,8 +14,8 @@ export const mkCons = {
     name: "mkCons",
     forceCount: 1,
     nArgs: 2,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(106)),
+    memModel: (params) => new ArgSizesConstCost(params.get(107)),
     call: (args, ctx) => {
         const [item, list] = asUplcValues(args)
 

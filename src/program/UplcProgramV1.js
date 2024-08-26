@@ -1,6 +1,11 @@
 import { None } from "@helios-lang/type-utils"
 import { builtinsV1 } from "../builtins/index.js"
-import { CostModel, DEFAULT_COST_MODEL_PARAMS_V1 } from "../costmodel/index.js"
+import {
+    CostModel,
+    COMPAT_MAP_V1,
+    DEFAULT_COST_MODEL_PARAMS_V1,
+    PreConwayCostModelParamsProxy
+} from "../costmodel/index.js"
 import { apply } from "../terms/index.js"
 import {
     decodeCborProgram,
@@ -130,8 +135,11 @@ export class UplcProgramV1 {
      * @param {CostModelParamsV1} costModelParams
      * @returns {CekResult}
      */
-    eval(args, costModelParams = DEFAULT_COST_MODEL_PARAMS_V1) {
-        const costModel = new CostModel(costModelParams, builtinsV1)
+    eval(args, costModelParams = DEFAULT_COST_MODEL_PARAMS_V1()) {
+        const costModel = new CostModel(
+            new PreConwayCostModelParamsProxy(costModelParams, COMPAT_MAP_V1),
+            builtinsV1
+        )
         return evalProgram(builtinsV1, costModel, this.expr, args)
     }
 

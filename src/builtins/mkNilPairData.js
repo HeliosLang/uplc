@@ -13,8 +13,8 @@ export const mkNilPairData = {
     name: "mkNilPairData",
     forceCount: 0,
     nArgs: 1,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(110)),
+    memModel: (params) => new ArgSizesConstCost(params.get(111)),
     call: (args, ctx) => {
         const a = asUplcValue(args[0])
 

@@ -14,8 +14,8 @@ export const decodeUtf8 = {
     name: "decodeUtf8",
     forceCount: 0,
     nArgs: 1,
-    CpuModel: ArgSizesFirstCost,
-    MemModel: ArgSizesFirstCost,
+    cpuModel: (params) => new ArgSizesFirstCost(params.get(46), params.get(45)),
+    memModel: (params) => new ArgSizesFirstCost(params.get(48), params.get(47)),
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 

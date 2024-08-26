@@ -14,8 +14,8 @@ export const mapData = {
     name: "mapData",
     forceCount: 0,
     nArgs: 1,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(104)),
+    memModel: (params) => new ArgSizesConstCost(params.get(105)),
     call: (args, ctx) => {
         const [list] = asUplcValues(args)
 

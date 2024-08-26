@@ -1,9 +1,9 @@
-import { DEFAULT_COST_MODEL_PARAMS_V1 } from "./CostModelParamsV1.js"
 import { CostModelParamsProxy } from "./CostModelParamsProxy.js"
 
 /**
  * @typedef {import("./ArgSizesCost.js").ArgSizesCostClass} ArgSizesCostClass
  * @typedef {import("./Cost.js").Cost} Cost
+ * @typedef {import("./CostModelParamsProxy.js").CostModelParamsProxyI} CostModelParamsProxyI
  * @typedef {import("./CostModelParamsV1.js").CostModelParamsV1} CostModelParams
  * @typedef {import("./CostModelParamsV1.js").CostModelParamKeyV1} CostModelParamKey
  */
@@ -17,8 +17,8 @@ import { CostModelParamsProxy } from "./CostModelParamsProxy.js"
 /**
  * @typedef {{
  *   name: string
- *   CpuModel: ArgSizesCostClass
- *   MemModel: ArgSizesCostClass
+ *   cpuModel: ArgSizesCostClass
+ *   memModel: ArgSizesCostClass
  * }} BuiltinCostModel
  */
 
@@ -78,20 +78,49 @@ export class CostModel {
     builtins
 
     /**
-     * @param {CostModelParams} rawParams
+     * @param {CostModelParamsProxyI} params
      * @param {BuiltinCostModel[]} builtins
      */
-    constructor(rawParams, builtins) {
-        const params = new CostModelParamsProxy(rawParams)
+    constructor(params, builtins) {
+        this.builtinTerm = {
+            cpu: params.get(19),
+            mem: params.get(20)
+        }
 
-        this.builtinTerm = params.getTermParams("Builtin")
-        this.callTerm = params.getTermParams("Apply")
-        this.constTerm = params.getTermParams("Const")
-        this.delayTerm = params.getTermParams("Delay")
-        this.forceTerm = params.getTermParams("Force")
-        this.lambdaTerm = params.getTermParams("Lam")
-        this.startupTerm = params.getTermParams("Startup")
-        this.varTerm = params.getTermParams("Var")
+        this.callTerm = {
+            cpu: params.get(17),
+            mem: params.get(18)
+        }
+
+        this.constTerm = {
+            cpu: params.get(21),
+            mem: params.get(22)
+        }
+
+        this.delayTerm = {
+            cpu: params.get(23),
+            mem: params.get(24)
+        }
+
+        this.forceTerm = {
+            cpu: params.get(25),
+            mem: params.get(26)
+        }
+
+        this.lambdaTerm = {
+            cpu: params.get(27),
+            mem: params.get(28)
+        }
+
+        this.startupTerm = {
+            cpu: params.get(29),
+            mem: params.get(30)
+        }
+
+        this.varTerm = {
+            cpu: params.get(31),
+            mem: params.get(32)
+        }
 
         this.builtins = Object.fromEntries(
             builtins.map(
@@ -100,14 +129,8 @@ export class CostModel {
                  * @returns {[string, (argSizes: bigint[]) => Cost]}
                  */
                 (b) => {
-                    const cpuModel = new b.CpuModel(
-                        params,
-                        `${b.name}-cpu-arguments`
-                    )
-                    const memModel = new b.MemModel(
-                        params,
-                        `${b.name}-memory-arguments`
-                    )
+                    const cpuModel = b.cpuModel(params)
+                    const memModel = b.memModel(params)
 
                     /**
                      * @param {bigint[]} argSizes

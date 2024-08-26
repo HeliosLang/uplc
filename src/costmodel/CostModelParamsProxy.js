@@ -1,43 +1,40 @@
+import { expectSome, isNone } from "@helios-lang/type-utils"
+
 /**
  * @typedef {import("./Cost.js").Cost} Cost
- * @typedef {import("./CostModelParamsV1.js").CostModelParamsV1} CostModelParams
  */
 
-import { isNone } from "@helios-lang/type-utils"
+/**
+ * @typedef {{
+ *   get: (key: number) => bigint
+ * }} CostModelParamsProxyI
+ */
 
+/**
+ * @implements {CostModelParamsProxyI}
+ */
 export class CostModelParamsProxy {
     /**
      * @private
      * @readonly
-     * @type {{[key: string]: number}}
+     * @type {Record<number, number>}
      */
     params
 
     /**
-     * @private
-     * @readonly
-     * @type {Set<string>}
-     */
-    accessed
-
-    /**
-     * @param {CostModelParams} params
+     * @param {Record<number, number>} params
      */
     constructor(params) {
         this.params = params
-        this.accessed = new Set()
     }
 
     /**
      * Throws an error if key not found
-     * @param {string} key
+     * @param {number} key
      * @returns {bigint}
      */
     get(key) {
         const v = this.params[key]
-
-        // TODO: throw error if already accessed before
-        this.accessed.add(key)
 
         if (isNone(v)) {
             throw new Error(`CostModelParams.${key} undefined`)
@@ -53,26 +50,56 @@ export class CostModelParamsProxy {
 
         return BigInt(v)
     }
+}
+
+/**
+ * @implements {CostModelParamsProxyI}
+ */
+export class PreConwayCostModelParamsProxy {
+    /**
+     * @private
+     * @readonly
+     * @type {Record<string, number>}
+     */
+    params
 
     /**
-     * @param {string} key
-     * @returns {Cost}
+     * @private
+     * @readonly
+     * @type {Record<number, string>}
      */
-    getTermParams(key) {
-        return {
-            cpu: this.get(`cek${key}Cost-exBudgetCPU`),
-            mem: this.get(`cek${key}Cost-exBudgetMemory`)
-        }
+    compatMap
+
+    /**
+     * @param {Record<string, number>} params
+     * @param {Record<number, string>} compatMap
+     */
+    constructor(params, compatMap) {
+        this.params = params
+        this.compatMap = compatMap
     }
 
     /**
-     * @param {string} key
-     * @returns {[bigint, bigint]}
+     * Throws an error if key not found
+     * @param {number} id
+     * @returns {bigint}
      */
-    getLinearParams(key) {
-        const a = this.get(`${key}-slope`)
-        const b = this.get(`${key}-intercept`)
+    get(id) {
+        const key = expectSome(this.compatMap[id])
+        const v = expectSome(this.params[key])
 
-        return [a, b]
+        if (isNone(v)) {
+            throw new Error(`CostModelParams.${key} undefined`)
+        }
+
+        if (!(typeof v == "number")) {
+            throw new Error(`CostModelParams.${key} isn't a number`)
+        }
+
+        if (v % 1.0 != 0.0) {
+            throw new Error(`CostModelParams.${key} isn't a whole number`)
+        }
+
+        return BigInt(v)
     }
 }

@@ -14,8 +14,8 @@ export const blake2b_256 = {
     name: "blake2b_256",
     forceCount: 0,
     nArgs: 1,
-    CpuModel: ArgSizesFirstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesFirstCost(params.get(15), params.get(14)),
+    memModel: (params) => new ArgSizesConstCost(params.get(16)),
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 

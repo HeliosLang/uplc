@@ -14,8 +14,9 @@ export const verifyEd25519Signature = {
     name: "verifyEd25519Signature",
     forceCount: 0,
     nArgs: 3,
-    CpuModel: ArgSizesThirdCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) =>
+        new ArgSizesThirdCost(params.get(188), params.get(187)),
+    memModel: (params) => new ArgSizesConstCost(params.get(189)),
     call: (args, ctx) => {
         const [publicKey, message, signature] = asUplcValues(args)
 

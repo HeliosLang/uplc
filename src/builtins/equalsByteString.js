@@ -14,8 +14,9 @@ export const equalsByteString = {
     name: "equalsByteString",
     forceCount: 0,
     nArgs: 2,
-    CpuModel: ArgSizesDiagCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) =>
+        new ArgSizesDiagCost(params.get(66), params.get(65), params.get(64)),
+    memModel: (params) => new ArgSizesConstCost(params.get(67)),
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 

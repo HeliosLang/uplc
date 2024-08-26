@@ -13,8 +13,8 @@ export const nullList = {
     name: "nullList",
     forceCount: 1,
     nArgs: 1,
-    CpuModel: ArgSizesConstCost,
-    MemModel: ArgSizesConstCost,
+    cpuModel: (params) => new ArgSizesConstCost(params.get(128)),
+    memModel: (params) => new ArgSizesConstCost(params.get(129)),
     call: (args, ctx) => {
         const [list] = asUplcValues(args)
 
