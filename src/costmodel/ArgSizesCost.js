@@ -1,5 +1,3 @@
-import { CostModelParamsProxy } from "./CostModelParamsProxy.js"
-
 /**
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./Cost.js").Cost} Cost

@@ -1,11 +1,7 @@
-import { CostModelParamsProxy } from "./CostModelParamsProxy.js"
-
 /**
  * @typedef {import("./ArgSizesCost.js").ArgSizesCostClass} ArgSizesCostClass
  * @typedef {import("./Cost.js").Cost} Cost
  * @typedef {import("./CostModelParamsProxy.js").CostModelParamsProxyI} CostModelParamsProxyI
- * @typedef {import("./CostModelParamsV1.js").CostModelParamsV1} CostModelParams
- * @typedef {import("./CostModelParamsV1.js").CostModelParamKeyV1} CostModelParamKey
  */
 
 /**
@@ -73,6 +69,18 @@ export class CostModel {
 
     /**
      * @readonly
+     * @type {Cost}
+     */
+    constrTerm
+
+    /**
+     * @readonly
+     * @type {Cost}
+     */
+    caseTerm
+
+    /**
+     * @readonly
      * @type {{[name: string]: (argSizes: bigint[]) => Cost}}
      */
     builtins
@@ -82,14 +90,14 @@ export class CostModel {
      * @param {BuiltinCostModel[]} builtins
      */
     constructor(params, builtins) {
-        this.builtinTerm = {
-            cpu: params.get(19),
-            mem: params.get(20)
-        }
-
         this.callTerm = {
             cpu: params.get(17),
             mem: params.get(18)
+        }
+
+        this.builtinTerm = {
+            cpu: params.get(19),
+            mem: params.get(20)
         }
 
         this.constTerm = {
@@ -120,6 +128,16 @@ export class CostModel {
         this.varTerm = {
             cpu: params.get(31),
             mem: params.get(32)
+        }
+
+        this.constrTerm = {
+            cpu: params.get(193, 0n),
+            mem: params.get(194, 0n)
+        }
+
+        this.caseTerm = {
+            cpu: params.get(195, 0n),
+            mem: params.get(196, 0n)
         }
 
         this.builtins = Object.fromEntries(

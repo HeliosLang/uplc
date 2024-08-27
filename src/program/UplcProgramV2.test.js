@@ -1,33 +1,8 @@
+import { strictEqual, throws } from "node:assert"
 import { describe, it } from "node:test"
-import {
-    UplcBuiltin,
-    UplcCall,
-    UplcConst,
-    UplcLambda,
-    UplcVar
-} from "../terms/index.js"
-import {
-    UplcBool,
-    UplcByteArray,
-    UplcDataValue,
-    UplcInt,
-    UplcList,
-    UplcPair,
-    UplcString,
-    UplcType,
-    UplcUnit
-} from "../values/index.js"
-import { UplcProgramV2 } from "./UplcProgramV2.js"
-import { deepEqual, strictEqual, throws } from "node:assert"
 import { expectLeft, expectRight } from "@helios-lang/type-utils"
-import { hexToBytes } from "@helios-lang/codec-utils"
-import {
-    ByteArrayData,
-    ConstrData,
-    IntData,
-    ListData,
-    MapData
-} from "../data/index.js"
+import { UplcBool, UplcInt } from "../values/index.js"
+import { UplcProgramV2 } from "./UplcProgramV2.js"
 
 /**
  * @typedef {import("../values/index.js").UplcValue} UplcValue

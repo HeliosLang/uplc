@@ -2,9 +2,8 @@ import { None } from "@helios-lang/type-utils"
 import { builtinsV1 } from "../builtins/index.js"
 import {
     CostModel,
-    COMPAT_MAP_V1,
-    DEFAULT_COST_MODEL_PARAMS_V1,
-    PreConwayCostModelParamsProxy
+    CostModelParamsProxy,
+    DEFAULT_COST_MODEL_PARAMS_V1
 } from "../costmodel/index.js"
 import { apply } from "../terms/index.js"
 import {
@@ -20,7 +19,6 @@ import { parseProgram } from "./parse.js"
 /**
  * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
  * @typedef {import("../cek/index.js").CekResult} CekResult
- * @typedef {import("../costmodel/index.js").CostModelParamsV1} CostModelParamsV1
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcProgram.js").UplcProgram} UplcProgram
@@ -132,12 +130,12 @@ export class UplcProgramV1 {
 
     /**
      * @param {undefined | UplcValue[]} args - if undefined, eval the root term without any applications, if empy: apply a force to the root term
-     * @param {CostModelParamsV1} costModelParams
+     * @param {number[]} costModelParams
      * @returns {CekResult}
      */
     eval(args, costModelParams = DEFAULT_COST_MODEL_PARAMS_V1()) {
         const costModel = new CostModel(
-            new PreConwayCostModelParamsProxy(costModelParams, COMPAT_MAP_V1),
+            new CostModelParamsProxy(costModelParams),
             builtinsV1
         )
         return evalProgram(builtinsV1, costModel, this.expr, args)

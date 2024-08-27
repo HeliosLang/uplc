@@ -1,17 +1,7 @@
 import { ERA } from "@helios-lang/era"
 
 /**
- * @typedef {keyof BABBAGE_COST_MODEL_PARAMS_V1} CostModelParamKeyV1
- */
-
-/**
- * @typedef {{
- *   [key in CostModelParamKeyV1]: number
- * }} CostModelParamsV1
- */
-
-/**
- * @returns {CostModelParamsV1}
+ * @returns {number[]}
  */
 export function DEFAULT_COST_MODEL_PARAMS_V1() {
     switch (ERA) {
@@ -22,692 +12,346 @@ export function DEFAULT_COST_MODEL_PARAMS_V1() {
     }
 }
 
-export const BABBAGE_COST_MODEL_PARAMS_V1 = {
-    "addInteger-cpu-arguments-intercept": 205665,
-    "addInteger-cpu-arguments-slope": 812,
-    "addInteger-memory-arguments-intercept": 1,
-    "addInteger-memory-arguments-slope": 1,
-    "appendByteString-cpu-arguments-intercept": 1000,
-    "appendByteString-cpu-arguments-slope": 571,
-    "appendByteString-memory-arguments-intercept": 0,
-    "appendByteString-memory-arguments-slope": 1,
-    "appendString-cpu-arguments-intercept": 1000,
-    "appendString-cpu-arguments-slope": 24177,
-    "appendString-memory-arguments-intercept": 4,
-    "appendString-memory-arguments-slope": 1,
-    "bData-cpu-arguments": 1000,
-    "bData-memory-arguments": 32,
-    "blake2b_256-cpu-arguments-intercept": 117366,
-    "blake2b_256-cpu-arguments-slope": 10475,
-    "blake2b_256-memory-arguments": 4,
-    "cekApplyCost-exBudgetCPU": 23000,
-    "cekApplyCost-exBudgetMemory": 100,
-    "cekBuiltinCost-exBudgetCPU": 23000,
-    "cekBuiltinCost-exBudgetMemory": 100,
-    "cekConstCost-exBudgetCPU": 23000,
-    "cekConstCost-exBudgetMemory": 100,
-    "cekDelayCost-exBudgetCPU": 23000,
-    "cekDelayCost-exBudgetMemory": 100,
-    "cekForceCost-exBudgetCPU": 23000,
-    "cekForceCost-exBudgetMemory": 100,
-    "cekLamCost-exBudgetCPU": 23000,
-    "cekLamCost-exBudgetMemory": 100,
-    "cekStartupCost-exBudgetCPU": 100,
-    "cekStartupCost-exBudgetMemory": 100,
-    "cekVarCost-exBudgetCPU": 23000,
-    "cekVarCost-exBudgetMemory": 100,
-    "chooseData-cpu-arguments": 19537,
-    "chooseData-memory-arguments": 32,
-    "chooseList-cpu-arguments": 175354,
-    "chooseList-memory-arguments": 32,
-    "chooseUnit-cpu-arguments": 46417,
-    "chooseUnit-memory-arguments": 4,
-    "consByteString-cpu-arguments-intercept": 221973,
-    "consByteString-cpu-arguments-slope": 511,
-    "consByteString-memory-arguments-intercept": 0,
-    "consByteString-memory-arguments-slope": 1,
-    "constrData-cpu-arguments": 89141,
-    "constrData-memory-arguments": 32,
-    "decodeUtf8-cpu-arguments-intercept": 497525,
-    "decodeUtf8-cpu-arguments-slope": 14068,
-    "decodeUtf8-memory-arguments-intercept": 4,
-    "decodeUtf8-memory-arguments-slope": 2,
-    "divideInteger-cpu-arguments-constant": 196500,
-    "divideInteger-cpu-arguments-model-arguments-intercept": 453240,
-    "divideInteger-cpu-arguments-model-arguments-slope": 220,
-    "divideInteger-memory-arguments-intercept": 0,
-    "divideInteger-memory-arguments-minimum": 1,
-    "divideInteger-memory-arguments-slope": 1,
-    "encodeUtf8-cpu-arguments-intercept": 1000,
-    "encodeUtf8-cpu-arguments-slope": 28662,
-    "encodeUtf8-memory-arguments-intercept": 4,
-    "encodeUtf8-memory-arguments-slope": 2,
-    "equalsByteString-cpu-arguments-constant": 245000,
-    "equalsByteString-cpu-arguments-intercept": 216773,
-    "equalsByteString-cpu-arguments-slope": 62,
-    "equalsByteString-memory-arguments": 1,
-    "equalsData-cpu-arguments-intercept": 1060367,
-    "equalsData-cpu-arguments-slope": 12586,
-    "equalsData-memory-arguments": 1,
-    "equalsInteger-cpu-arguments-intercept": 208512,
-    "equalsInteger-cpu-arguments-slope": 421,
-    "equalsInteger-memory-arguments": 1,
-    "equalsString-cpu-arguments-constant": 187000,
-    "equalsString-cpu-arguments-intercept": 1000,
-    "equalsString-cpu-arguments-slope": 52998,
-    "equalsString-memory-arguments": 1,
-    "fstPair-cpu-arguments": 80436,
-    "fstPair-memory-arguments": 32,
-    "headList-cpu-arguments": 43249,
-    "headList-memory-arguments": 32,
-    "iData-cpu-arguments": 1000,
-    "iData-memory-arguments": 32,
-    "ifThenElse-cpu-arguments": 80556,
-    "ifThenElse-memory-arguments": 1,
-    "indexByteString-cpu-arguments": 57667,
-    "indexByteString-memory-arguments": 4,
-    "lengthOfByteString-cpu-arguments": 1000,
-    "lengthOfByteString-memory-arguments": 10,
-    "lessThanByteString-cpu-arguments-intercept": 197145,
-    "lessThanByteString-cpu-arguments-slope": 156,
-    "lessThanByteString-memory-arguments": 1,
-    "lessThanEqualsByteString-cpu-arguments-intercept": 197145,
-    "lessThanEqualsByteString-cpu-arguments-slope": 156,
-    "lessThanEqualsByteString-memory-arguments": 1,
-    "lessThanEqualsInteger-cpu-arguments-intercept": 204924,
-    "lessThanEqualsInteger-cpu-arguments-slope": 473,
-    "lessThanEqualsInteger-memory-arguments": 1,
-    "lessThanInteger-cpu-arguments-intercept": 208896,
-    "lessThanInteger-cpu-arguments-slope": 511,
-    "lessThanInteger-memory-arguments": 1,
-    "listData-cpu-arguments": 52467,
-    "listData-memory-arguments": 32,
-    "mapData-cpu-arguments": 64832,
-    "mapData-memory-arguments": 32,
-    "mkCons-cpu-arguments": 65493,
-    "mkCons-memory-arguments": 32,
-    "mkNilData-cpu-arguments": 22558,
-    "mkNilData-memory-arguments": 32,
-    "mkNilPairData-cpu-arguments": 16563,
-    "mkNilPairData-memory-arguments": 32,
-    "mkPairData-cpu-arguments": 76511,
-    "mkPairData-memory-arguments": 32,
-    "modInteger-cpu-arguments-constant": 196500,
-    "modInteger-cpu-arguments-model-arguments-intercept": 453240,
-    "modInteger-cpu-arguments-model-arguments-slope": 220,
-    "modInteger-memory-arguments-intercept": 0,
-    "modInteger-memory-arguments-minimum": 1,
-    "modInteger-memory-arguments-slope": 1,
-    "multiplyInteger-cpu-arguments-intercept": 69522,
-    "multiplyInteger-cpu-arguments-slope": 11687,
-    "multiplyInteger-memory-arguments-intercept": 0,
-    "multiplyInteger-memory-arguments-slope": 1,
-    "nullList-cpu-arguments": 60091,
-    "nullList-memory-arguments": 32,
-    "quotientInteger-cpu-arguments-constant": 196500,
-    "quotientInteger-cpu-arguments-model-arguments-intercept": 453240,
-    "quotientInteger-cpu-arguments-model-arguments-slope": 220,
-    "quotientInteger-memory-arguments-intercept": 0,
-    "quotientInteger-memory-arguments-minimum": 1,
-    "quotientInteger-memory-arguments-slope": 1,
-    "remainderInteger-cpu-arguments-constant": 196500,
-    "remainderInteger-cpu-arguments-model-arguments-intercept": 453240,
-    "remainderInteger-cpu-arguments-model-arguments-slope": 220,
-    "remainderInteger-memory-arguments-intercept": 0,
-    "remainderInteger-memory-arguments-minimum": 1,
-    "remainderInteger-memory-arguments-slope": 1,
-    "sha2_256-cpu-arguments-intercept": 806990,
-    "sha2_256-cpu-arguments-slope": 30482,
-    "sha2_256-memory-arguments": 4,
-    "sha3_256-cpu-arguments-intercept": 1927926,
-    "sha3_256-cpu-arguments-slope": 82523,
-    "sha3_256-memory-arguments": 4,
-    "sliceByteString-cpu-arguments-intercept": 265318,
-    "sliceByteString-cpu-arguments-slope": 0,
-    "sliceByteString-memory-arguments-intercept": 4,
-    "sliceByteString-memory-arguments-slope": 0,
-    "sndPair-cpu-arguments": 85931,
-    "sndPair-memory-arguments": 32,
-    "subtractInteger-cpu-arguments-intercept": 205665,
-    "subtractInteger-cpu-arguments-slope": 812,
-    "subtractInteger-memory-arguments-intercept": 1,
-    "subtractInteger-memory-arguments-slope": 1,
-    "tailList-cpu-arguments": 41182,
-    "tailList-memory-arguments": 32,
-    "trace-cpu-arguments": 212342,
-    "trace-memory-arguments": 32,
-    "unBData-cpu-arguments": 31220,
-    "unBData-memory-arguments": 32,
-    "unConstrData-cpu-arguments": 32696,
-    "unConstrData-memory-arguments": 32,
-    "unIData-cpu-arguments": 43357,
-    "unIData-memory-arguments": 32,
-    "unListData-cpu-arguments": 32247,
-    "unListData-memory-arguments": 32,
-    "unMapData-cpu-arguments": 38314,
-    "unMapData-memory-arguments": 32,
-    "verifyEd25519Signature-cpu-arguments-intercept": 9462713,
-    "verifyEd25519Signature-cpu-arguments-slope": 1021,
-    "verifyEd25519Signature-memory-arguments": 10
-}
+/**
+ * @type {number[]}
+ */
+export const BABBAGE_COST_MODEL_PARAMS_V1 = [
+    205665, // 0: addInteger-cpu-arguments-intercept
+    812, // 1: addInteger-cpu-arguments-slope
+    1, // 2: addInteger-memory-arguments-intercept
+    1, // 3: addInteger-memory-arguments-slope
+    1000, // 4: appendByteString-cpu-arguments-intercept
+    571, // 5: appendByteString-cpu-arguments-slope
+    0, // 6: appendByteString-memory-arguments-intercept
+    1, // 7: appendByteString-memory-arguments-slope
+    1000, // 8: appendString-cpu-arguments-intercept
+    24177, // 9: appendString-cpu-arguments-slope
+    4, // 10: appendString-memory-arguments-intercept
+    1, // 11: appendString-memory-arguments-slope
+    1000, // 12: bData-cpu-arguments
+    32, // 13: bData-memory-arguments
+    117366, // 14: blake2b_256-cpu-arguments-intercept
+    10475, // 15: blake2b_256-cpu-arguments-slope
+    4, // 16: blake2b_256-memory-arguments
+    23000, // 17: cekApplyCost-exBudgetCPU
+    100, // 18: cekApplyCost-exBudgetMemory
+    23000, // 19: cekBuiltinCost-exBudgetCPU
+    100, // 20: cekBuiltinCost-exBudgetMemory
+    23000, // 21: cekConstCost-exBudgetCPU
+    100, // 22: cekConstCost-exBudgetMemory
+    23000, // 23: cekDelayCost-exBudgetCPU
+    100, // 24: cekDelayCost-exBudgetMemory
+    23000, // 25: cekForceCost-exBudgetCPU
+    100, // 26: cekForceCost-exBudgetMemory
+    23000, // 27: cekLamCost-exBudgetCPU
+    100, // 28: cekLamCost-exBudgetMemory
+    100, // 29: cekStartupCost-exBudgetCPU
+    100, // 30: cekStartupCost-exBudgetMemory
+    23000, // 31: cekVarCost-exBudgetCPU
+    100, // 32: cekVarCost-exBudgetMemory
+    19537, // 33: chooseData-cpu-arguments
+    32, // 34: chooseData-memory-arguments
+    175354, // 35: chooseList-cpu-arguments
+    32, // 36: chooseList-memory-arguments
+    46417, // 37: chooseUnit-cpu-arguments
+    4, // 38: chooseUnit-memory-arguments
+    221973, // 39: consByteString-cpu-arguments-intercept
+    511, // 40: consByteString-cpu-arguments-slope
+    0, // 41: consByteString-memory-arguments-intercept
+    1, // 42: consByteString-memory-arguments-slope
+    89141, // 43: constrData-cpu-arguments
+    32, // 44: constrData-memory-arguments
+    497525, // 45: decodeUtf8-cpu-arguments-intercept
+    14068, // 46: decodeUtf8-cpu-arguments-slope
+    4, // 47: decodeUtf8-memory-arguments-intercept
+    2, // 48: decodeUtf8-memory-arguments-slope
+    196500, // 49: divideInteger-cpu-arguments-constant
+    453240, // 50: divideInteger-cpu-arguments-model-arguments-intercept
+    220, // 51: divideInteger-cpu-arguments-model-arguments-slope
+    0, // 52: divideInteger-memory-arguments-intercept
+    1, // 53: divideInteger-memory-arguments-minimum
+    1, // 54: divideInteger-memory-arguments-slope
+    1000, // 55: encodeUtf8-cpu-arguments-intercept
+    28662, // 56: encodeUtf8-cpu-arguments-slope
+    4, // 57: encodeUtf8-memory-arguments-intercept
+    2, // 58: encodeUtf8-memory-arguments-slope
+    245000, // 59: equalsByteString-cpu-arguments-constant
+    216773, // 60: equalsByteString-cpu-arguments-intercept
+    62, // 61: equalsByteString-cpu-arguments-slope
+    1, // 62: equalsByteString-memory-arguments
+    1060367, // 63: equalsData-cpu-arguments-intercept
+    12586, // 64: equalsData-cpu-arguments-slope
+    1, // 65: equalsData-memory-arguments
+    208512, // 66: equalsInteger-cpu-arguments-intercept
+    421, // 67: equalsInteger-cpu-arguments-slope
+    1, // 68: equalsInteger-memory-arguments
+    187000, // 69: equalsString-cpu-arguments-constant
+    1000, // 70: equalsString-cpu-arguments-intercept
+    52998, // 71: equalsString-cpu-arguments-slope
+    1, // 72: equalsString-memory-arguments
+    80436, // 73: fstPair-cpu-arguments
+    32, // 74: fstPair-memory-arguments
+    43249, // 75: headList-cpu-arguments
+    32, // 76: headList-memory-arguments
+    1000, // 77: iData-cpu-arguments
+    32, // 78: iData-memory-arguments
+    80556, // 79: ifThenElse-cpu-arguments
+    1, // 80: ifThenElse-memory-arguments
+    57667, // 81: indexByteString-cpu-arguments
+    4, // 82: indexByteString-memory-arguments
+    1000, // 83: lengthOfByteString-cpu-arguments
+    10, // 84: lengthOfByteString-memory-arguments
+    197145, // 85: lessThanByteString-cpu-arguments-intercept
+    156, // 86: lessThanByteString-cpu-arguments-slope
+    1, // 87: lessThanByteString-memory-arguments
+    197145, // 88: lessThanEqualsByteString-cpu-arguments-intercept
+    156, // 89: lessThanEqualsByteString-cpu-arguments-slope
+    1, // 90: lessThanEqualsByteString-memory-arguments
+    204924, // 91: lessThanEqualsInteger-cpu-arguments-intercept
+    473, // 92: lessThanEqualsInteger-cpu-arguments-slope
+    1, // 93: lessThanEqualsInteger-memory-arguments
+    208896, // 94: lessThanInteger-cpu-arguments-intercept
+    511, // 95: lessThanInteger-cpu-arguments-slope
+    1, // 96: lessThanInteger-memory-arguments
+    52467, // 97: listData-cpu-arguments
+    32, // 98: listData-memory-arguments
+    64832, // 99: mapData-cpu-arguments
+    32, // 100: mapData-memory-arguments
+    65493, // 101: mkCons-cpu-arguments
+    32, // 102: mkCons-memory-arguments
+    22558, // 103: mkNilData-cpu-arguments
+    32, // 104: mkNilData-memory-arguments
+    16563, // 105: mkNilPairData-cpu-arguments
+    32, // 106: mkNilPairData-memory-arguments
+    76511, // 107: mkPairData-cpu-arguments
+    32, // 108: mkPairData-memory-arguments
+    196500, // 109: modInteger-cpu-arguments-constant
+    453240, // 110: modInteger-cpu-arguments-model-arguments-intercept
+    220, // 111: modInteger-cpu-arguments-model-arguments-slope
+    0, // 112: modInteger-memory-arguments-intercept
+    1, // 113: modInteger-memory-arguments-minimum
+    1, // 114: modInteger-memory-arguments-slope
+    69522, // 115: multiplyInteger-cpu-arguments-intercept
+    11687, // 116: multiplyInteger-cpu-arguments-slope
+    0, // 117: multiplyInteger-memory-arguments-intercept
+    1, // 118: multiplyInteger-memory-arguments-slope
+    60091, // 119: nullList-cpu-arguments
+    32, // 120: nullList-memory-arguments
+    196500, // 121: quotientInteger-cpu-arguments-constant
+    453240, // 122: quotientInteger-cpu-arguments-model-arguments-intercept
+    220, // 123: quotientInteger-cpu-arguments-model-arguments-slope
+    0, // 124: quotientInteger-memory-arguments-intercept
+    1, // 125: quotientInteger-memory-arguments-minimum
+    1, // 126: quotientInteger-memory-arguments-slope
+    196500, // 127: remainderInteger-cpu-arguments-constant
+    453240, // 128: remainderInteger-cpu-arguments-model-arguments-intercept
+    220, // 129: remainderInteger-cpu-arguments-model-arguments-slope
+    0, // 130: remainderInteger-memory-arguments-intercept
+    1, // 131: remainderInteger-memory-arguments-minimum
+    1, // 132: remainderInteger-memory-arguments-slope
+    806990, // 133: sha2_256-cpu-arguments-intercept
+    30482, // 134: sha2_256-cpu-arguments-slope
+    4, // 135: sha2_256-memory-arguments
+    1927926, // 136: sha3_256-cpu-arguments-intercept
+    82523, // 137: sha3_256-cpu-arguments-slope
+    4, // 138: sha3_256-memory-arguments
+    265318, // 139: sliceByteString-cpu-arguments-intercept
+    0, // 140: sliceByteString-cpu-arguments-slope
+    4, // 141: sliceByteString-memory-arguments-intercept
+    0, // 142: sliceByteString-memory-arguments-slope
+    85931, // 143: sndPair-cpu-arguments
+    32, // 144: sndPair-memory-arguments
+    205665, // 145: subtractInteger-cpu-arguments-intercept
+    812, // 146: subtractInteger-cpu-arguments-slope
+    1, // 147: subtractInteger-memory-arguments-intercept
+    1, // 148: subtractInteger-memory-arguments-slope
+    41182, // 149: tailList-cpu-arguments
+    32, // 150: tailList-memory-arguments
+    212342, // 151: trace-cpu-arguments
+    32, // 152: trace-memory-arguments
+    31220, // 153: unBData-cpu-arguments
+    32, // 154: unBData-memory-arguments
+    32696, // 155: unConstrData-cpu-arguments
+    32, // 156: unConstrData-memory-arguments
+    43357, // 157: unIData-cpu-arguments
+    32, // 158: unIData-memory-arguments
+    32247, // 159: unListData-cpu-arguments
+    32, // 160: unListData-memory-arguments
+    38314, // 161: unMapData-cpu-arguments
+    32, // 162: unMapData-memory-arguments
+    9462713, // 163: verifyEd25519Signature-cpu-arguments-intercept
+    1021, // 164: verifyEd25519Signature-cpu-arguments-slope
+    10 // 165: verifyEd25519Signature-memory-arguments
+]
 
 /**
- * For consisntency the following fields were renamed:
- *   blake2b-cpu-arguments-intercept -> blake2b_256-cpu-arguments-intercept
- *   blake2b-cpu-arguments-slope -> blake2b_256-cpu-arguments-slope
- *   blake2b-memory-arguments -> blake2b_256-memory-arguments
- *   verifySignature-cpu-arguments-intercept -> verifyEd25519Signature-cpu-arguments-intercept": 3345831,
- *   verifySignature-cpu-arguments-slope -> verifyEd25519Signature-cpu-arguments-slope
- *   verifySignature-memory-arguments -> verifyEd25519Signature-memory-arguments
- * @type {CostModelParamsV1}
+ * @type {number[]}
  */
-export const ALONZO_GENESIS_COST_MODEL_PARAMS = {
-    "addInteger-cpu-arguments-intercept": 197209,
-    "addInteger-cpu-arguments-slope": 0,
-    "addInteger-memory-arguments-intercept": 1,
-    "addInteger-memory-arguments-slope": 1,
-    "appendByteString-cpu-arguments-intercept": 396231,
-    "appendByteString-cpu-arguments-slope": 621,
-    "appendByteString-memory-arguments-intercept": 0,
-    "appendByteString-memory-arguments-slope": 1,
-    "appendString-cpu-arguments-intercept": 150000,
-    "appendString-cpu-arguments-slope": 1000,
-    "appendString-memory-arguments-intercept": 0,
-    "appendString-memory-arguments-slope": 1,
-    "bData-cpu-arguments": 150000,
-    "bData-memory-arguments": 32,
-    "blake2b_256-cpu-arguments-intercept": 2477736,
-    "blake2b_256-cpu-arguments-slope": 29175,
-    "blake2b_256-memory-arguments": 4,
-    "cekApplyCost-exBudgetCPU": 29773,
-    "cekApplyCost-exBudgetMemory": 100,
-    "cekBuiltinCost-exBudgetCPU": 29773,
-    "cekBuiltinCost-exBudgetMemory": 100,
-    "cekConstCost-exBudgetCPU": 29773,
-    "cekConstCost-exBudgetMemory": 100,
-    "cekDelayCost-exBudgetCPU": 29773,
-    "cekDelayCost-exBudgetMemory": 100,
-    "cekForceCost-exBudgetCPU": 29773,
-    "cekForceCost-exBudgetMemory": 100,
-    "cekLamCost-exBudgetCPU": 29773,
-    "cekLamCost-exBudgetMemory": 100,
-    "cekStartupCost-exBudgetCPU": 100,
-    "cekStartupCost-exBudgetMemory": 100,
-    "cekVarCost-exBudgetCPU": 29773,
-    "cekVarCost-exBudgetMemory": 100,
-    "chooseData-cpu-arguments": 150000,
-    "chooseData-memory-arguments": 32,
-    "chooseList-cpu-arguments": 150000,
-    "chooseList-memory-arguments": 32,
-    "chooseUnit-cpu-arguments": 150000,
-    "chooseUnit-memory-arguments": 32,
-    "consByteString-cpu-arguments-intercept": 150000,
-    "consByteString-cpu-arguments-slope": 1000,
-    "consByteString-memory-arguments-intercept": 0,
-    "consByteString-memory-arguments-slope": 1,
-    "constrData-cpu-arguments": 150000,
-    "constrData-memory-arguments": 32,
-    "decodeUtf8-cpu-arguments-intercept": 150000,
-    "decodeUtf8-cpu-arguments-slope": 1000,
-    "decodeUtf8-memory-arguments-intercept": 0,
-    "decodeUtf8-memory-arguments-slope": 8,
-    "divideInteger-cpu-arguments-constant": 148000,
-    "divideInteger-cpu-arguments-model-arguments-intercept": 425507,
-    "divideInteger-cpu-arguments-model-arguments-slope": 118,
-    "divideInteger-memory-arguments-intercept": 0,
-    "divideInteger-memory-arguments-minimum": 1,
-    "divideInteger-memory-arguments-slope": 1,
-    "encodeUtf8-cpu-arguments-intercept": 150000,
-    "encodeUtf8-cpu-arguments-slope": 1000,
-    "encodeUtf8-memory-arguments-intercept": 0,
-    "encodeUtf8-memory-arguments-slope": 8,
-    "equalsByteString-cpu-arguments-constant": 150000,
-    "equalsByteString-cpu-arguments-intercept": 112536,
-    "equalsByteString-cpu-arguments-slope": 247,
-    "equalsByteString-memory-arguments": 1,
-    "equalsData-cpu-arguments-intercept": 150000,
-    "equalsData-cpu-arguments-slope": 10000,
-    "equalsData-memory-arguments": 1,
-    "equalsInteger-cpu-arguments-intercept": 136542,
-    "equalsInteger-cpu-arguments-slope": 1326,
-    "equalsInteger-memory-arguments": 1,
-    "equalsString-cpu-arguments-constant": 1000,
-    "equalsString-cpu-arguments-intercept": 150000,
-    "equalsString-cpu-arguments-slope": 1000,
-    "equalsString-memory-arguments": 1,
-    "fstPair-cpu-arguments": 150000,
-    "fstPair-memory-arguments": 32,
-    "headList-cpu-arguments": 150000,
-    "headList-memory-arguments": 32,
-    "iData-cpu-arguments": 150000,
-    "iData-memory-arguments": 32,
-    "ifThenElse-cpu-arguments": 1,
-    "ifThenElse-memory-arguments": 1,
-    "indexByteString-cpu-arguments": 150000,
-    "indexByteString-memory-arguments": 1,
-    "lengthOfByteString-cpu-arguments": 150000,
-    "lengthOfByteString-memory-arguments": 4,
-    "lessThanByteString-cpu-arguments-intercept": 103599,
-    "lessThanByteString-cpu-arguments-slope": 248,
-    "lessThanByteString-memory-arguments": 1,
-    "lessThanEqualsByteString-cpu-arguments-intercept": 103599,
-    "lessThanEqualsByteString-cpu-arguments-slope": 248,
-    "lessThanEqualsByteString-memory-arguments": 1,
-    "lessThanEqualsInteger-cpu-arguments-intercept": 145276,
-    "lessThanEqualsInteger-cpu-arguments-slope": 1366,
-    "lessThanEqualsInteger-memory-arguments": 1,
-    "lessThanInteger-cpu-arguments-intercept": 179690,
-    "lessThanInteger-cpu-arguments-slope": 497,
-    "lessThanInteger-memory-arguments": 1,
-    "listData-cpu-arguments": 150000,
-    "listData-memory-arguments": 32,
-    "mapData-cpu-arguments": 150000,
-    "mapData-memory-arguments": 32,
-    "mkCons-cpu-arguments": 150000,
-    "mkCons-memory-arguments": 32,
-    "mkNilData-cpu-arguments": 150000,
-    "mkNilData-memory-arguments": 32,
-    "mkNilPairData-cpu-arguments": 150000,
-    "mkNilPairData-memory-arguments": 32,
-    "mkPairData-cpu-arguments": 150000,
-    "mkPairData-memory-arguments": 32,
-    "modInteger-cpu-arguments-constant": 148000,
-    "modInteger-cpu-arguments-model-arguments-intercept": 425507,
-    "modInteger-cpu-arguments-model-arguments-slope": 118,
-    "modInteger-memory-arguments-intercept": 0,
-    "modInteger-memory-arguments-minimum": 1,
-    "modInteger-memory-arguments-slope": 1,
-    "multiplyInteger-cpu-arguments-intercept": 61516,
-    "multiplyInteger-cpu-arguments-slope": 11218,
-    "multiplyInteger-memory-arguments-intercept": 0,
-    "multiplyInteger-memory-arguments-slope": 1,
-    "nullList-cpu-arguments": 150000,
-    "nullList-memory-arguments": 32,
-    "quotientInteger-cpu-arguments-constant": 148000,
-    "quotientInteger-cpu-arguments-model-arguments-intercept": 425507,
-    "quotientInteger-cpu-arguments-model-arguments-slope": 118,
-    "quotientInteger-memory-arguments-intercept": 0,
-    "quotientInteger-memory-arguments-minimum": 1,
-    "quotientInteger-memory-arguments-slope": 1,
-    "remainderInteger-cpu-arguments-constant": 148000,
-    "remainderInteger-cpu-arguments-model-arguments-intercept": 425507,
-    "remainderInteger-cpu-arguments-model-arguments-slope": 118,
-    "remainderInteger-memory-arguments-intercept": 0,
-    "remainderInteger-memory-arguments-minimum": 1,
-    "remainderInteger-memory-arguments-slope": 1,
-    "sha2_256-cpu-arguments-intercept": 2477736,
-    "sha2_256-cpu-arguments-slope": 29175,
-    "sha2_256-memory-arguments": 4,
-    "sha3_256-cpu-arguments-intercept": 0,
-    "sha3_256-cpu-arguments-slope": 82363,
-    "sha3_256-memory-arguments": 4,
-    "sliceByteString-cpu-arguments-intercept": 150000,
-    "sliceByteString-cpu-arguments-slope": 5000,
-    "sliceByteString-memory-arguments-intercept": 0,
-    "sliceByteString-memory-arguments-slope": 1,
-    "sndPair-cpu-arguments": 150000,
-    "sndPair-memory-arguments": 32,
-    "subtractInteger-cpu-arguments-intercept": 197209,
-    "subtractInteger-cpu-arguments-slope": 0,
-    "subtractInteger-memory-arguments-intercept": 1,
-    "subtractInteger-memory-arguments-slope": 1,
-    "tailList-cpu-arguments": 150000,
-    "tailList-memory-arguments": 32,
-    "trace-cpu-arguments": 150000,
-    "trace-memory-arguments": 32,
-    "unBData-cpu-arguments": 150000,
-    "unBData-memory-arguments": 32,
-    "unConstrData-cpu-arguments": 150000,
-    "unConstrData-memory-arguments": 32,
-    "unIData-cpu-arguments": 150000,
-    "unIData-memory-arguments": 32,
-    "unListData-cpu-arguments": 150000,
-    "unListData-memory-arguments": 32,
-    "unMapData-cpu-arguments": 150000,
-    "unMapData-memory-arguments": 32,
-    "verifyEd25519Signature-cpu-arguments-intercept": 3345831,
-    "verifyEd25519Signature-cpu-arguments-slope": 1,
-    "verifyEd25519Signature-memory-arguments": 1
-}
-
-/**
- * @type {CostModelParamsV1}
- */
-export const CONWAY_COST_MODEL_PARAMS_V1 = {
-    "addInteger-cpu-arguments-intercept": 100788,
-    "addInteger-cpu-arguments-slope": 420,
-    "addInteger-memory-arguments-intercept": 1,
-    "addInteger-memory-arguments-slope": 1,
-    "appendByteString-cpu-arguments-intercept": 1000,
-    "appendByteString-cpu-arguments-slope": 173,
-    "appendByteString-memory-arguments-intercept": 0,
-    "appendByteString-memory-arguments-slope": 1,
-    "appendString-cpu-arguments-intercept": 1000,
-    "appendString-cpu-arguments-slope": 59957,
-    "appendString-memory-arguments-intercept": 4,
-    "appendString-memory-arguments-slope": 1,
-    "bData-cpu-arguments": 11183,
-    "bData-memory-arguments": 32,
-    "blake2b_256-cpu-arguments-intercept": 201305,
-    "blake2b_256-cpu-arguments-slope": 8356,
-    "blake2b_256-memory-arguments": 4,
-    "cekApplyCost-exBudgetCPU": 16000,
-    "cekApplyCost-exBudgetMemory": 100,
-    "cekBuiltinCost-exBudgetCPU": 16000,
-    "cekBuiltinCost-exBudgetMemory": 100,
-    "cekConstCost-exBudgetCPU": 16000,
-    "cekConstCost-exBudgetMemory": 100,
-    "cekDelayCost-exBudgetCPU": 16000,
-    "cekDelayCost-exBudgetMemory": 100,
-    "cekForceCost-exBudgetCPU": 16000,
-    "cekForceCost-exBudgetMemory": 100,
-    "cekLamCost-exBudgetCPU": 16000,
-    "cekLamCost-exBudgetMemory": 100,
-    "cekStartupCost-exBudgetCPU": 100,
-    "cekStartupCost-exBudgetMemory": 100,
-    "cekVarCost-exBudgetCPU": 16000,
-    "cekVarCost-exBudgetMemory": 100,
-    "chooseData-cpu-arguments": 94375,
-    "chooseData-memory-arguments": 32,
-    "chooseList-cpu-arguments": 132994,
-    "chooseList-memory-arguments": 32,
-    "chooseUnit-cpu-arguments": 61462,
-    "chooseUnit-memory-arguments": 4,
-    "consByteString-cpu-arguments-intercept": 72010,
-    "consByteString-cpu-arguments-slope": 178,
-    "consByteString-memory-arguments-intercept": 0,
-    "consByteString-memory-arguments-slope": 1,
-    "constrData-cpu-arguments": 22151,
-    "constrData-memory-arguments": 32,
-    "decodeUtf8-cpu-arguments-intercept": 91189,
-    "decodeUtf8-cpu-arguments-slope": 769,
-    "decodeUtf8-memory-arguments-intercept": 4,
-    "decodeUtf8-memory-arguments-slope": 2,
-    "divideInteger-cpu-arguments-constant": 85848,
-    "divideInteger-cpu-arguments-model-arguments-intercept": 228465,
-    "divideInteger-cpu-arguments-model-arguments-slope": 122,
-    "divideInteger-memory-arguments-intercept": 0,
-    "divideInteger-memory-arguments-minimum": 1,
-    "divideInteger-memory-arguments-slope": 1,
-    "encodeUtf8-cpu-arguments-intercept": 1000,
-    "encodeUtf8-cpu-arguments-slope": 42921,
-    "encodeUtf8-memory-arguments-intercept": 4,
-    "encodeUtf8-memory-arguments-slope": 2,
-    "equalsByteString-cpu-arguments-constant": 24548,
-    "equalsByteString-cpu-arguments-intercept": 29498,
-    "equalsByteString-cpu-arguments-slope": 38,
-    "equalsByteString-memory-arguments": 1,
-    "equalsData-cpu-arguments-intercept": 898148,
-    "equalsData-cpu-arguments-slope": 27279,
-    "equalsData-memory-arguments": 1,
-    "equalsInteger-cpu-arguments-intercept": 51775,
-    "equalsInteger-cpu-arguments-slope": 558,
-    "equalsInteger-memory-arguments": 1,
-    "equalsString-cpu-arguments-constant": 39184,
-    "equalsString-cpu-arguments-intercept": 1000,
-    "equalsString-cpu-arguments-slope": 60594,
-    "equalsString-memory-arguments": 1,
-    "fstPair-cpu-arguments": 141895,
-    "fstPair-memory-arguments": 32,
-    "headList-cpu-arguments": 83150,
-    "headList-memory-arguments": 32,
-    "iData-cpu-arguments": 15299,
-    "iData-memory-arguments": 32,
-    "ifThenElse-cpu-arguments": 76049,
-    "ifThenElse-memory-arguments": 1,
-    "indexByteString-cpu-arguments": 13169,
-    "indexByteString-memory-arguments": 4,
-    "lengthOfByteString-cpu-arguments": 22100,
-    "lengthOfByteString-memory-arguments": 10,
-    "lessThanByteString-cpu-arguments-intercept": 28999,
-    "lessThanByteString-cpu-arguments-slope": 74,
-    "lessThanByteString-memory-arguments": 1,
-    "lessThanEqualsByteString-cpu-arguments-intercept": 28999,
-    "lessThanEqualsByteString-cpu-arguments-slope": 74,
-    "lessThanEqualsByteString-memory-arguments": 1,
-    "lessThanEqualsInteger-cpu-arguments-intercept": 43285,
-    "lessThanEqualsInteger-cpu-arguments-slope": 552,
-    "lessThanEqualsInteger-memory-arguments": 1,
-    "lessThanInteger-cpu-arguments-intercept": 44749,
-    "lessThanInteger-cpu-arguments-slope": 541,
-    "lessThanInteger-memory-arguments": 1,
-    "listData-cpu-arguments": 33852,
-    "listData-memory-arguments": 32,
-    "mapData-cpu-arguments": 68246,
-    "mapData-memory-arguments": 32,
-    "mkCons-cpu-arguments": 72362,
-    "mkCons-memory-arguments": 32,
-    "mkNilData-cpu-arguments": 7243,
-    "mkNilData-memory-arguments": 32,
-    "mkNilPairData-cpu-arguments": 7391,
-    "mkNilPairData-memory-arguments": 32,
-    "mkPairData-cpu-arguments": 11546,
-    "mkPairData-memory-arguments": 32,
-    "modInteger-cpu-arguments-constant": 85848,
-    "modInteger-cpu-arguments-model-arguments-intercept": 228465,
-    "modInteger-cpu-arguments-model-arguments-slope": 122,
-    "modInteger-memory-arguments-intercept": 0,
-    "modInteger-memory-arguments-minimum": 1,
-    "modInteger-memory-arguments-slope": 1,
-    "multiplyInteger-cpu-arguments-intercept": 90434,
-    "multiplyInteger-cpu-arguments-slope": 519,
-    "multiplyInteger-memory-arguments-intercept": 0,
-    "multiplyInteger-memory-arguments-slope": 1,
-    "nullList-cpu-arguments": 74433,
-    "nullList-memory-arguments": 32,
-    "quotientInteger-cpu-arguments-constant": 85848,
-    "quotientInteger-cpu-arguments-model-arguments-intercept": 228465,
-    "quotientInteger-cpu-arguments-model-arguments-slope": 122,
-    "quotientInteger-memory-arguments-intercept": 0,
-    "quotientInteger-memory-arguments-minimum": 1,
-    "quotientInteger-memory-arguments-slope": 1,
-    "remainderInteger-cpu-arguments-constant": 85848,
-    "remainderInteger-cpu-arguments-model-arguments-intercept": 228465,
-    "remainderInteger-cpu-arguments-model-arguments-slope": 122,
-    "remainderInteger-memory-arguments-intercept": 0,
-    "remainderInteger-memory-arguments-minimum": 1,
-    "remainderInteger-memory-arguments-slope": 1,
-    "sha2_256-cpu-arguments-intercept": 270652,
-    "sha2_256-cpu-arguments-slope": 22588,
-    "sha2_256-memory-arguments": 4,
-    "sha3_256-cpu-arguments-intercept": 1457325,
-    "sha3_256-cpu-arguments-slope": 64566,
-    "sha3_256-memory-arguments": 4,
-    "sliceByteString-cpu-arguments-intercept": 20467,
-    "sliceByteString-cpu-arguments-slope": 1,
-    "sliceByteString-memory-arguments-intercept": 4,
-    "sliceByteString-memory-arguments-slope": 0,
-    "sndPair-cpu-arguments": 141992,
-    "sndPair-memory-arguments": 32,
-    "subtractInteger-cpu-arguments-intercept": 100788,
-    "subtractInteger-cpu-arguments-slope": 420,
-    "subtractInteger-memory-arguments-intercept": 1,
-    "subtractInteger-memory-arguments-slope": 1,
-    "tailList-cpu-arguments": 81663,
-    "tailList-memory-arguments": 32,
-    "trace-cpu-arguments": 59498,
-    "trace-memory-arguments": 32,
-    "unBData-cpu-arguments": 20142,
-    "unBData-memory-arguments": 32,
-    "unConstrData-cpu-arguments": 24588,
-    "unConstrData-memory-arguments": 32,
-    "unIData-cpu-arguments": 20744,
-    "unIData-memory-arguments": 32,
-    "unListData-cpu-arguments": 25933,
-    "unListData-memory-arguments": 32,
-    "unMapData-cpu-arguments": 24623,
-    "unMapData-memory-arguments": 32,
-    "verifyEd25519Signature-cpu-arguments-intercept": 53384111,
-    "verifyEd25519Signature-cpu-arguments-slope": 14333,
-    "verifyEd25519Signature-memory-arguments": 10
-}
-
-// prefer indices downstream
-export const COMPAT_MAP_V1 = {
-    0: "addInteger-cpu-arguments-intercept",
-    1: "addInteger-cpu-arguments-slope",
-    2: "addInteger-memory-arguments-intercept",
-    3: "addInteger-memory-arguments-slope",
-    4: "appendByteString-cpu-arguments-intercept",
-    5: "appendByteString-cpu-arguments-slope",
-    6: "appendByteString-memory-arguments-intercept",
-    7: "appendByteString-memory-arguments-slope",
-    8: "appendString-cpu-arguments-intercept",
-    9: "appendString-cpu-arguments-slope",
-    10: "appendString-memory-arguments-intercept",
-    11: "appendString-memory-arguments-slope",
-    12: "bData-cpu-arguments",
-    13: "bData-memory-arguments",
-    14: "blake2b_256-cpu-arguments-intercept",
-    15: "blake2b_256-cpu-arguments-slope",
-    16: "blake2b_256-memory-arguments",
-    17: "cekApplyCost-exBudgetCPU",
-    18: "cekApplyCost-exBudgetMemory",
-    19: "cekBuiltinCost-exBudgetCPU",
-    20: "cekBuiltinCost-exBudgetMemory",
-    21: "cekConstCost-exBudgetCPU",
-    22: "cekConstCost-exBudgetMemory",
-    23: "cekDelayCost-exBudgetCPU",
-    24: "cekDelayCost-exBudgetMemory",
-    25: "cekForceCost-exBudgetCPU",
-    26: "cekForceCost-exBudgetMemory",
-    27: "cekLamCost-exBudgetCPU",
-    28: "cekLamCost-exBudgetMemory",
-    29: "cekStartupCost-exBudgetCPU",
-    30: "cekStartupCost-exBudgetMemory",
-    31: "cekVarCost-exBudgetCPU",
-    32: "cekVarCost-exBudgetMemory",
-    33: "chooseData-cpu-arguments",
-    34: "chooseData-memory-arguments",
-    35: "chooseList-cpu-arguments",
-    36: "chooseList-memory-arguments",
-    37: "chooseUnit-cpu-arguments",
-    38: "chooseUnit-memory-arguments",
-    39: "consByteString-cpu-arguments-intercept",
-    40: "consByteString-cpu-arguments-slope",
-    41: "consByteString-memory-arguments-intercept",
-    42: "consByteString-memory-arguments-slope",
-    43: "constrData-cpu-arguments",
-    44: "constrData-memory-arguments",
-    45: "decodeUtf8-cpu-arguments-intercept",
-    46: "decodeUtf8-cpu-arguments-slope",
-    47: "decodeUtf8-memory-arguments-intercept",
-    48: "decodeUtf8-memory-arguments-slope",
-    49: "divideInteger-cpu-arguments-constant",
-    50: "divideInteger-cpu-arguments-model-arguments-intercept",
-    51: "divideInteger-cpu-arguments-model-arguments-slope",
-    57: "divideInteger-memory-arguments-intercept",
-    58: "divideInteger-memory-arguments-minimum",
-    59: "divideInteger-memory-arguments-slope",
-    60: "encodeUtf8-cpu-arguments-intercept",
-    61: "encodeUtf8-cpu-arguments-slope",
-    62: "encodeUtf8-memory-arguments-intercept",
-    63: "encodeUtf8-memory-arguments-slope",
-    64: "equalsByteString-cpu-arguments-constant",
-    65: "equalsByteString-cpu-arguments-intercept",
-    66: "equalsByteString-cpu-arguments-slope",
-    67: "equalsByteString-memory-arguments",
-    68: "equalsData-cpu-arguments-intercept",
-    69: "equalsData-cpu-arguments-slope",
-    70: "equalsData-memory-arguments",
-    71: "equalsInteger-cpu-arguments-intercept",
-    72: "equalsInteger-cpu-arguments-slope",
-    73: "equalsInteger-memory-arguments",
-    74: "equalsString-cpu-arguments-constant",
-    75: "equalsString-cpu-arguments-intercept",
-    76: "equalsString-cpu-arguments-slope",
-    77: "equalsString-memory-arguments",
-    78: "fstPair-cpu-arguments",
-    79: "fstPair-memory-arguments",
-    80: "headList-cpu-arguments",
-    81: "headList-memory-arguments",
-    82: "iData-cpu-arguments",
-    83: "iData-memory-arguments",
-    84: "ifThenElse-cpu-arguments",
-    85: "ifThenElse-memory-arguments",
-    86: "indexByteString-cpu-arguments",
-    87: "indexByteString-memory-arguments",
-    88: "lengthOfByteString-cpu-arguments",
-    89: "lengthOfByteString-memory-arguments",
-    90: "lessThanByteString-cpu-arguments-intercept",
-    91: "lessThanByteString-cpu-arguments-slope",
-    92: "lessThanByteString-memory-arguments",
-    93: "lessThanEqualsByteString-cpu-arguments-intercept",
-    94: "lessThanEqualsByteString-cpu-arguments-slope",
-    95: "lessThanEqualsByteString-memory-arguments",
-    96: "lessThanEqualsInteger-cpu-arguments-intercept",
-    97: "lessThanEqualsInteger-cpu-arguments-slope",
-    98: "lessThanEqualsInteger-memory-arguments",
-    99: "lessThanInteger-cpu-arguments-intercept",
-    100: "lessThanInteger-cpu-arguments-slope",
-    101: "lessThanInteger-memory-arguments",
-    102: "listData-cpu-arguments",
-    103: "listData-memory-arguments",
-    104: "mapData-cpu-arguments",
-    105: "mapData-memory-arguments",
-    106: "mkCons-cpu-arguments",
-    107: "mkCons-memory-arguments",
-    108: "mkNilData-cpu-arguments",
-    109: "mkNilData-memory-arguments",
-    110: "mkNilPairData-cpu-arguments",
-    111: "mkNilPairData-memory-arguments",
-    112: "mkPairData-cpu-arguments",
-    113: "mkPairData-memory-arguments",
-    114: "modInteger-cpu-arguments-constant",
-    115: "modInteger-cpu-arguments-model-arguments-intercept",
-    116: "modInteger-cpu-arguments-model-arguments-slope",
-    121: "modInteger-memory-arguments-intercept",
-    122: "modInteger-memory-arguments-minimum",
-    123: "modInteger-memory-arguments-slope",
-    124: "multiplyInteger-cpu-arguments-intercept",
-    125: "multiplyInteger-cpu-arguments-slope",
-    126: "multiplyInteger-memory-arguments-intercept",
-    127: "multiplyInteger-memory-arguments-slope",
-    128: "nullList-cpu-arguments",
-    129: "nullList-memory-arguments",
-    130: "quotientInteger-cpu-arguments-constant",
-    131: "quotientInteger-cpu-arguments-model-arguments-intercept",
-    132: "quotientInteger-cpu-arguments-model-arguments-slope",
-    138: "quotientInteger-memory-arguments-intercept",
-    139: "quotientInteger-memory-arguments-minimum",
-    140: "quotientInteger-memory-arguments-slope",
-    141: "remainderInteger-cpu-arguments-constant",
-    142: "remainderInteger-cpu-arguments-model-arguments-intercept",
-    143: "remainderInteger-cpu-arguments-model-arguments-slope",
-    148: "remainderInteger-memory-arguments-intercept",
-    149: "remainderInteger-memory-arguments-minimum",
-    150: "remainderInteger-memory-arguments-slope",
-    155: "sha2_256-cpu-arguments-intercept",
-    156: "sha2_256-cpu-arguments-slope",
-    157: "sha2_256-memory-arguments",
-    158: "sha3_256-cpu-arguments-intercept",
-    159: "sha3_256-cpu-arguments-slope",
-    160: "sha3_256-memory-arguments",
-    161: "sliceByteString-cpu-arguments-intercept",
-    162: "sliceByteString-cpu-arguments-slope",
-    163: "sliceByteString-memory-arguments-intercept",
-    164: "sliceByteString-memory-arguments-slope",
-    165: "sndPair-cpu-arguments",
-    166: "sndPair-memory-arguments",
-    167: "subtractInteger-cpu-arguments-intercept",
-    168: "subtractInteger-cpu-arguments-slope",
-    169: "subtractInteger-memory-arguments-intercept",
-    170: "subtractInteger-memory-arguments-slope",
-    171: "tailList-cpu-arguments",
-    172: "tailList-memory-arguments",
-    173: "trace-cpu-arguments",
-    174: "trace-memory-arguments",
-    175: "unBData-cpu-arguments",
-    176: "unBData-memory-arguments",
-    177: "unConstrData-cpu-arguments",
-    178: "unConstrData-memory-arguments",
-    179: "unIData-cpu-arguments",
-    180: "unIData-memory-arguments",
-    181: "unListData-cpu-arguments",
-    182: "unListData-memory-arguments",
-    183: "unMapData-cpu-arguments",
-    184: "unMapData-memory-arguments",
-    187: "verifyEd25519Signature-cpu-arguments-intercept",
-    188: "verifyEd25519Signature-cpu-arguments-slope",
-    189: "verifyEd25519Signature-memory-arguments"
-}
+export const CONWAY_COST_MODEL_PARAMS_V1 = [
+    100788, // 0: addInteger-cpu-arguments-intercept
+    420, // 1: addInteger-cpu-arguments-slope
+    1, // 2: addInteger-memory-arguments-intercept
+    1, // 3: addInteger-memory-arguments-slope
+    1000, // 4: appendByteString-cpu-arguments-intercept
+    173, // 5: appendByteString-cpu-arguments-slope
+    0, // 6: appendByteString-memory-arguments-intercept
+    1, // 7: appendByteString-memory-arguments-slope
+    1000, // 8: appendString-cpu-arguments-intercept
+    59957, // 9: appendString-cpu-arguments-slope
+    4, // 10: appendString-memory-arguments-intercept
+    1, // 11: appendString-memory-arguments-slope
+    11183, // 12: bData-cpu-arguments
+    32, // 13: bData-memory-arguments
+    201305, // 14: blake2b_256-cpu-arguments-intercept
+    8356, // 15: blake2b_256-cpu-arguments-slope
+    4, // 16: blake2b_256-memory-arguments
+    16000, // 17: cekApplyCost-exBudgetCPU
+    100, // 18: cekApplyCost-exBudgetMemory
+    16000, // 19: cekBuiltinCost-exBudgetCPU
+    100, // 20: cekBuiltinCost-exBudgetMemory
+    16000, // 21: cekConstCost-exBudgetCPU
+    100, // 22: cekConstCost-exBudgetMemory
+    16000, // 23: cekDelayCost-exBudgetCPU
+    100, // 24: cekDelayCost-exBudgetMemory
+    16000, // 25: cekForceCost-exBudgetCPU
+    100, // 26: cekForceCost-exBudgetMemory
+    16000, // 27: cekLamCost-exBudgetCPU
+    100, // 28: cekLamCost-exBudgetMemory
+    100, // 29: cekStartupCost-exBudgetCPU
+    100, // 30: cekStartupCost-exBudgetMemory
+    16000, // 31: cekVarCost-exBudgetCPU
+    100, // 32: cekVarCost-exBudgetMemory
+    94375, // 33: chooseData-cpu-arguments
+    32, // 34: chooseData-memory-arguments
+    132994, // 35: chooseList-cpu-arguments
+    32, // 36: chooseList-memory-arguments
+    61462, // 37: chooseUnit-cpu-arguments
+    4, // 38: chooseUnit-memory-arguments
+    72010, // 39: consByteString-cpu-arguments-intercept
+    178, // 40: consByteString-cpu-arguments-slope
+    0, // 41: consByteString-memory-arguments-intercept
+    1, // 42: consByteString-memory-arguments-slope
+    22151, // 43: constrData-cpu-arguments
+    32, // 44: constrData-memory-arguments
+    91189, // 45: decodeUtf8-cpu-arguments-intercept
+    769, // 46: decodeUtf8-cpu-arguments-slope
+    4, // 47: decodeUtf8-memory-arguments-intercept
+    2, // 48: decodeUtf8-memory-arguments-slope
+    85848, // 49: divideInteger-cpu-arguments-constant
+    228465, // 50: divideInteger-cpu-arguments-model-arguments-intercept
+    122, // 51: divideInteger-cpu-arguments-model-arguments-slope
+    0, // 52: divideInteger-memory-arguments-intercept
+    1, // 53: divideInteger-memory-arguments-minimum
+    1, // 54: divideInteger-memory-arguments-slope
+    1000, // 55: encodeUtf8-cpu-arguments-intercept
+    42921, // 56: encodeUtf8-cpu-arguments-slope
+    4, // 57: encodeUtf8-memory-arguments-intercept
+    2, // 58: encodeUtf8-memory-arguments-slope
+    24548, // 59: equalsByteString-cpu-arguments-constant
+    29498, // 60: equalsByteString-cpu-arguments-intercept
+    38, // 61: equalsByteString-cpu-arguments-slope
+    1, // 62: equalsByteString-memory-arguments
+    898148, // 63: equalsData-cpu-arguments-intercept
+    27279, // 64: equalsData-cpu-arguments-slope
+    1, // 65: equalsData-memory-arguments
+    51775, // 66: equalsInteger-cpu-arguments-intercept
+    558, // 67: equalsInteger-cpu-arguments-slope
+    1, // 68: equalsInteger-memory-arguments
+    39184, // 69: equalsString-cpu-arguments-constant
+    1000, // 70: equalsString-cpu-arguments-intercept
+    60594, // 71: equalsString-cpu-arguments-slope
+    1, // 72: equalsString-memory-arguments
+    141895, // 73: fstPair-cpu-arguments
+    32, // 74: fstPair-memory-arguments
+    83150, // 75: headList-cpu-arguments
+    32, // 76: headList-memory-arguments
+    15299, // 77: iData-cpu-arguments
+    32, // 78: iData-memory-arguments
+    76049, // 79: ifThenElse-cpu-arguments
+    1, // 80: ifThenElse-memory-arguments
+    13169, // 81: indexByteString-cpu-arguments
+    4, // 82: indexByteString-memory-arguments
+    22100, // 83: lengthOfByteString-cpu-arguments
+    10, // 84: lengthOfByteString-memory-arguments
+    28999, // 85: lessThanByteString-cpu-arguments-intercept
+    74, // 86: lessThanByteString-cpu-arguments-slope
+    1, // 87: lessThanByteString-memory-arguments
+    28999, // 88: lessThanEqualsByteString-cpu-arguments-intercept
+    74, // 89: lessThanEqualsByteString-cpu-arguments-slope
+    1, // 90: lessThanEqualsByteString-memory-arguments
+    43285, // 91: lessThanEqualsInteger-cpu-arguments-intercept
+    552, // 92: lessThanEqualsInteger-cpu-arguments-slope
+    1, // 93: lessThanEqualsInteger-memory-arguments
+    44749, // 94: lessThanInteger-cpu-arguments-intercept
+    541, // 95: lessThanInteger-cpu-arguments-slope
+    1, // 96: lessThanInteger-memory-arguments
+    33852, // 97: listData-cpu-arguments
+    32, // 98: listData-memory-arguments
+    68246, // 99: mapData-cpu-arguments
+    32, // 100: mapData-memory-arguments
+    72362, // 101: mkCons-cpu-arguments
+    32, // 102: mkCons-memory-arguments
+    7243, // 103: mkNilData-cpu-arguments
+    32, // 104: mkNilData-memory-arguments
+    7391, // 105: mkNilPairData-cpu-arguments
+    32, // 106: mkNilPairData-memory-arguments
+    11546, // 107: mkPairData-cpu-arguments
+    32, // 108: mkPairData-memory-arguments
+    85848, // 109: modInteger-cpu-arguments-constant
+    228465, // 110: modInteger-cpu-arguments-model-arguments-intercept
+    122, // 111: modInteger-cpu-arguments-model-arguments-slope
+    0, // 112: modInteger-memory-arguments-intercept
+    1, // 113: modInteger-memory-arguments-minimum
+    1, // 114: modInteger-memory-arguments-slope
+    90434, // 115: multiplyInteger-cpu-arguments-intercept
+    519, // 116: multiplyInteger-cpu-arguments-slope
+    0, // 117: multiplyInteger-memory-arguments-intercept
+    1, // 118: multiplyInteger-memory-arguments-slope
+    74433, // 119: nullList-cpu-arguments
+    32, // 120: nullList-memory-arguments
+    85848, // 121: quotientInteger-cpu-arguments-constant
+    228465, // 122: quotientInteger-cpu-arguments-model-arguments-intercept
+    122, // 123: quotientInteger-cpu-arguments-model-arguments-slope
+    0, // 124: quotientInteger-memory-arguments-intercept
+    1, // 125: quotientInteger-memory-arguments-minimum
+    1, // 126: quotientInteger-memory-arguments-slope
+    85848, // 127: remainderInteger-cpu-arguments-constant
+    228465, // 128: remainderInteger-cpu-arguments-model-arguments-intercept
+    122, // 129: remainderInteger-cpu-arguments-model-arguments-slope
+    0, // 130: remainderInteger-memory-arguments-intercept
+    1, // 131: remainderInteger-memory-arguments-minimum
+    1, // 132: remainderInteger-memory-arguments-slope
+    270652, // 133: sha2_256-cpu-arguments-intercept
+    22588, // 134: sha2_256-cpu-arguments-slope
+    4, // 135: sha2_256-memory-arguments
+    1457325, // 136: sha3_256-cpu-arguments-intercept
+    64566, // 137: sha3_256-cpu-arguments-slope
+    4, // 138: sha3_256-memory-arguments
+    20467, // 139: sliceByteString-cpu-arguments-intercept
+    1, // 140: sliceByteString-cpu-arguments-slope
+    4, // 141: sliceByteString-memory-arguments-intercept
+    0, // 142: sliceByteString-memory-arguments-slope
+    141992, // 143: sndPair-cpu-arguments
+    32, // 144: sndPair-memory-arguments
+    100788, // 145: subtractInteger-cpu-arguments-intercept
+    420, // 146: subtractInteger-cpu-arguments-slope
+    1, // 147: subtractInteger-memory-arguments-intercept
+    1, // 148: subtractInteger-memory-arguments-slope
+    81663, // 149: tailList-cpu-arguments
+    32, // 150: tailList-memory-arguments
+    59498, // 151: trace-cpu-arguments
+    32, // 152: trace-memory-arguments
+    20142, // 153: unBData-cpu-arguments
+    32, // 154: unBData-memory-arguments
+    24588, // 155: unConstrData-cpu-arguments
+    32, // 156: unConstrData-memory-arguments
+    20744, // 157: unIData-cpu-arguments
+    32, // 158: unIData-memory-arguments
+    25933, // 159: unListData-cpu-arguments
+    32, // 160: unListData-memory-arguments
+    24623, // 161: unMapData-cpu-arguments
+    32, // 162: unMapData-memory-arguments
+    53384111, // 163: verifyEd25519Signature-cpu-arguments-intercept
+    14333, // 164: verifyEd25519Signature-cpu-arguments-slope
+    10 // 165: verifyEd25519Signature-memory-arguments
+]

@@ -1,7 +1,7 @@
 /**
  * Methods for parsing the string representation of a program
  */
-
+import { bytesToHex, encodeIntBE, padBytes } from "@helios-lang/codec-utils"
 import {
     Source,
     TokenReader,
@@ -45,7 +45,6 @@ import {
     ListData,
     MapData
 } from "../index.js"
-import { encodeIntBE, padBytes } from "@helios-lang/codec-utils"
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
