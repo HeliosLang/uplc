@@ -18,7 +18,7 @@ export const chooseList = {
     call: (args, ctx) => {
         const list = asUplcValue(args[0])
 
-        if (!(list instanceof UplcList)) {
+        if (list?.kind != "list") {
             throw new Error(
                 `expected as list as first argument of chooseList, got ${list?.toString()}`
             )

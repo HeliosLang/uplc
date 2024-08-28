@@ -6,12 +6,13 @@ import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 /**
  * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
  * @typedef {import("@helios-lang/codec-utils").IntLike} IntLike
+ * @typedef {import("./UplcData.js").ConstrDataI} ConstrDataI
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
 
 /**
  * Represents a tag index and a list of `UplcData` fields.
- * @implements {UplcData}
+ * @implements {ConstrDataI}
  */
 export class ConstrData {
     /**
@@ -36,13 +37,20 @@ export class ConstrData {
     }
 
     /**
+     * @type {"constr"}
+     */
+    get kind() {
+        return "constr"
+    }
+
+    /**
      * @param {UplcData} data
      * @param {Option<number>} tag
      * @param {Option<number>} nFields
-     * @returns {asserts data is ConstrData}
+     * @returns {asserts data is ConstrDataI}
      */
     static assert(data, tag = None, nFields = None) {
-        if (data instanceof ConstrData) {
+        if (data.kind == "constr") {
             if (isSome(tag) && data.tag != tag) {
                 throw new Error(
                     `expected ConstrData with tag ${tag}, got tag ${data.tag}`
@@ -61,10 +69,10 @@ export class ConstrData {
 
     /**
      * @param {UplcData} data
-     * @returns {ConstrData}
+     * @returns {ConstrDataI}
      */
     static expect(data, msg = `expected ConstrData, got ${data.toString()}`) {
-        if (data instanceof ConstrData) {
+        if (data.kind == "constr") {
             return data
         } else {
             throw new Error(msg)
@@ -107,7 +115,7 @@ export class ConstrData {
      * @returns {boolean}
      */
     isEqual(other) {
-        if (other instanceof ConstrData) {
+        if (other.kind == "constr") {
             if (this.tag == other.tag && this.length == other.length) {
                 return this.fields.every((f, i) => f.isEqual(other.fields[i]))
             } else {
@@ -147,11 +155,10 @@ export class ConstrData {
     }
 
     /**
-     * @returns {string}
+     * @returns {number[]}
      */
-    toString() {
-        let parts = this.fields.map((field) => field.toString())
-        return `${this.tag.toString()}{${parts.join(", ")}}`
+    toCbor() {
+        return encodeConstr(this.tag, this.fields)
     }
 
     /**
@@ -164,9 +171,10 @@ export class ConstrData {
     }
 
     /**
-     * @returns {number[]}
+     * @returns {string}
      */
-    toCbor() {
-        return encodeConstr(this.tag, this.fields)
+    toString() {
+        let parts = this.fields.map((field) => field.toString())
+        return `${this.tag.toString()}{${parts.join(", ")}}`
     }
 }

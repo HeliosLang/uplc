@@ -19,7 +19,7 @@ export const unListData = {
     call: (args, ctx) => {
         const [dataValue] = asUplcValues(args)
 
-        if (!(dataValue instanceof UplcDataValue)) {
+        if (dataValue?.kind != "data") {
             throw new Error(
                 `expected an data as first argument of unListData, got ${dataValue?.toString()}`
             )
@@ -27,7 +27,7 @@ export const unListData = {
 
         const data = dataValue.value
 
-        if (!(data instanceof ListData)) {
+        if (data.kind != "list") {
             throw new Error(
                 `expected ListData as first argument of unListData, got ${data?.toString()}`
             )

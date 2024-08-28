@@ -19,13 +19,13 @@ export const constrData = {
     call: (args, ctx) => {
         const [tag, fields] = asUplcValues(args)
 
-        if (!(tag instanceof UplcInt)) {
+        if (tag?.kind != "int") {
             throw new Error(
                 `expected an integer as first argument of constrData, got ${tag?.toString()}`
             )
         }
 
-        if (!(fields instanceof UplcList)) {
+        if (fields?.kind != "list") {
             throw new Error(
                 `expected a list as second argument of constrData, got ${fields?.toString()}`
             )
@@ -40,7 +40,7 @@ export const constrData = {
                 new ConstrData(
                     Number(tag.value),
                     fields.items.map((f) => {
-                        if (f instanceof UplcDataValue) {
+                        if (f.kind == "data") {
                             return f.value
                         } else {
                             throw new Error("expected only data value fields")

@@ -18,13 +18,13 @@ export const mkPairData = {
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 
-        if (!(a instanceof UplcDataValue)) {
+        if (a?.kind != "data") {
             throw new Error(
                 `expected an data as first argument of mkPairData, got ${a?.toString()}`
             )
         }
 
-        if (!(b instanceof UplcDataValue)) {
+        if (b?.kind != "data") {
             throw new Error(
                 `expected an data as second argument of mkPairData, got ${b?.toString()}`
             )

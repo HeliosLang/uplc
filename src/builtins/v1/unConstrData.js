@@ -25,7 +25,7 @@ export const unConstrData = {
     call: (args, ctx) => {
         const [dataValue] = asUplcValues(args)
 
-        if (!(dataValue instanceof UplcDataValue)) {
+        if (dataValue?.kind != "data") {
             throw new Error(
                 `expected an data as first argument of unConstrData, got ${dataValue?.toString()}`
             )
@@ -33,7 +33,7 @@ export const unConstrData = {
 
         const data = dataValue.value
 
-        if (!(data instanceof ConstrData)) {
+        if (data.kind != "constr") {
             throw new Error(
                 `expected ConstrData as first argument of unConstrData, got ${data?.toString()}`
             )

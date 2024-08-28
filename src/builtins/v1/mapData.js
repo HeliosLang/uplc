@@ -19,7 +19,7 @@ export const mapData = {
     call: (args, ctx) => {
         const [list] = asUplcValues(args)
 
-        if (!(list instanceof UplcList)) {
+        if (list?.kind != "list") {
             throw new Error(
                 `expected a list as first argument of mapData, got ${list?.toString()}`
             )
@@ -35,17 +35,17 @@ export const mapData = {
             new UplcDataValue(
                 new MapData(
                     list.items.map((item) => {
-                        if (item instanceof UplcPair) {
+                        if (item.kind == "pair") {
                             const a = item.first
                             const b = item.second
 
-                            if (!(a instanceof UplcDataValue)) {
+                            if (a.kind != "data") {
                                 throw new Error(
                                     "unexpected non-data first entry in pair"
                                 )
                             }
 
-                            if (!(b instanceof UplcDataValue)) {
+                            if (b.kind != "data") {
                                 throw new Error(
                                     "unexpected non-data second entry in pair"
                                 )

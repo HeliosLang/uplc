@@ -14,12 +14,13 @@ import { UplcType } from "./UplcType.js"
  */
 
 /**
+ * @typedef {import("./UplcValue.js").UplcDataValueI} UplcDataValueI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
  * `UplcValue` that wraps a `UplcData` instance.
- * @implements {UplcValue}
+ * @implements {UplcDataValueI}
  */
 export class UplcDataValue {
     /**
@@ -36,6 +37,13 @@ export class UplcDataValue {
     }
 
     /**
+     * @type {"data"}
+     */
+    get kind() {
+        return "data"
+    }
+
+    /**
      * @param {FlatReader<any, UplcValue>} r
      * @returns {UplcDataValue}
      */
@@ -43,6 +51,18 @@ export class UplcDataValue {
         const bytes = r.readBytes()
         const data = decodeUplcData(bytes)
         return new UplcDataValue(data)
+    }
+
+    /**
+     * @param {UplcDataValue | UplcData} data
+     * @returns {UplcData}
+     */
+    static unwrap(data) {
+        if (data.kind == "data") {
+            return data.value
+        } else {
+            return data
+        }
     }
 
     /**
@@ -73,7 +93,14 @@ export class UplcDataValue {
      * @returns {boolean}
      */
     isEqual(other) {
-        return other instanceof UplcDataValue && other.value.isEqual(this.value)
+        return other.kind == "data" && other.value.isEqual(this.value)
+    }
+
+    /**
+     * @param {FlatWriter} w
+     */
+    toFlat(w) {
+        w.writeBytes(this.value.toCbor())
     }
 
     /**
@@ -86,49 +113,33 @@ export class UplcDataValue {
          * @returns {string}
          */
         function dataToString(data) {
-            if (data instanceof ByteArrayData) {
-                return `B ${data.toString()}`
-            } else if (data instanceof IntData) {
-                return `I ${data.toString()}`
-            } else if (data instanceof ConstrData) {
-                return `Constr ${data.tag} [${data.fields
-                    .map((field) => dataToString(field))
-                    .join(", ")}]`
-            } else if (data instanceof ListData) {
-                return `List [${data.items
-                    .map((item) => dataToString(item))
-                    .join(", ")}]`
-            } else if (data instanceof MapData) {
-                return `Map[${data.items
-                    .map(
-                        ([first, second]) =>
-                            `(${dataToString(first)}, ${dataToString(second)})`
-                    )
-                    .join(", ")}]`
-            } else {
-                throw new Error("unhandled UplcData type")
+            switch (data.kind) {
+                case "bytes":
+                    return `B ${data.toString()}`
+                case "int":
+                    return `I ${data.toString()}`
+                case "constr":
+                    return `Constr ${data.tag} [${data.fields
+                        .map((field) => dataToString(field))
+                        .join(", ")}]`
+                case "list":
+                    return `List [${data.items
+                        .map((item) => dataToString(item))
+                        .join(", ")}]`
+                case "map":
+                    return `Map[${data.items
+                        .map(
+                            ([first, second]) =>
+                                `(${dataToString(first)}, ${dataToString(
+                                    second
+                                )})`
+                        )
+                        .join(", ")}]`
+                default:
+                    throw new Error("unhandled UplcData type")
             }
         }
 
         return `(${dataToString(this.value)})`
-    }
-
-    /**
-     * @param {FlatWriter} w
-     */
-    toFlat(w) {
-        w.writeBytes(this.value.toCbor())
-    }
-
-    /**
-     * @param {UplcDataValue | UplcData} data
-     * @returns {UplcData}
-     */
-    static unwrap(data) {
-        if (data instanceof UplcDataValue) {
-            return data.value
-        } else {
-            return data
-        }
     }
 }

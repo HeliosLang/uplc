@@ -19,7 +19,7 @@ export const mkCons = {
     call: (args, ctx) => {
         const [item, list] = asUplcValues(args)
 
-        if (!(list instanceof UplcList)) {
+        if (list?.kind != "list") {
             throw new Error(
                 `expected list as second argument of mkCons, got ${list?.toString()}`
             )

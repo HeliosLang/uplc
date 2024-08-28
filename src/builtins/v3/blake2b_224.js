@@ -20,7 +20,7 @@ export const blake2b_224 = {
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 
-        if (!(a instanceof UplcByteArray)) {
+        if (a?.kind != "bytes") {
             throw new Error(
                 `expected a byte array for the first argument of blake2b_224, got ${a?.toString()}`
             )

@@ -5,12 +5,13 @@ import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 /**
  * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
  * @typedef {import("@helios-lang/codec-utils").IntLike} IntLike
+ * @typedef {import("./UplcData.js").IntDataI} IntDataI
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
 
 /**
  * Represents an unbounded integer (bigint).
- * @implements {UplcData}
+ * @implements {IntDataI}
  */
 export class IntData {
     /**
@@ -38,11 +39,18 @@ export class IntData {
     }
 
     /**
+     * @type {"int"}
+     */
+    get kind() {
+        return "int"
+    }
+
+    /**
      * @param {UplcData} data
-     * @returns {asserts data is IntData}
+     * @returns {asserts data is IntDataI}
      */
     static assert(data) {
-        if (!(data instanceof IntData)) {
+        if (data.kind != "int") {
             throw new Error(`expected IntData, got ${data.toString()}`)
         }
     }
@@ -50,10 +58,10 @@ export class IntData {
     /**
      * @param {UplcData} data
      * @param {string} msg
-     * @returns {IntData}
+     * @returns {IntDataI}
      */
     static expect(data, msg = `expected IntData, got ${data.toString()}`) {
-        if (data instanceof IntData) {
+        if (data.kind == "int") {
             return data
         } else {
             throw new Error(msg)
@@ -95,7 +103,7 @@ export class IntData {
      * @returns {boolean}
      */
     isEqual(other) {
-        return other instanceof IntData && other.value == this.value
+        return other.kind == "int" && other.value == this.value
     }
 
     /**
@@ -106,17 +114,17 @@ export class IntData {
     }
 
     /**
-     * @returns {string}
-     */
-    toString() {
-        return this.value.toString()
-    }
-
-    /**
      * Returns string, not js object, because of unbounded integers
      * @returns {string}
      */
     toSchemaJson() {
         return `{"int": ${this.value.toString()}}`
+    }
+
+    /**
+     * @returns {string}
+     */
+    toString() {
+        return this.value.toString()
     }
 }

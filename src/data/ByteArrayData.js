@@ -9,11 +9,12 @@ import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
+ * @typedef {import("./UplcData.js").ByteArrayDataI} ByteArrayDataI
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
 
 /**
- * @implements {UplcData}
+ * @implements {ByteArrayDataI}
  */
 export class ByteArrayData {
     /**
@@ -30,15 +31,22 @@ export class ByteArrayData {
     }
 
     /**
+     * @type {"bytes"}
+     */
+    get kind() {
+        return "bytes"
+    }
+
+    /**
      * @param {UplcData} data
      * @param {string} msg
-     * @returns {asserts data is ByteArrayData}
+     * @returns {asserts data is ByteArrayDataI}
      */
     static assert(
         data,
         msg = `expected ByteArrayData, got ${data.toString()}`
     ) {
-        if (!(data instanceof ByteArrayData)) {
+        if (data.kind != "bytes") {
             throw new Error(msg)
         }
     }
@@ -46,13 +54,13 @@ export class ByteArrayData {
     /**
      * @param {UplcData} data
      * @param {string} msg
-     * @returns {ByteArrayData}
+     * @returns {ByteArrayDataI}
      */
     static expect(
         data,
         msg = `expected ByteArrayData, got ${data.toString()}`
     ) {
-        if (data instanceof ByteArrayData) {
+        if (data.kind == "bytes") {
             return data
         } else {
             throw new Error(msg)
@@ -117,7 +125,7 @@ export class ByteArrayData {
      * @returns {boolean}
      */
     isEqual(other) {
-        if (other instanceof ByteArrayData) {
+        if (other.kind == "bytes") {
             return ByteArrayData.compare(this.bytes, other.bytes) == 0
         } else {
             return false
@@ -141,14 +149,14 @@ export class ByteArrayData {
     /**
      * @returns {string}
      */
-    toString() {
-        return `#${this.toHex()}`
+    toSchemaJson() {
+        return `{"bytes": "${this.toHex()}"}`
     }
 
     /**
      * @returns {string}
      */
-    toSchemaJson() {
-        return `{"bytes": "${this.toHex()}"}`
+    toString() {
+        return `#${this.toHex()}`
     }
 }

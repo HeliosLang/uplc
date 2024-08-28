@@ -6,4 +6,7 @@ export { restoreUplcProgram } from "./restore.js"
 /**
  * @typedef {import("./UplcProgram.js").PlutusVersion} PlutusVersion
  * @typedef {import("./UplcProgram.js").UplcProgram} UplcProgram
+ * @typedef {import("./UplcProgram.js").UplcProgramV1I} UplcProgramV1I
+ * @typedef {import("./UplcProgram.js").UplcProgramV2I} UplcProgramV2I
+ * @typedef {import("./UplcProgram.js").UplcProgramV3I} UplcProgramV3I
  */

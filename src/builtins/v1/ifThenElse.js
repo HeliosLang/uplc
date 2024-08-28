@@ -18,7 +18,7 @@ export const ifThenElse = {
     call: (args, ctx) => {
         const cond = asUplcValue(args[0])
 
-        if (!(cond instanceof UplcBool)) {
+        if (cond?.kind != "bool") {
             throw new Error(
                 `expected a bool for first argument of ifThenElse, got ${cond?.toString()}`
             )

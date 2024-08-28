@@ -20,13 +20,13 @@ export const equalsByteString = {
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 
-        if (!(a instanceof UplcByteArray)) {
+        if (a?.kind != "bytes") {
             throw new Error(
                 `expected a byte array for the first argument of equalsByteString, got ${a?.toString()}`
             )
         }
 
-        if (!(b instanceof UplcByteArray)) {
+        if (b?.kind != "bytes") {
             throw new Error(
                 `expected a byte array for the second argument of equalsByteString, got ${b?.toString()}`
             )

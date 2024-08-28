@@ -19,19 +19,19 @@ export const verifyEcdsaSecp256k1Signature = {
     call: (args, ctx) => {
         const [publicKey, message, signature] = asUplcValues(args)
 
-        if (!(publicKey instanceof UplcByteArray)) {
+        if (publicKey?.kind != "bytes") {
             throw new Error(
                 `expected a byte array for the first argument of verifyEcdsaSecp256k1Signature, got ${publicKey?.toString()}`
             )
         }
 
-        if (!(message instanceof UplcByteArray)) {
+        if (message?.kind != "bytes") {
             throw new Error(
                 `expected a byte array for the second argument of verifyEcdsaSecp256k1Signature, got ${message?.toString()}`
             )
         }
 
-        if (!(signature instanceof UplcByteArray)) {
+        if (signature?.kind != "bytes") {
             throw new Error(
                 `expected a byte array for the third argument of verifyEcdsaSecp256k1Signature, got ${signature?.toString()}`
             )

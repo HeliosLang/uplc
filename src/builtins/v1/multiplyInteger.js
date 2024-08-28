@@ -18,13 +18,13 @@ export const multiplyInteger = {
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 
-        if (!(a instanceof UplcInt)) {
+        if (a?.kind != "int") {
             throw new Error(
                 `expected an integer for the first argument of multiplyInteger, got ${a?.toString()}`
             )
         }
 
-        if (!(b instanceof UplcInt)) {
+        if (b?.kind != "int") {
             throw new Error(
                 `expected an integer for the second argument of multiplyInteger, got ${b?.toString()}`
             )

@@ -18,7 +18,7 @@ export const mkNilPairData = {
     call: (args, ctx) => {
         const a = asUplcValue(args[0])
 
-        if (!(a instanceof UplcUnit)) {
+        if (a?.kind != "unit") {
             throw new Error(
                 `expected a unit value for the first argument of mkNilPairData, got ${a?.toString()}`
             )

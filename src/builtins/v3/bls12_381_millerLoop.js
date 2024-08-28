@@ -23,13 +23,13 @@ export const bls12_381_millerLoop = {
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 
-        if (!(a instanceof Bls12_381_G1_element)) {
+        if (a?.kind != "bls12_381_G1_element") {
             throw new Error(
                 `expected Bls12_381_G1_element for first arg of bls12_381_millerLoop`
             )
         }
 
-        if (!(b instanceof Bls12_381_G2_element)) {
+        if (b?.kind != "bls12_381_G2_element") {
             throw new Error(
                 `expected Bls12_381_G2_element for second arg of bls12_381_millerLoop`
             )

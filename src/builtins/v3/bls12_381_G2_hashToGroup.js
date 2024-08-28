@@ -20,13 +20,13 @@ export const bls12_381_G2_hashToGroup = {
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 
-        if (!(a instanceof UplcByteArray)) {
+        if (a?.kind != "bytes") {
             throw new Error(
                 `expected UplcByteArray for first arg of bls12_381_G2_hashToGroup`
             )
         }
 
-        if (!(b instanceof UplcByteArray)) {
+        if (b?.kind != "bytes") {
             throw new Error(
                 `expected UplcByteArray for second arg of bls12_381_G2_hashToGroup`
             )

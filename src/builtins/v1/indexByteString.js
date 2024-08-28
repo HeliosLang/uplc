@@ -18,13 +18,13 @@ export const indexByteString = {
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 
-        if (!(a instanceof UplcByteArray)) {
+        if (a?.kind != "bytes") {
             throw new Error(
                 `expected a byte array for the first argument of indexByteString, got ${a?.toString()}`
             )
         }
 
-        if (!(b instanceof UplcInt)) {
+        if (b?.kind != "int") {
             throw new Error(
                 `expected an integer for the second argument of indexByteString, got ${b?.toString()}`
             )

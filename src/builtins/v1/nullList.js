@@ -18,7 +18,7 @@ export const nullList = {
     call: (args, ctx) => {
         const [list] = asUplcValues(args)
 
-        if (!(list instanceof UplcList)) {
+        if (list?.kind != "list") {
             throw new Error(
                 `expected list as first argument of nullList, got ${list?.toString()}`
             )

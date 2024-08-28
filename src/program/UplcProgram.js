@@ -22,17 +22,50 @@ import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
 
 /**
  * @typedef {{
- *   alt: Option<UplcProgram>
- *   plutusVersion: PlutusVersion
- *   plutusVersionTag: PlutusVersionTag
- *   uplcVersion: UplcVersion
- *   eval: (args: undefined | UplcValue[]) => CekResult
+ *   root: UplcTerm
+ *   eval: (args: Option<UplcValue[]>, costModelParams?: number[]) => CekResult
  *   hash: () => number[]
  *   toCbor: () => number[]
  *   toFlat: () => number[]
  *   toString: () => string
- *   withAlt: (alt: UplcProgram) => UplcProgram
- * }} UplcProgram
+ * }} CommonUplcProgramProps
+ */
+
+/**
+ * @typedef {CommonUplcProgramProps & {
+ *   plutusVersion: "PlutusScriptV1"
+ *   plutusVersionTag: 1
+ *   uplcVersion: "1.0.0"
+ *   alt: Option<UplcProgramV1I>
+ *   apply: (args: UplcValue[]) => UplcProgramV1I
+ *   withAlt: (alt: UplcProgramV1I) => UplcProgramV1I
+ * }} UplcProgramV1I
+ */
+
+/**
+ * @typedef {CommonUplcProgramProps & {
+ *   plutusVersion: "PlutusScriptV2"
+ *   plutusVersionTag: 2
+ *   uplcVersion: "1.0.0"
+ *   alt: Option<UplcProgramV2I>
+ *   apply: (args: UplcValue[]) => UplcProgramV2I
+ *   withAlt: (alt: UplcProgramV2I) => UplcProgramV2I
+ * }} UplcProgramV2I
+ */
+
+/**
+ * @typedef {CommonUplcProgramProps & {
+ *   plutusVersion: "PlutusScriptV3"
+ *   plutusVersionTag: 3
+ *   uplcVersion: "1.1.0"
+ *   alt: Option<UplcProgramV3I>
+ *   apply: (args: UplcValue[]) => UplcProgramV3I
+ *   withAlt: (alt: UplcProgramV3I) => UplcProgramV3I
+ * }} UplcProgramV3I
+ */
+
+/**
+ * @typedef {UplcProgramV1I | UplcProgramV2I | UplcProgramV3I} UplcProgram
  */
 
 /**
@@ -106,7 +139,7 @@ export function decodeFlatProgram(bytes, expectedUplcVersion) {
  * @param {Builtin[]} builtins
  * @param {CostModel} costModel
  * @param {UplcTerm} expr
- * @param {undefined | UplcValue[]} args
+ * @param {Option<UplcValue[]>} args
  * @returns {CekResult}
  */
 export function evalProgram(builtins, costModel, expr, args) {

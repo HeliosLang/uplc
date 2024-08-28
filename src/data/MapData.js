@@ -4,12 +4,13 @@ import { ByteStream } from "@helios-lang/codec-utils"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
+ * @typedef {import("./UplcData.js").MapDataI} MapDataI
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
 
 /**
  * Represents a list of pairs of other `UplcData` instances.
- * @implements {UplcData}
+ * @implements {MapDataI}
  */
 export class MapData {
     /**
@@ -26,11 +27,18 @@ export class MapData {
     }
 
     /**
+     * @type {"map"}
+     */
+    get kind() {
+        return "map"
+    }
+
+    /**
      * @param {UplcData} data
-     * @returns {asserts data is MapData}
+     * @returns {asserts data is MapDataI}
      */
     static assert(data) {
-        if (!(data instanceof MapData)) {
+        if (data.kind != "map") {
             throw new Error(`expected MapData, got ${data.toString()}`)
         }
     }
@@ -38,10 +46,10 @@ export class MapData {
     /**
      * @param {UplcData} data
      * @param {string} msg
-     * @returns {MapData}
+     * @returns {MapDataI}
      */
     static expect(data, msg = `expected MapData, got ${data.toString()}`) {
-        if (data instanceof MapData) {
+        if (data.kind == "map") {
             return data
         } else {
             throw new Error(msg)
@@ -91,7 +99,7 @@ export class MapData {
      * @returns {boolean}
      */
     isEqual(other) {
-        if (other instanceof MapData) {
+        if (other.kind == "map") {
             if (this.length == other.length) {
                 return this.items.every(([key, value], i) => {
                     const [otherKey, otherValue] = other.items[i]
@@ -106,12 +114,10 @@ export class MapData {
     }
 
     /**
-     * @returns {string}
+     * @returns {number[]}
      */
-    toString() {
-        return `{${this.items
-            .map(([fst, snd]) => `${fst.toString()}: ${snd.toString()}`)
-            .join(", ")}}`
+    toCbor() {
+        return encodeMap(this.items)
     }
 
     /**
@@ -132,9 +138,11 @@ export class MapData {
     }
 
     /**
-     * @returns {number[]}
+     * @returns {string}
      */
-    toCbor() {
-        return encodeMap(this.items)
+    toString() {
+        return `{${this.items
+            .map(([fst, snd]) => `${fst.toString()}: ${snd.toString()}`)
+            .join(", ")}}`
     }
 }

@@ -5,11 +5,12 @@ import { prepadBytes } from "@helios-lang/codec-utils"
 
 /**
  * @typedef {import("@helios-lang/crypto").Point3<[bigint, bigint]>} Point3
+ * @typedef {import("./UplcValue.js").Bls12_381_G2_elementI} Bls12_381_G2_elementI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
- * @implements {UplcValue}
+ * @implements {Bls12_381_G2_elementI}
  */
 export class Bls12_381_G2_element {
     /**
@@ -23,6 +24,13 @@ export class Bls12_381_G2_element {
      */
     constructor(point) {
         this.point = point
+    }
+
+    /**
+     * @type {"bls12_381_G2_element"}
+     */
+    get kind() {
+        return "bls12_381_G2_element"
     }
 
     /**
@@ -71,7 +79,7 @@ export class Bls12_381_G2_element {
      */
     isEqual(other) {
         return (
-            other instanceof Bls12_381_G2_element &&
+            other.kind == "bls12_381_G2_element" &&
             G2.equals(this.point, other.point)
         )
     }

@@ -18,7 +18,7 @@ export const lengthOfByteString = {
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 
-        if (!(a instanceof UplcByteArray)) {
+        if (a?.kind != "bytes") {
             throw new Error(
                 `expected a byte array for the first argument of lengthOfByteString, got ${a?.toString()}`
             )

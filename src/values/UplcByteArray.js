@@ -10,12 +10,13 @@ import { UplcType } from "./UplcType.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
+ * @typedef {import("./UplcValue.js").UplcByteArrayI} UplcByteArrayI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
  * Primitive equivalent of `ByteArrayData`.
- * @implements {UplcValue}
+ * @implements {UplcByteArrayI}
  */
 export class UplcByteArray {
     /**
@@ -29,6 +30,13 @@ export class UplcByteArray {
      */
     constructor(bytes) {
         this.bytes = toBytes(bytes)
+    }
+
+    /**
+     * @type {"bytes"}
+     */
+    get kind() {
+        return "bytes"
     }
 
     /**
@@ -66,10 +74,14 @@ export class UplcByteArray {
      * @returns {boolean}
      */
     isEqual(other) {
-        return (
-            other instanceof UplcByteArray &&
-            equalsBytes(this.bytes, other.bytes)
-        )
+        return other.kind == "bytes" && equalsBytes(this.bytes, other.bytes)
+    }
+
+    /**
+     * @param {FlatWriter} w
+     */
+    toFlat(w) {
+        w.writeBytes(this.bytes)
     }
 
     /**
@@ -78,12 +90,5 @@ export class UplcByteArray {
      */
     toString() {
         return `#${bytesToHex(this.bytes)}`
-    }
-
-    /**
-     * @param {FlatWriter} w
-     */
-    toFlat(w) {
-        w.writeBytes(this.bytes)
     }
 }

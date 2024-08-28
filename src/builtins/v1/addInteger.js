@@ -18,13 +18,13 @@ export const addInteger = {
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 
-        if (!(a instanceof UplcInt)) {
+        if (a?.kind != "int") {
             throw new Error(
                 `expected integer for first arg of addInteger, got ${a?.toString()}`
             )
         }
 
-        if (!(b instanceof UplcInt)) {
+        if (b?.kind != "int") {
             throw new Error(
                 `expected integer for second arg of addInteger, got ${b?.toString()}`
             )

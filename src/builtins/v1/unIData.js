@@ -19,7 +19,7 @@ export const unIData = {
     call: (args, ctx) => {
         const [dataValue] = asUplcValues(args)
 
-        if (!(dataValue instanceof UplcDataValue)) {
+        if (dataValue?.kind != "data") {
             throw new Error(
                 `expected an data as first argument of unIData, got ${dataValue?.toString()}`
             )
@@ -27,7 +27,7 @@ export const unIData = {
 
         const data = dataValue.value
 
-        if (!(data instanceof IntData)) {
+        if (data.kind != "int") {
             throw new Error(
                 `expected IntData as first argument of unIData, got ${data?.toString()}`
             )

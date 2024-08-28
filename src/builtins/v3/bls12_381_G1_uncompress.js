@@ -18,7 +18,7 @@ export const bls12_381_G1_uncompress = {
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 
-        if (!(a instanceof UplcByteArray)) {
+        if (a?.kind != "bytes") {
             throw new Error(
                 `expected UplcByteArray for first arg of bls12_381_G1_uncompress`
             )

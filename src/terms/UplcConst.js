@@ -48,7 +48,7 @@ export class UplcConst {
         this.value = value
         this.site = site
 
-        if (value instanceof UplcInt && !value.signed) {
+        if (value.kind == "int" && !value.signed) {
             throw new Error("UplcConst(UplcInt) must be signed")
         }
     }
@@ -75,7 +75,7 @@ export class UplcConst {
     get serializableTerm() {
         const v = this.value
 
-        if (v instanceof Bls12_381_G1_element) {
+        if (v.kind == "bls12_381_G1_element") {
             return new UplcCall(
                 new UplcBuiltin(
                     builtinsV3.findIndex(
@@ -85,7 +85,7 @@ export class UplcConst {
                 new UplcConst(new UplcByteArray(v.compress())),
                 this.site
             )
-        } else if (v instanceof Bls12_381_G2_element) {
+        } else if (v.kind == "bls12_381_G2_element") {
             return new UplcCall(
                 new UplcBuiltin(
                     builtinsV3.findIndex(
@@ -114,13 +114,13 @@ export class UplcConst {
         const v = this.value
 
         if (
-            v instanceof Bls12_381_G1_element ||
-            v instanceof Bls12_381_G2_element
+            v.kind == "bls12_381_G1_element" ||
+            v.kind == "bls12_381_G2_element"
         ) {
             const t = this.serializableTerm
 
             t.toFlat(w)
-        } else if (v instanceof Bls12_381_MlResult) {
+        } else if (v.kind == "bls12_381_mlresult") {
             throw new Error("Bls12_381_MlResult can't be serialized")
         } else {
             w.writeTermTag(UPLC_CONST_TAG)

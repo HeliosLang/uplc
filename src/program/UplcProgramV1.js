@@ -21,7 +21,7 @@ import { parseProgram } from "./parse.js"
  * @typedef {import("../cek/index.js").CekResult} CekResult
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
  * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./UplcProgram.js").UplcProgram} UplcProgram
+ * @typedef {import("./UplcProgram.js").UplcProgramV1I} UplcProgramV1I
  */
 
 const PLUTUS_VERSION = "PlutusScriptV1"
@@ -29,18 +29,18 @@ const PLUTUS_VERSION_TAG = 1
 const UPLC_VERSION = "1.0.0"
 
 /**
- * @implements {UplcProgram}
+ * @implements {UplcProgramV1I}
  */
 export class UplcProgramV1 {
     /**
      * @readonly
      * @type {UplcTerm}
      */
-    expr
+    root
 
     /**
      * @readonly
-     * @type {Option<UplcProgram>}
+     * @type {Option<UplcProgramV1I>}
      */
     alt
 
@@ -50,11 +50,11 @@ export class UplcProgramV1 {
     #cachedHash
 
     /**
-     * @param {UplcTerm} expr
-     * @param {Option<UplcProgram>} alt
+     * @param {UplcTerm} root
+     * @param {Option<UplcProgramV1I>} alt
      */
-    constructor(expr, alt = None) {
-        this.expr = expr
+    constructor(root, alt = None) {
+        this.root = root
         this.alt = alt
         this.#cachedHash = None
     }
@@ -125,11 +125,11 @@ export class UplcProgramV1 {
      * @returns {UplcProgramV1} - a new UplcProgram instance
      */
     apply(args) {
-        return new UplcProgramV1(apply(this.expr, args))
+        return new UplcProgramV1(apply(this.root, args))
     }
 
     /**
-     * @param {undefined | UplcValue[]} args - if undefined, eval the root term without any applications, if empy: apply a force to the root term
+     * @param {Option<UplcValue[]>} args - if None, eval the root term without any applications, if empy: apply a force to the root term
      * @param {number[]} costModelParams
      * @returns {CekResult}
      */
@@ -138,7 +138,7 @@ export class UplcProgramV1 {
             new CostModelParamsProxy(costModelParams),
             builtinsV1
         )
-        return evalProgram(builtinsV1, costModel, this.expr, args)
+        return evalProgram(builtinsV1, costModel, this.root, args)
     }
 
     /**
@@ -157,28 +157,28 @@ export class UplcProgramV1 {
      * @returns {number[]}
      */
     toCbor() {
-        return encodeCborProgram(this.expr, UPLC_VERSION)
+        return encodeCborProgram(this.root, UPLC_VERSION)
     }
 
     /**
      * @returns {number[]}
      */
     toFlat() {
-        return encodeFlatProgram(this.expr, UPLC_VERSION)
+        return encodeFlatProgram(this.root, UPLC_VERSION)
     }
 
     /**
      * @returns {string}
      */
     toString() {
-        return this.expr.toString()
+        return this.root.toString()
     }
 
     /**
-     * @param {UplcProgram} alt
+     * @param {UplcProgramV1I} alt
      * @returns {UplcProgramV1}
      */
     withAlt(alt) {
-        return new UplcProgramV1(this.expr, alt)
+        return new UplcProgramV1(this.root, alt)
     }
 }

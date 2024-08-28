@@ -19,7 +19,7 @@ export const listData = {
     call: (args, ctx) => {
         const [list] = asUplcValues(args)
 
-        if (!(list instanceof UplcList)) {
+        if (list?.kind != "list") {
             throw new Error(
                 `expected a list as first argument of listData, got ${list?.toString()}`
             )
@@ -35,7 +35,7 @@ export const listData = {
             new UplcDataValue(
                 new ListData(
                     list.items.map((item) => {
-                        if (item instanceof UplcDataValue) {
+                        if (item.kind == "data") {
                             return item.value
                         } else {
                             throw new Error("unexpected data list item")

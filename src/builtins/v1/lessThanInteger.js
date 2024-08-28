@@ -22,13 +22,13 @@ export const lessThanInteger = {
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 
-        if (!(a instanceof UplcInt)) {
+        if (a?.kind != "int") {
             throw new Error(
                 `expected an integer for the first argument of lessThanInteger, got ${a?.toString()}`
             )
         }
 
-        if (!(b instanceof UplcInt)) {
+        if (b?.kind != "int") {
             throw new Error(
                 `expected an integer for the second argument of lessThanInteger, got ${b?.toString()}`
             )

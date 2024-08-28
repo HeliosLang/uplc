@@ -18,13 +18,13 @@ export const appendStringV1 = {
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 
-        if (!(a instanceof UplcString)) {
+        if (a?.kind != "string") {
             throw new Error(
                 `expected a string for the first argument of appendString, got ${a?.toString()}`
             )
         }
 
-        if (!(b instanceof UplcString)) {
+        if (b?.kind != "string") {
             throw new Error(
                 `expected a string for the second argument of appendString, got ${b?.toString()}`
             )

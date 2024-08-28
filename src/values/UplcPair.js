@@ -2,23 +2,24 @@ import { FlatWriter } from "../flat/index.js"
 import { UplcType } from "./UplcType.js"
 
 /**
+ * @typedef {import("./UplcValue.js").UplcPairI} UplcPairI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
  * Primitive pair value.
- * @implements {UplcValue}
+ * @implements {UplcPairI}
  */
 export class UplcPair {
     /**
      * @readonly
-     * @typedef {UplcValue}
+     * @type {UplcValue}
      */
     first
 
     /**
      * @readonly
-     * @typedef {UplcValue}
+     * @type {UplcValue}
      */
     second
 
@@ -29,6 +30,13 @@ export class UplcPair {
     constructor(first, second) {
         this.first = first
         this.second = second
+    }
+
+    /**
+     * @type {"pair"}
+     */
+    get kind() {
+        return "pair"
     }
 
     /**
@@ -60,17 +68,10 @@ export class UplcPair {
      */
     isEqual(other) {
         return (
-            other instanceof UplcPair &&
+            other.kind == "pair" &&
             other.first.isEqual(this.first) &&
             other.second.isEqual(this.second)
         )
-    }
-
-    /**
-     * @returns {string}
-     */
-    toString() {
-        return `(${this.first.toString()}, ${this.second.toString()})`
     }
 
     /**
@@ -79,5 +80,12 @@ export class UplcPair {
     toFlat(w) {
         this.first.toFlat(w)
         this.second.toFlat(w)
+    }
+
+    /**
+     * @returns {string}
+     */
+    toString() {
+        return `(${this.first.toString()}, ${this.second.toString()})`
     }
 }

@@ -21,19 +21,19 @@ export const sliceByteString = {
     call: (args, ctx) => {
         const [a, b, c] = asUplcValues(args)
 
-        if (!(a instanceof UplcInt)) {
+        if (a?.kind != "int") {
             throw new Error(
                 `expected an integer for the first argument of sliceByteString, got ${a?.toString()}`
             )
         }
 
-        if (!(b instanceof UplcInt)) {
+        if (b?.kind != "int") {
             throw new Error(
                 `expected an integer for the second argument of sliceByteString, got ${b?.toString()}`
             )
         }
 
-        if (!(c instanceof UplcByteArray)) {
+        if (c?.kind != "bytes") {
             throw new Error(
                 `expected a byte array for the third argument of sliceByteString, got ${c?.toString()}`
             )

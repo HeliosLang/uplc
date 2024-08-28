@@ -33,19 +33,19 @@ export const integerToByteString = {
     call: (args, ctx) => {
         const [a, b, c] = asUplcValues(args)
 
-        if (!(a instanceof UplcBool)) {
+        if (a?.kind != "bool") {
             throw new Error(
                 `expected UplcBool for first arg of integerToByteString`
             )
         }
 
-        if (!(b instanceof UplcInt)) {
+        if (b?.kind != "int") {
             throw new Error(
                 `expected UplcInt for second arg of integerToByteString`
             )
         }
 
-        if (!(c instanceof UplcInt)) {
+        if (c?.kind != "int") {
             throw new Error(
                 `expected UplcInt for third arg of integerToByteString`
             )

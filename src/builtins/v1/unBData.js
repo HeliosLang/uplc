@@ -19,7 +19,7 @@ export const unBData = {
     call: (args, ctx) => {
         const [dataValue] = asUplcValues(args)
 
-        if (!(dataValue instanceof UplcDataValue)) {
+        if (dataValue?.kind != "data") {
             throw new Error(
                 `expected an data as first argument of unBData, got ${dataValue?.toString()}`
             )
@@ -27,7 +27,7 @@ export const unBData = {
 
         const data = dataValue.value
 
-        if (!(data instanceof ByteArrayData)) {
+        if (data.kind != "bytes") {
             throw new Error(
                 `expected ByteArrayData as first argument of unBData, got ${data?.toString()}`
             )

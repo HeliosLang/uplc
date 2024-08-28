@@ -19,7 +19,7 @@ export const encodeUtf8 = {
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 
-        if (!(a instanceof UplcString)) {
+        if (a?.kind != "string") {
             throw new Error(
                 `expected a string for the first argument of encodeUtf8, got ${a?.toString()}`
             )

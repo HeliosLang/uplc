@@ -18,7 +18,7 @@ export const trace = {
     call: (args, ctx) => {
         const message = asUplcValue(args[0])
 
-        if (!(message instanceof UplcString)) {
+        if (message?.kind != "string") {
             throw new Error(
                 `expected a string as first argument of trace, got ${message?.toString()}`
             )

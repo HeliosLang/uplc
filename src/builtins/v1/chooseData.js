@@ -25,24 +25,25 @@ export const chooseData = {
     call: (args, ctx) => {
         const data = asUplcValue(args[0])
 
-        if (!(data instanceof UplcDataValue)) {
+        if (data?.kind != "data") {
             throw new Error(
                 `expected data value as first argument of chooseData, got ${data?.toString()}`
             )
         }
 
-        if (data.value instanceof ConstrData) {
-            return args[1]
-        } else if (data.value instanceof MapData) {
-            return args[2]
-        } else if (data.value instanceof ListData) {
-            return args[3]
-        } else if (data.value instanceof IntData) {
-            return args[4]
-        } else if (data.value instanceof ByteArrayData) {
-            return args[5]
-        } else {
-            throw new Error("unexpected data type in chooseData")
+        switch (data.value.kind) {
+            case "constr":
+                return args[1]
+            case "map":
+                return args[2]
+            case "list":
+                return args[3]
+            case "int":
+                return args[4]
+            case "bytes":
+                return args[5]
+            default:
+                throw new Error("unexpected data type in chooseData")
         }
     }
 }

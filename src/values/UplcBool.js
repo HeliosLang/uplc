@@ -3,12 +3,13 @@ import { FlatReader, FlatWriter } from "../flat/index.js"
 import { UplcType } from "./UplcType.js"
 
 /**
+ * @typedef {import("./UplcValue.js").UplcBoolI} UplcBoolI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
  * JS/TS equivalent of the Helios language `Bool` type.
- * @implements {UplcValue}
+ * @implements {UplcBoolI}
  */
 export class UplcBool {
     /**
@@ -22,6 +23,13 @@ export class UplcBool {
      */
     constructor(value) {
         this.value = value
+    }
+
+    /**
+     * @type {"bool"}
+     */
+    get kind() {
+        return "bool"
     }
 
     /**
@@ -67,14 +75,14 @@ export class UplcBool {
      * @returns {boolean}
      */
     isEqual(other) {
-        return other instanceof UplcBool && other.value == this.value
+        return other.kind == "bool" && other.value == this.value
     }
 
     /**
-     * @returns {ConstrData}
+     * @param {FlatWriter} w
      */
-    toData() {
-        return new ConstrData(this.value ? 1 : 0, [])
+    toFlat(w) {
+        w.writeBool(this.value)
     }
 
     /**
@@ -85,9 +93,9 @@ export class UplcBool {
     }
 
     /**
-     * @param {FlatWriter} w
+     * @returns {ConstrData}
      */
-    toFlat(w) {
-        w.writeBool(this.value)
+    toUplcData() {
+        return new ConstrData(this.value ? 1 : 0, [])
     }
 }

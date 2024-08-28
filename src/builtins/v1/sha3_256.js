@@ -20,7 +20,7 @@ export const sha3_256 = {
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 
-        if (!(a instanceof UplcByteArray)) {
+        if (a?.kind != "bytes") {
             throw new Error(
                 `expected a byte array for the first argument of sha3_256, got ${a?.toString()}`
             )

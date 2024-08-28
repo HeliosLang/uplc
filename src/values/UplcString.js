@@ -3,12 +3,13 @@ import { FlatReader, FlatWriter, bytesFlatSize } from "../flat/index.js"
 import { UplcType } from "./UplcType.js"
 
 /**
+ * @typedef {import("./UplcValue.js").UplcStringI} UplcStringI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
  * Primitive string value.
- * @implements {UplcValue}
+ * @implements {UplcStringI}
  */
 export class UplcString {
     /**
@@ -22,6 +23,13 @@ export class UplcString {
      */
     constructor(value) {
         this.value = value
+    }
+
+    /**
+     * @type {"string"}
+     */
+    get kind() {
+        return "string"
     }
 
     /**
@@ -68,14 +76,7 @@ export class UplcString {
      * @returns {boolean}
      */
     isEqual(other) {
-        return other instanceof UplcString && other.value == this.value
-    }
-
-    /**
-     * @returns {string}
-     */
-    toString() {
-        return `"${this.value}"`
+        return other.kind == "string" && other.value == this.value
     }
 
     /**
@@ -84,5 +85,12 @@ export class UplcString {
     toFlat(w) {
         const bytes = encodeUtf8(this.value)
         w.writeBytes(bytes)
+    }
+
+    /**
+     * @returns {string}
+     */
+    toString() {
+        return `"${this.value}"`
     }
 }

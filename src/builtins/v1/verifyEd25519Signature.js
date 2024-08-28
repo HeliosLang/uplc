@@ -20,19 +20,19 @@ export const verifyEd25519Signature = {
     call: (args, ctx) => {
         const [publicKey, message, signature] = asUplcValues(args)
 
-        if (!(publicKey instanceof UplcByteArray)) {
+        if (publicKey?.kind != "bytes") {
             throw new Error(
                 `expected a byte array for the first argument of verifyEd25519Signature, got ${publicKey?.toString()}`
             )
         }
 
-        if (!(message instanceof UplcByteArray)) {
+        if (message?.kind != "bytes") {
             throw new Error(
                 `expected a byte array for the second argument of verifyEd25519Signature, got ${message?.toString()}`
             )
         }
 
-        if (!(signature instanceof UplcByteArray)) {
+        if (signature?.kind != "bytes") {
             throw new Error(
                 `expected a byte array for the third argument of verifyEd25519Signature, got ${signature?.toString()}`
             )

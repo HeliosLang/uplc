@@ -18,7 +18,7 @@ export const bls12_381_G2_compress = {
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 
-        if (!(a instanceof Bls12_381_G2_element)) {
+        if (a?.kind != "bls12_381_G2_element") {
             throw new Error(
                 `expected Bls12_381_G2_element for first arg of bls12_381_G2_compress`
             )

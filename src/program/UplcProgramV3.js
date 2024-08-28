@@ -21,7 +21,7 @@ import { parseProgram } from "./parse.js"
  * @typedef {import("../cek/index.js").CekResult} CekResult
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
  * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./UplcProgram.js").UplcProgram} UplcProgram
+ * @typedef {import("./UplcProgram.js").UplcProgramV3I} UplcProgramV3I
  */
 
 const PLUTUS_VERSION = "PlutusScriptV3"
@@ -29,18 +29,18 @@ const PLUTUS_VERSION_TAG = 3
 const UPLC_VERSION = "1.1.0"
 
 /**
- * @implements {UplcProgram}
+ * @implements {UplcProgramV3I}
  */
 export class UplcProgramV3 {
     /**
      * @readonly
      * @type {UplcTerm}
      */
-    expr
+    root
 
     /**
      * @readonly
-     * @type {Option<UplcProgram>}
+     * @type {Option<UplcProgramV3I>}
      */
     alt
 
@@ -50,11 +50,11 @@ export class UplcProgramV3 {
     #cachedHash
 
     /**
-     * @param {UplcTerm} expr
-     * @param {Option<UplcProgram>} alt
+     * @param {UplcTerm} root
+     * @param {Option<UplcProgramV3I>} alt
      */
-    constructor(expr, alt = None) {
-        this.expr = expr
+    constructor(root, alt = None) {
+        this.root = root
         this.alt = alt
         this.#cachedHash = None
     }
@@ -117,7 +117,7 @@ export class UplcProgramV3 {
      * @returns {UplcProgramV3} - a new UplcProgram instance
      */
     apply(args) {
-        return new UplcProgramV3(apply(this.expr, args))
+        return new UplcProgramV3(apply(this.root, args))
     }
 
     /**
@@ -130,7 +130,7 @@ export class UplcProgramV3 {
             new CostModelParamsProxy(costModelParams),
             builtinsV3
         )
-        return evalProgram(builtinsV3, costModel, this.expr, args)
+        return evalProgram(builtinsV3, costModel, this.root, args)
     }
 
     /**
@@ -149,28 +149,28 @@ export class UplcProgramV3 {
      * @returns {number[]}
      */
     toCbor() {
-        return encodeCborProgram(this.expr, UPLC_VERSION)
+        return encodeCborProgram(this.root, UPLC_VERSION)
     }
 
     /**
      * @returns {number[]}
      */
     toFlat() {
-        return encodeFlatProgram(this.expr, UPLC_VERSION)
+        return encodeFlatProgram(this.root, UPLC_VERSION)
     }
 
     /**
      * @returns {string}
      */
     toString() {
-        return this.expr.toString()
+        return this.root.toString()
     }
 
     /**
-     * @param {UplcProgram} alt
-     * @returns {UplcProgramV3}
+     * @param {UplcProgramV3I} alt
+     * @returns {UplcProgramV3I}
      */
     withAlt(alt) {
-        return new UplcProgramV3(this.expr, alt)
+        return new UplcProgramV3(this.root, alt)
     }
 }

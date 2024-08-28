@@ -5,12 +5,13 @@ import { UplcType } from "./UplcType.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").IntLike} IntLike
+ * @typedef {import("./UplcValue.js").UplcIntI} UplcIntI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
  * Primitive integer UplcValue
- * @implements {UplcValue}
+ * @implements {UplcIntI}
  */
 export class UplcInt {
     /**
@@ -44,6 +45,13 @@ export class UplcInt {
         }
 
         this.signed = signed
+    }
+
+    /**
+     * @type {"int"}
+     */
+    get kind() {
+        return "int"
     }
 
     /**
@@ -89,38 +97,18 @@ export class UplcInt {
      * @returns {boolean}
      */
     isEqual(other) {
-        return other instanceof UplcInt && this.value == other.value
+        return other.kind == "int" && this.value == other.value
     }
 
     /**
-     * Applies zigzag encoding
-     * @returns {UplcInt}
+     * @param {FlatWriter} w
      */
-    toUnsigned() {
-        if (this.signed) {
-            return new UplcInt(encodeZigZag(this.value), false)
-        } else {
-            return this
+    toFlat(w) {
+        if (!this.signed) {
+            throw new Error("not signed")
         }
-    }
 
-    /**
-     * Unapplies zigzag encoding
-     * @returns {UplcInt}
-     */
-    toSigned() {
-        if (this.signed) {
-            return this
-        } else {
-            return new UplcInt(decodeZigZag(this.value), true)
-        }
-    }
-
-    /**
-     * @returns {string}
-     */
-    toString() {
-        return this.value.toString()
+        w.writeInt(this.toUnsigned().value)
     }
 
     /**
@@ -138,13 +126,33 @@ export class UplcInt {
     }
 
     /**
-     * @param {FlatWriter} w
+     * @returns {string}
      */
-    toFlat(w) {
-        if (!this.signed) {
-            throw new Error("not signed")
-        }
+    toString() {
+        return this.value.toString()
+    }
 
-        w.writeInt(this.toUnsigned().value)
+    /**
+     * Unapplies zigzag encoding
+     * @returns {UplcInt}
+     */
+    toSigned() {
+        if (this.signed) {
+            return this
+        } else {
+            return new UplcInt(decodeZigZag(this.value), true)
+        }
+    }
+
+    /**
+     * Applies zigzag encoding
+     * @returns {UplcInt}
+     */
+    toUnsigned() {
+        if (this.signed) {
+            return new UplcInt(encodeZigZag(this.value), false)
+        } else {
+            return this
+        }
     }
 }

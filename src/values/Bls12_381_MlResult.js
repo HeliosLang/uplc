@@ -4,11 +4,12 @@ import { UplcType } from "./UplcType.js"
 
 /**
  * @typedef {import("@helios-lang/crypto").FieldElement12} FieldElement12
+ * @typedef {import("./UplcValue.js").Bls12_381_MlResultI} Bls12_381_MlResultI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
- * @implements {UplcValue}
+ * @implements {Bls12_381_MlResultI}
  */
 export class Bls12_381_MlResult {
     /**
@@ -22,6 +23,13 @@ export class Bls12_381_MlResult {
      */
     constructor(element) {
         this.element = element
+    }
+
+    /**
+     * @type {"bls12_381_mlresult"}
+     */
+    get kind() {
+        return "bls12_381_mlresult"
     }
 
     /**
@@ -53,7 +61,7 @@ export class Bls12_381_MlResult {
      */
     isEqual(other) {
         return (
-            other instanceof Bls12_381_MlResult &&
+            other.kind == "bls12_381_mlresult" &&
             F12.equals(this.element, other.element)
         )
     }

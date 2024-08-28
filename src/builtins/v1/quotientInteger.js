@@ -30,13 +30,13 @@ export const quotientInteger = {
 export function evalQuotientInteger(args, ctx) {
     const [a, b] = asUplcValues(args)
 
-    if (!(a instanceof UplcInt)) {
+    if (a?.kind != "int") {
         throw new Error(
             `expected an integer for the first argument of quotientInteger, got ${a?.toString()}`
         )
     }
 
-    if (!(b instanceof UplcInt)) {
+    if (b?.kind != "int") {
         throw new Error(
             `expected an integer for the second argument of quotientInteger, got ${b?.toString()}`
         )

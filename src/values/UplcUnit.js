@@ -2,15 +2,23 @@ import { FlatWriter } from "../flat/FlatWriter.js"
 import { UplcType } from "./UplcType.js"
 
 /**
+ * @typedef {import("./UplcValue.js").UplcUnitI} UplcUnitI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
  * Primitive unit value.
- * @implements {UplcValue}
+ * @implements {UplcUnitI}
  */
 export class UplcUnit {
     constructor() {}
+
+    /**
+     * @type {"unit"}
+     */
+    get kind() {
+        return "unit"
+    }
 
     /**
      * @type {number}
@@ -38,7 +46,7 @@ export class UplcUnit {
      * @returns {boolean}
      */
     isEqual(other) {
-        return other instanceof UplcUnit
+        return other.kind == "unit"
     }
 
     /**

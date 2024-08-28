@@ -4,12 +4,13 @@ import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
+ * @typedef {import("./UplcData.js").ListDataI} ListDataI
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
 
 /**
  * Represents a list of other `UplcData` instances.
- * @implements {UplcData}
+ * @implements {ListDataI}
  */
 export class ListData {
     /**
@@ -26,11 +27,18 @@ export class ListData {
     }
 
     /**
+     * @type {"list"}
+     */
+    get kind() {
+        return "list"
+    }
+
+    /**
      * @param {UplcData} data
-     * @returns {asserts data is ListData}
+     * @returns {asserts data is ListDataI}
      */
     static assert(data) {
-        if (!(data instanceof ListData)) {
+        if (data.kind != "list") {
             throw new Error(`expected ListData, got ${data.toString()}`)
         }
     }
@@ -38,10 +46,10 @@ export class ListData {
     /**
      * @param {UplcData} data
      * @param {string} msg
-     * @returns {ListData}
+     * @returns {ListDataI}
      */
     static expect(data, msg = `expected ListData, got ${data.toString()}`) {
-        if (data instanceof ListData) {
+        if (data.kind == "list") {
             return data
         } else {
             throw new Error(msg)
@@ -91,7 +99,7 @@ export class ListData {
      * @returns {boolean}
      */
     isEqual(other) {
-        if (other instanceof ListData) {
+        if (other.kind == "list") {
             if (this.length == other.length) {
                 return this.items.every((item, i) =>
                     item.isEqual(other.items[i])
@@ -114,16 +122,16 @@ export class ListData {
     /**
      * @returns {string}
      */
-    toString() {
-        return `[${this.items.map((item) => item.toString()).join(", ")}]`
+    toSchemaJson() {
+        return `{"list":[${this.items
+            .map((item) => item.toSchemaJson())
+            .join(", ")}]}`
     }
 
     /**
      * @returns {string}
      */
-    toSchemaJson() {
-        return `{"list":[${this.items
-            .map((item) => item.toSchemaJson())
-            .join(", ")}]}`
+    toString() {
+        return `[${this.items.map((item) => item.toString()).join(", ")}]`
     }
 }

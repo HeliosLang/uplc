@@ -19,7 +19,7 @@ export const decodeUtf8 = {
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 
-        if (!(a instanceof UplcByteArray)) {
+        if (a?.kind != "bytes") {
             throw new Error(
                 `expected a byte array for the first argument of decodeUtf8, got ${a?.toString()}`
             )

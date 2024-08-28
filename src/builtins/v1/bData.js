@@ -19,7 +19,7 @@ export const bData = {
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 
-        if (!(a instanceof UplcByteArray)) {
+        if (a?.kind != "bytes") {
             throw new Error(
                 `expected a byte array as the first argument of bData, got ${a?.toString()}`
             )

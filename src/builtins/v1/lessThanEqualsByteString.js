@@ -19,13 +19,13 @@ export const lessThanEqualsByteString = {
     call: (args, ctx) => {
         const [a, b] = asUplcValues(args)
 
-        if (!(a instanceof UplcByteArray)) {
+        if (a?.kind != "bytes") {
             throw new Error(
                 `expected a byte array for the first argument of lessThanEqualsByteString, got ${a?.toString()}`
             )
         }
 
-        if (!(b instanceof UplcByteArray)) {
+        if (b?.kind != "bytes") {
             throw new Error(
                 `expected a byte array for the second argument of lessThanEqualsByteString, got ${b?.toString()}`
             )

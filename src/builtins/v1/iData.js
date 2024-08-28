@@ -19,7 +19,7 @@ export const iData = {
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 
-        if (!(a instanceof UplcInt)) {
+        if (a?.kind != "int") {
             throw new Error(
                 `expected an integer as the first argument of iData, got ${a?.toString()}`
             )

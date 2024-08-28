@@ -18,7 +18,7 @@ export const fstPair = {
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 
-        if (!(a instanceof UplcPair)) {
+        if (a?.kind != "pair") {
             throw new Error(
                 `expected a pair as first argument of fstPair, got ${a?.toString()}`
             )

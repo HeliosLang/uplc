@@ -20,7 +20,7 @@ export const serialiseData = {
     call: (args, ctx) => {
         const [a] = asUplcValues(args)
 
-        if (!(a instanceof UplcDataValue)) {
+        if (a?.kind != "data") {
             throw new Error(
                 `expected a data value for the first argument of serialiseData, got ${a?.toString()}`
             )
