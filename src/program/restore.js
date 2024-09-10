@@ -48,6 +48,12 @@ import { UplcProgramV3 } from "./UplcProgramV3.js"
  * @param {UplcProgramV3Props} props
  * @returns {UplcProgramV3}
  *
+ * @overload
+ * @param {PlutusVersion} version
+ * @param {ByteArrayLike} cbor
+ * @param {UplcProgramV1Props | UplcProgramV2Props | UplcProgramV3Props} props
+ * @returns {UplcProgram}
+ *
  * @param {PlutusVersion} version
  * @param {ByteArrayLike} cbor
  * @param {UplcProgramV1Props | UplcProgramV2Props | UplcProgramV3Props} props
