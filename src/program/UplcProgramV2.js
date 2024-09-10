@@ -37,6 +37,10 @@ const PLUTUS_VERSION_TAG = 2
 const UPLC_VERSION = "1.0.0"
 
 /**
+ * @typedef {typeof PLUTUS_VERSION} PlutusVersionV2
+ */
+
+/**
  * @implements {UplcProgramV2I}
  */
 export class UplcProgramV2 {
@@ -53,14 +57,17 @@ export class UplcProgramV2 {
     alt
 
     /**
+     * @private
+     * @readonly
      * @type {Option<() => string>}
      */
-    #ir
+    genIr
 
     /**
+     * @private
      * @type {Option<number[]>}
      */
-    #cachedHash
+    cachedHash
 
     /**
      * @param {UplcTerm} root
@@ -69,8 +76,8 @@ export class UplcProgramV2 {
     constructor(root, props = {}) {
         this.root = root
         this.alt = props.alt
-        this.#ir = props.ir
-        this.#cachedHash = None
+        this.genIr = props.ir
+        this.cachedHash = None
     }
 
     /**
@@ -110,11 +117,11 @@ export class UplcProgramV2 {
      * @type {Option<string>}
      */
     get ir() {
-        return this.#ir ? this.#ir() : None
+        return this.genIr ? this.genIr() : None
     }
 
     /**
-     * @type {typeof PLUTUS_VERSION}
+     * @type {PlutusVersionV2}
      */
     get plutusVersion() {
         return PLUTUS_VERSION
@@ -163,11 +170,11 @@ export class UplcProgramV2 {
      * @returns {number[]} - 28 byte hash
      */
     hash() {
-        if (!this.#cachedHash) {
-            this.#cachedHash = hashProgram(this)
+        if (!this.cachedHash) {
+            this.cachedHash = hashProgram(this)
         }
 
-        return this.#cachedHash
+        return this.cachedHash
     }
 
     /**
@@ -197,6 +204,6 @@ export class UplcProgramV2 {
      * @returns {UplcProgramV2I}
      */
     withAlt(alt) {
-        return new UplcProgramV2(this.root, { alt, ir: this.#ir })
+        return new UplcProgramV2(this.root, { alt, ir: this.genIr })
     }
 }

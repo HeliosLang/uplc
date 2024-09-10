@@ -37,6 +37,10 @@ const PLUTUS_VERSION_TAG = 1
 const UPLC_VERSION = "1.0.0"
 
 /**
+ * @typedef {typeof PLUTUS_VERSION} PlutusVersionV1
+ */
+
+/**
  * @implements {UplcProgramV1I}
  */
 export class UplcProgramV1 {
@@ -53,14 +57,17 @@ export class UplcProgramV1 {
     alt
 
     /**
+     * @private
+     * @readonly
      * @type {Option<() => string>}
      */
-    #ir
+    genIr
 
     /**
+     * @private
      * @type {Option<number[]>}
      */
-    #cachedHash
+    cachedHash
 
     /**
      * @param {UplcTerm} root
@@ -69,8 +76,8 @@ export class UplcProgramV1 {
     constructor(root, props = {}) {
         this.root = root
         this.alt = props.alt
-        this.#ir = props.ir
-        this.#cachedHash = None
+        this.genIr = props.ir
+        this.cachedHash = None
     }
 
     /**
@@ -110,12 +117,12 @@ export class UplcProgramV1 {
      * @type {Option<string>}
      */
     get ir() {
-        return this.#ir ? this.#ir() : None
+        return this.genIr ? this.genIr() : None
     }
 
     /**
      * Script version, determines the available builtins and the shape of the ScriptContext
-     * @type {typeof PLUTUS_VERSION}
+     * @type {PlutusVersionV1}
      */
     get plutusVersion() {
         return PLUTUS_VERSION
@@ -171,11 +178,11 @@ export class UplcProgramV1 {
      * @returns {number[]} - 28 byte hash
      */
     hash() {
-        if (!this.#cachedHash) {
-            this.#cachedHash = hashProgram(this)
+        if (!this.cachedHash) {
+            this.cachedHash = hashProgram(this)
         }
 
-        return this.#cachedHash
+        return this.cachedHash
     }
 
     /**
@@ -205,6 +212,6 @@ export class UplcProgramV1 {
      * @returns {UplcProgramV1}
      */
     withAlt(alt) {
-        return new UplcProgramV1(this.root, { alt, ir: this.#ir })
+        return new UplcProgramV1(this.root, { alt, ir: this.genIr })
     }
 }
