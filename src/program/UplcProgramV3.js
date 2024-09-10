@@ -24,6 +24,14 @@ import { parseProgram } from "./parse.js"
  * @typedef {import("./UplcProgram.js").UplcProgramV3I} UplcProgramV3I
  */
 
+/**
+ * The optional ir property is lazy because it is only used for debugging and might require an expensive formatting operation
+ * @typedef {{
+ *   alt?: Option<UplcProgramV3I>
+ *   ir?: Option<() => string>
+ * }} UplcProgramV3Props
+ */
+
 const PLUTUS_VERSION = "PlutusScriptV3"
 const PLUTUS_VERSION_TAG = 3
 const UPLC_VERSION = "1.1.0"
@@ -56,10 +64,7 @@ export class UplcProgramV3 {
 
     /**
      * @param {UplcTerm} root
-     * @param {{
-     *   alt?: Option<UplcProgramV3I>
-     *   ir?: Option<() => string>
-     * }} props - the optional ir property is lazy because it is only used for debugging and might require an expensive formatting operation
+     * @param {UplcProgramV3Props} props
      */
     constructor(root, props = {}) {
         this.root = root
@@ -70,30 +75,34 @@ export class UplcProgramV3 {
 
     /**
      * @param {number[]} bytes
+     * @param {UplcProgramV3Props} props
      * @returns {UplcProgramV3}
      */
-    static fromFlat(bytes) {
-        return new UplcProgramV3(decodeFlatProgram(bytes, UPLC_VERSION))
+    static fromFlat(bytes, props = {}) {
+        return new UplcProgramV3(decodeFlatProgram(bytes, UPLC_VERSION), props)
     }
 
     /**
      * @param {ByteArrayLike} bytes
+     * @param {UplcProgramV3Props} props
      * @returns {UplcProgramV3}
      */
-    static fromCbor(bytes) {
-        return new UplcProgramV3(decodeCborProgram(bytes, UPLC_VERSION))
+    static fromCbor(bytes, props = {}) {
+        return new UplcProgramV3(decodeCborProgram(bytes, UPLC_VERSION), props)
     }
 
     /**
      * @param {string} src
+     * @param {UplcProgramV3Props} props
      * @returns {UplcProgramV3}
      */
-    static fromString(src) {
+    static fromString(src, props = {}) {
         return new UplcProgramV3(
             parseProgram(src, {
                 uplcVersion: UPLC_VERSION,
                 builtins: builtinsV3
-            })
+            }),
+            props
         )
     }
 
