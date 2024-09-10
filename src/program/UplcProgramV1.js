@@ -45,17 +45,26 @@ export class UplcProgramV1 {
     alt
 
     /**
+     * @type {Option<() => string>}
+     */
+    #ir
+
+    /**
      * @type {Option<number[]>}
      */
     #cachedHash
 
     /**
      * @param {UplcTerm} root
-     * @param {Option<UplcProgramV1I>} alt
+     * @param {{
+     *   alt?: Option<UplcProgramV1I>
+     *   ir?: Option<() => string>
+     * }} props - the optional ir property is lazy because it is only used for debugging and might require an expensive formatting operation
      */
-    constructor(root, alt = None) {
+    constructor(root, props = {}) {
         this.root = root
-        this.alt = alt
+        this.alt = props.alt
+        this.#ir = props.ir
         this.#cachedHash = None
     }
 
@@ -86,6 +95,13 @@ export class UplcProgramV1 {
                 builtins: builtinsV1
             })
         )
+    }
+
+    /**
+     * @type {Option<string>}
+     */
+    get ir() {
+        return this.#ir ? this.#ir() : None
     }
 
     /**
@@ -125,7 +141,8 @@ export class UplcProgramV1 {
      * @returns {UplcProgramV1} - a new UplcProgram instance
      */
     apply(args) {
-        return new UplcProgramV1(apply(this.root, args))
+        const alt = this.alt ? this.alt.apply(args) : None
+        return new UplcProgramV1(apply(this.root, args), { alt })
     }
 
     /**
@@ -179,6 +196,6 @@ export class UplcProgramV1 {
      * @returns {UplcProgramV1}
      */
     withAlt(alt) {
-        return new UplcProgramV1(this.root, alt)
+        return new UplcProgramV1(this.root, { alt, ir: this.#ir })
     }
 }

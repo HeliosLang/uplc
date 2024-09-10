@@ -45,17 +45,26 @@ export class UplcProgramV2 {
     alt
 
     /**
+     * @type {Option<() => string>}
+     */
+    #ir
+
+    /**
      * @type {Option<number[]>}
      */
     #cachedHash
 
     /**
      * @param {UplcTerm} root
-     * @param {Option<UplcProgramV2I>} alt
+     * @param {{
+     *   alt?: Option<UplcProgramV2I>
+     *   ir?: Option<() => string>
+     * }} props - the optional ir property is lazy because it is only used for debugging and might require an expensive formatting operation
      */
-    constructor(root, alt = None) {
+    constructor(root, props = {}) {
         this.root = root
-        this.alt = alt
+        this.alt = props.alt
+        this.#ir = props.ir
         this.#cachedHash = None
     }
 
@@ -89,6 +98,13 @@ export class UplcProgramV2 {
     }
 
     /**
+     * @type {Option<string>}
+     */
+    get ir() {
+        return this.#ir ? this.#ir() : None
+    }
+
+    /**
      * @type {typeof PLUTUS_VERSION}
      */
     get plutusVersion() {
@@ -112,12 +128,13 @@ export class UplcProgramV2 {
     /**
      * Wrap the top-level term with consecutive UplcCall (not exported) terms.
      *
-     * Returns a new UplcProgramV1 instance, leaving the original untouched.
+     * Returns a new UplcProgramV2 instance, leaving the original untouched.
      * @param {UplcValue[]} args
      * @returns {UplcProgramV2} - a new UplcProgram instance
      */
     apply(args) {
-        return new UplcProgramV2(apply(this.root, args))
+        const alt = this.alt ? this.alt.apply(args) : None
+        return new UplcProgramV2(apply(this.root, args), { alt })
     }
 
     /**
@@ -171,6 +188,6 @@ export class UplcProgramV2 {
      * @returns {UplcProgramV2I}
      */
     withAlt(alt) {
-        return new UplcProgramV2(this.root, alt)
+        return new UplcProgramV2(this.root, { alt, ir: this.#ir })
     }
 }

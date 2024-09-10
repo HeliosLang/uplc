@@ -1,5 +1,4 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcList } from "../../values/index.js"
 import { asUplcValue } from "../cast.js"
 
 /**
@@ -20,7 +19,7 @@ export const chooseList = {
 
         if (list?.kind != "list") {
             throw new Error(
-                `expected as list as first argument of chooseList, got ${list?.toString()}`
+                `expected a list as first argument of chooseList, got ${list?.toString()}`
             )
         }
 

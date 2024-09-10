@@ -23,11 +23,12 @@ import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
 /**
  * @typedef {{
  *   root: UplcTerm
- *   eval: (args: Option<UplcValue[]>, costModelParams?: number[]) => CekResult
- *   hash: () => number[]
- *   toCbor: () => number[]
- *   toFlat: () => number[]
- *   toString: () => string
+ *   ir: Option<string>
+ *   eval(args: Option<UplcValue[]>, costModelParams?: number[]): CekResult
+ *   hash(): number[]
+ *   toCbor(): number[]
+ *   toFlat(): number[]
+ *   toString(): string
  * }} CommonUplcProgramProps
  */
 
