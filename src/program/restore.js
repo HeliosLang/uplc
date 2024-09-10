@@ -51,6 +51,11 @@ import { UplcProgramV3 } from "./UplcProgramV3.js"
  * @overload
  * @param {PlutusVersion} version
  * @param {ByteArrayLike} cbor
+ * @returns {UplcProgram}
+ *
+ * @overload
+ * @param {PlutusVersion} version
+ * @param {ByteArrayLike} cbor
  * @param {UplcProgramV1Props | UplcProgramV2Props | UplcProgramV3Props} props
  * @returns {UplcProgram}
  *

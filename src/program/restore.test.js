@@ -6,6 +6,11 @@ import { UplcProgramV1 } from "./UplcProgramV1.js"
 import { UplcProgramV2 } from "./UplcProgramV2.js"
 import { UplcProgramV3 } from "./UplcProgramV3.js"
 
+/**
+ * @typedef {import("./UplcProgram.js").UplcProgram} UplcProgram
+ * @typedef {import("./UplcProgram.js").PlutusVersion} PlutusVersion
+ */
+
 describe(restoreUplcProgram.name, () => {
     const validCborV1V2 = new UplcProgramV1(
         new UplcConst(new UplcInt(0))
@@ -60,5 +65,28 @@ describe(restoreUplcProgram.name, () => {
         const program = restoreUplcProgram("PlutusScriptV3", validCborV3, {
             alt: restoreUplcProgram("PlutusScriptV3", validCborV3)
         })
+    })
+
+    it("returns a UplcProgram instance when restoring a program of unknown version at compile-time", () => {
+        /**
+         * @satisfies {UplcProgram}
+         */
+        const program = restoreUplcProgram(
+            /** @type {PlutusVersion} */ ("PlutusScriptV2"),
+            validCborV1V2
+        )
+    })
+
+    it("returns a UplcProgram instance when restoring a program of unknown version at compile-time with additional properties", () => {
+        /**
+         * @satisfies {UplcProgram}
+         */
+        const program = restoreUplcProgram(
+            /** @type {PlutusVersion} */ ("PlutusScriptV2"),
+            validCborV1V2,
+            {
+                alt: restoreUplcProgram("PlutusScriptV2", validCborV1V2)
+            }
+        )
     })
 })
