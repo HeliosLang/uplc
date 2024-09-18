@@ -25,10 +25,10 @@ import { parseProgram } from "./parse.js"
  */
 
 /**
- * The optional ir property is lazy because it is only used for debugging and might require an expensive formatting operation
+ * The optional ir property can be lazy because it is only used for debugging and might require an expensive formatting operation
  * @typedef {{
  *   alt?: Option<UplcProgramV2I>
- *   ir?: Option<() => string>
+ *   ir?: Option<(() => string) | string>
  * }} UplcProgramV2Props
  */
 
@@ -59,15 +59,16 @@ export class UplcProgramV2 {
     /**
      * @private
      * @readonly
-     * @type {Option<() => string>}
+     * @type {Option<(() => string) | string>}
      */
-    genIr
+    _ir
 
     /**
+     * Cached hash
      * @private
      * @type {Option<number[]>}
      */
-    cachedHash
+    _hash
 
     /**
      * @param {UplcTerm} root
@@ -76,8 +77,8 @@ export class UplcProgramV2 {
     constructor(root, props = {}) {
         this.root = root
         this.alt = props.alt
-        this.genIr = props.ir
-        this.cachedHash = None
+        this._ir = props.ir
+        this._hash = None
     }
 
     /**
@@ -117,7 +118,15 @@ export class UplcProgramV2 {
      * @type {Option<string>}
      */
     get ir() {
-        return this.genIr ? this.genIr() : None
+        if (this._ir) {
+            if (typeof this._ir == "string") {
+                return this._ir
+            } else {
+                return this._ir()
+            }
+        } else {
+            return None
+        }
     }
 
     /**
@@ -170,11 +179,11 @@ export class UplcProgramV2 {
      * @returns {number[]} - 28 byte hash
      */
     hash() {
-        if (!this.cachedHash) {
-            this.cachedHash = hashProgram(this)
+        if (!this._hash) {
+            this._hash = hashProgram(this)
         }
 
-        return this.cachedHash
+        return this._hash
     }
 
     /**
@@ -204,6 +213,6 @@ export class UplcProgramV2 {
      * @returns {UplcProgramV2I}
      */
     withAlt(alt) {
-        return new UplcProgramV2(this.root, { alt, ir: this.genIr })
+        return new UplcProgramV2(this.root, { alt, ir: this._ir })
     }
 }
