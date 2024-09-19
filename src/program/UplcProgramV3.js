@@ -18,6 +18,7 @@ import { parseProgram } from "./parse.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
+ * @typedef {import("@helios-lang/compiler-utils").UplcLoggingI} UplcLoggingI
  * @typedef {import("../cek/index.js").CekResult} CekResult
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
  * @typedef {import("../values/index.js").UplcValue} UplcValue
@@ -165,14 +166,15 @@ export class UplcProgramV3 {
     /**
      * @param {undefined | UplcValue[]} args - if undefined, eval the root term without any applications, if empy: apply a force to the root term
      * @param {number[]} costModelParams
+     * @param {Option<UplcLoggingI>} logOptions?
      * @returns {CekResult}
      */
-    eval(args, costModelParams = DEFAULT_COST_MODEL_PARAMS_V3()) {
+    eval(args, costModelParams = DEFAULT_COST_MODEL_PARAMS_V3(), logOptions) {
         const costModel = new CostModel(
             new CostModelParamsProxy(costModelParams),
             builtinsV3
         )
-        return evalProgram(builtinsV3, costModel, this.root, args)
+        return evalProgram(builtinsV3, costModel, this.root, args, logOptions)
     }
 
     /**

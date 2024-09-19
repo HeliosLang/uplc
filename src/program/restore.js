@@ -19,46 +19,56 @@ import { UplcProgramV3 } from "./UplcProgramV3.js"
  * @param {PlutusVersionV1} version
  * @param {ByteArrayLike} cbor
  * @returns {UplcProgramV1}
- *
+ */
+/**
  * @overload
  * @param {PlutusVersionV1} version
  * @param {ByteArrayLike} cbor
  * @param {UplcProgramV1Props} props
  * @returns {UplcProgramV1}
- *
+ */
+/**
  * @overload
  * @param {PlutusVersionV2} version
  * @param {ByteArrayLike} cbor
  * @returns {UplcProgramV2}
- *
+ */
+/**
  * @overload
  * @param {PlutusVersionV2} version
  * @param {ByteArrayLike} cbor
  * @param {UplcProgramV2Props} props
  * @returns {UplcProgramV2}
- *
+ */
+/**
  * @overload
  * @param {PlutusVersionV3} version
  * @param {ByteArrayLike} cbor
  * @returns {UplcProgramV3}
- *
+ */
+/**
  * @overload
  * @param {PlutusVersionV3} version
  * @param {ByteArrayLike} cbor
  * @param {UplcProgramV3Props} props
  * @returns {UplcProgramV3}
- *
+ */
+/**
+ * Deserializes a UplcProgram from its CBOR representation with no available IR or alternate/unoptimized version
  * @overload
  * @param {PlutusVersion} version
  * @param {ByteArrayLike} cbor
  * @returns {UplcProgram}
- *
+ */
+/**
+ * Deserializes a UplcProgram from its CBOR representation, with optional IR-generator and alternate/unoptimized version
  * @overload
  * @param {PlutusVersion} version
  * @param {ByteArrayLike} cbor
  * @param {UplcProgramV1Props | UplcProgramV2Props | UplcProgramV3Props} props
  * @returns {UplcProgram}
- *
+ */
+/**
  * @param {PlutusVersion} version
  * @param {ByteArrayLike} cbor
  * @param {UplcProgramV1Props | UplcProgramV2Props | UplcProgramV3Props} props

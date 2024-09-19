@@ -1,4 +1,6 @@
 import { expectSome } from "@helios-lang/type-utils"
+import { BasicUplcLogger } from "@helios-lang/compiler-utils"
+
 import { CostTracker, CostModel } from "../costmodel/index.js"
 
 /**
@@ -10,6 +12,7 @@ import { CostTracker, CostModel } from "../costmodel/index.js"
  * @typedef {import("./types.js").CekFrame} CekFrame
  * @typedef {import("./types.js").CekState} CekState
  * @typedef {import("./types.js").CekTerm} CekTerm
+ * @typedef {import("@helios-lang/compiler-utils").UplcLoggingI} UplcLoggingI
  */
 
 /**
@@ -42,17 +45,29 @@ export class CekMachine {
     state
 
     /**
+     * @type {UplcLoggingI}
+     */
+    diagnostics
+
+    /**
+     * @type {UplcLoggingI["logPrint"]}
+     */
+    logPrint
+
+    /**
      * Initializes in computing state
      * @param {CekTerm} term
      * @param {Builtin[]} builtins
      * @param {CostModel} costModel
+     * @param {UplcLoggingI} diagnostics
      */
-    constructor(term, builtins, costModel) {
+    constructor(term, builtins, costModel, diagnostics) {
         this.builtins = builtins
-
         this.cost = new CostTracker(costModel)
-
         this.frames = []
+
+        // fallback for temporary (?) purposes
+        this.diagnostics = diagnostics || new BasicUplcLogger()
 
         this.state = {
             computing: {
@@ -98,6 +113,7 @@ export class CekMachine {
                 const f = this.frames.pop()
 
                 if (f) {
+                    // console.log("reducing at frame ", f);
                     const { state: newState, frame: newFrame } = f.reduce(
                         this.state.reducing,
                         this
@@ -119,6 +135,7 @@ export class CekMachine {
                         const builtin = expectSome(
                             this.getBuiltin(this.state.reducing.builtin.id)
                         )
+                        console.log("builtin", builtin.name)
                         return this.returnValue(builtin.name)
                     } else {
                         const props = this.state.reducing.lambda
@@ -153,6 +170,7 @@ export class CekMachine {
                 cpu: this.cost.cpu
             },
             breakdown: this.cost.breakdown
+            // diagnostics: this.diagnostics  // not needed if always passed in
         }
     }
 
@@ -171,12 +189,15 @@ export class CekMachine {
                 cpu: this.cost.cpu
             },
             breakdown: this.cost.breakdown
+            // diagnostics: this.diagnostics  // not needed if always passed in
         }
     }
     /**
      * @param {string} message
      */
     print(message) {
-        console.log(message)
+        if (this.diagnostics.logPrint) {
+            this.diagnostics.logPrint(message)
+        }
     }
 }
