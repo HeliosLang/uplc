@@ -15,7 +15,6 @@ import {
     hashProgram
 } from "./UplcProgram.js"
 import { parseProgram } from "./parse.js"
-import { BasicUplcLogger } from "../logging/BasicUplcLogger.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
