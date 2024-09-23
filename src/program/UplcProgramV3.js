@@ -15,10 +15,11 @@ import {
     hashProgram
 } from "./UplcProgram.js"
 import { parseProgram } from "./parse.js"
+import { BasicUplcLogger } from "../logging/BasicUplcLogger.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
- * @typedef {import("@helios-lang/compiler-utils").UplcLoggingI} UplcLoggingI
+ * @typedef {import("../logging/UplcLoggingI.js").UplcLoggingI} UplcLoggingI
  * @typedef {import("../cek/index.js").CekResult} CekResult
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
  * @typedef {import("../values/index.js").UplcValue} UplcValue
@@ -164,17 +165,24 @@ export class UplcProgramV3 {
     }
 
     /**
-     * @param {undefined | UplcValue[]} args - if undefined, eval the root term without any applications, if empy: apply a force to the root term
-     * @param {number[]} costModelParams
-     * @param {Option<UplcLoggingI>} logOptions?
+     * @param {undefined | UplcValue[]} args - if undefined, eval the root term without any applications, if empty: apply a force to the root term
+     * @param {Object} [options]
+     * @param {UplcLoggingI} [options.logOptions]
+     * @param {number[]} [options.costModelParams]
      * @returns {CekResult}
      */
-    eval(args, costModelParams = DEFAULT_COST_MODEL_PARAMS_V3(), logOptions) {
+    eval(args, options = {}) {
+        const { logOptions, costModelParams = DEFAULT_COST_MODEL_PARAMS_V3() } =
+            options
         const costModel = new CostModel(
             new CostModelParamsProxy(costModelParams),
             builtinsV3
         )
-        return evalProgram(builtinsV3, costModel, this.root, args, logOptions)
+        return evalProgram(builtinsV3, this.root, {
+            costModel,
+            args,
+            logOptions
+        })
     }
 
     /**

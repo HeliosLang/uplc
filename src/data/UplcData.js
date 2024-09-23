@@ -10,6 +10,8 @@
  *   toCbor: () => number[]
  *   toSchemaJson: () => string
  *   toString: () => string
+ *   fromData?: any
+ *   dataPath?: string
  * }} CommonUplcDataProps
  */
 

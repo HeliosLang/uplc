@@ -1,5 +1,5 @@
 import { decodeBytes, encodeBytes, isBytes } from "@helios-lang/cbor"
-import { BasicUplcLogger } from "@helios-lang/compiler-utils"
+import { BasicUplcLogger } from "../logging/BasicUplcLogger.js"
 import { ByteStream } from "@helios-lang/codec-utils"
 import { blake2b } from "@helios-lang/crypto"
 import { CekMachine } from "../cek/index.js"
@@ -9,7 +9,7 @@ import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
- * @typedef {import("@helios-lang/compiler-utils").UplcLoggingI} UplcLoggingI
+ * @typedef {import("../logging/UplcLoggingI.js").UplcLoggingI} UplcLoggingI
  * @typedef {import("../builtins/index.js").Builtin} Builtin
  * @typedef {import("../cek/index.js").CekResult} CekResult
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
@@ -26,7 +26,10 @@ import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
  * @typedef {{
  *   root: UplcTerm
  *   ir: Option<string>
- *   eval(args: Option<UplcValue[]>, costModelParams?: number[], logOptions?: Option<Partial<UplcLoggingI>>): CekResult
+ *   eval(args: Option<UplcValue[]>, options: {
+ *      logOptions?: UplcLoggingI,
+ *      costModelParams?: number[],
+ *   }): CekResult
  *   hash(): number[]
  *   toCbor(): number[]
  *   toFlat(): number[]
@@ -140,13 +143,14 @@ export function decodeFlatProgram(bytes, expectedUplcVersion) {
 
 /**
  * @param {Builtin[]} builtins
- * @param {CostModel} costModel
  * @param {UplcTerm} expr
- * @param {Option<UplcValue[]>} args
- * @param {Option<UplcLoggingI>} logOptions?
+ * @param {Object} options
+ * @param {CostModel} options.costModel
+ * @param {UplcLoggingI} [options.logOptions]
+ * @param {Option<UplcValue[]>} [options.args]
  * @returns {CekResult}
  */
-export function evalProgram(builtins, costModel, expr, args, logOptions) {
+export function evalProgram(builtins, expr, { costModel, args, logOptions }) {
     if (args) {
         if (args.length == 0) {
             expr = new UplcForce(expr)
@@ -157,12 +161,7 @@ export function evalProgram(builtins, costModel, expr, args, logOptions) {
         }
     }
 
-    const machine = new CekMachine(
-        expr,
-        builtins,
-        costModel,
-        logOptions || new BasicUplcLogger()
-    )
+    const machine = new CekMachine(expr, builtins, costModel, logOptions)
 
     return machine.eval()
 }

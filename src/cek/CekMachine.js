@@ -1,5 +1,5 @@
 import { expectSome } from "@helios-lang/type-utils"
-import { BasicUplcLogger } from "@helios-lang/compiler-utils"
+import { BasicUplcLogger } from "../logging/BasicUplcLogger.js"
 
 import { CostTracker, CostModel } from "../costmodel/index.js"
 
@@ -12,7 +12,7 @@ import { CostTracker, CostModel } from "../costmodel/index.js"
  * @typedef {import("./types.js").CekFrame} CekFrame
  * @typedef {import("./types.js").CekState} CekState
  * @typedef {import("./types.js").CekTerm} CekTerm
- * @typedef {import("@helios-lang/compiler-utils").UplcLoggingI} UplcLoggingI
+ * @typedef {import("../logging/UplcLoggingI.js").UplcLoggingI} UplcLoggingI
  */
 
 /**
@@ -45,29 +45,30 @@ export class CekMachine {
     state
 
     /**
-     * @type {UplcLoggingI}
+     * @private
+     * @type {String[]}     *
      */
-    diagnostics
+    logs
 
     /**
-     * @type {UplcLoggingI["logPrint"]}
+     * @type {Option<UplcLoggingI>}
      */
-    logPrint
+    diagnostics
 
     /**
      * Initializes in computing state
      * @param {CekTerm} term
      * @param {Builtin[]} builtins
      * @param {CostModel} costModel
-     * @param {UplcLoggingI} diagnostics
+     * @param {UplcLoggingI} [diagnostics]
      */
     constructor(term, builtins, costModel, diagnostics) {
         this.builtins = builtins
         this.cost = new CostTracker(costModel)
         this.frames = []
+        this.logs = []
 
-        // fallback for temporary (?) purposes
-        this.diagnostics = diagnostics || new BasicUplcLogger()
+        this.diagnostics = diagnostics
 
         this.state = {
             computing: {
@@ -113,7 +114,6 @@ export class CekMachine {
                 const f = this.frames.pop()
 
                 if (f) {
-                    // console.log("reducing at frame ", f);
                     const { state: newState, frame: newFrame } = f.reduce(
                         this.state.reducing,
                         this
@@ -135,7 +135,6 @@ export class CekMachine {
                         const builtin = expectSome(
                             this.getBuiltin(this.state.reducing.builtin.id)
                         )
-                        console.log("builtin", builtin.name)
                         return this.returnValue(builtin.name)
                     } else {
                         const props = this.state.reducing.lambda
@@ -169,6 +168,7 @@ export class CekMachine {
                 mem: this.cost.mem,
                 cpu: this.cost.cpu
             },
+            logs: this.logs,
             breakdown: this.cost.breakdown
             // diagnostics: this.diagnostics  // not needed if always passed in
         }
@@ -188,16 +188,17 @@ export class CekMachine {
                 mem: this.cost.mem,
                 cpu: this.cost.cpu
             },
+            logs: this.logs,
             breakdown: this.cost.breakdown
             // diagnostics: this.diagnostics  // not needed if always passed in
         }
     }
+
     /**
      * @param {string} message
      */
     print(message) {
-        if (this.diagnostics.logPrint) {
-            this.diagnostics.logPrint(message)
-        }
+        this.logs.push(message)
+        this.diagnostics?.logPrint(message)
     }
 }
