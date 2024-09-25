@@ -1,4 +1,5 @@
 import { expectSome } from "@helios-lang/type-utils"
+
 import { CostTracker, CostModel } from "../costmodel/index.js"
 
 /**
@@ -10,6 +11,7 @@ import { CostTracker, CostModel } from "../costmodel/index.js"
  * @typedef {import("./types.js").CekFrame} CekFrame
  * @typedef {import("./types.js").CekState} CekState
  * @typedef {import("./types.js").CekTerm} CekTerm
+ * @typedef {import("../logging/UplcLoggingI.js").UplcLoggingI} UplcLoggingI
  */
 
 /**
@@ -42,17 +44,30 @@ export class CekMachine {
     state
 
     /**
+     * @private
+     * @type {String[]}     *
+     */
+    logs
+
+    /**
+     * @type {Option<UplcLoggingI>}
+     */
+    diagnostics
+
+    /**
      * Initializes in computing state
      * @param {CekTerm} term
      * @param {Builtin[]} builtins
      * @param {CostModel} costModel
+     * @param {UplcLoggingI} [diagnostics]
      */
-    constructor(term, builtins, costModel) {
+    constructor(term, builtins, costModel, diagnostics) {
         this.builtins = builtins
-
         this.cost = new CostTracker(costModel)
-
         this.frames = []
+        this.logs = []
+
+        this.diagnostics = diagnostics
 
         this.state = {
             computing: {
@@ -152,6 +167,7 @@ export class CekMachine {
                 mem: this.cost.mem,
                 cpu: this.cost.cpu
             },
+            logs: this.logs,
             breakdown: this.cost.breakdown
         }
     }
@@ -170,13 +186,16 @@ export class CekMachine {
                 mem: this.cost.mem,
                 cpu: this.cost.cpu
             },
+            logs: this.logs,
             breakdown: this.cost.breakdown
         }
     }
+
     /**
      * @param {string} message
      */
     print(message) {
-        console.log(message)
+        this.logs.push(message)
+        this.diagnostics?.logPrint(message)
     }
 }

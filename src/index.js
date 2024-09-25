@@ -4,6 +4,7 @@ export * from "./data/index.js"
 export * from "./program/index.js"
 export * from "./terms/index.js"
 export * from "./values/index.js"
+export * from "./logging/index.js"
 
 /**
  * @typedef {import("./cek/index.js").CekResult} CekResult
