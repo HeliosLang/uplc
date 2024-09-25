@@ -169,7 +169,6 @@ export class CekMachine {
             },
             logs: this.logs,
             breakdown: this.cost.breakdown
-            // diagnostics: this.diagnostics  // not needed if always passed in
         }
     }
 
@@ -189,7 +188,6 @@ export class CekMachine {
             },
             logs: this.logs,
             breakdown: this.cost.breakdown
-            // diagnostics: this.diagnostics  // not needed if always passed in
         }
     }
 
