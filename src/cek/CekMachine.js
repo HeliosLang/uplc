@@ -1,5 +1,4 @@
 import { expectSome } from "@helios-lang/type-utils"
-import { BasicUplcLogger } from "../logging/BasicUplcLogger.js"
 
 import { CostTracker, CostModel } from "../costmodel/index.js"
 
