@@ -144,13 +144,13 @@ export function decodeFlatProgram(bytes, expectedUplcVersion) {
 /**
  * @param {Builtin[]} builtins
  * @param {UplcTerm} expr
+ * @param {Option<UplcValue[]>} args
  * @param {Object} options
  * @param {CostModel} options.costModel
  * @param {UplcLoggingI} [options.logOptions]
- * @param {Option<UplcValue[]>} [options.args]
  * @returns {CekResult}
  */
-export function evalProgram(builtins, expr, { costModel, args, logOptions }) {
+export function evalProgram(builtins, expr, args, { costModel, logOptions }) {
     if (args) {
         if (args.length == 0) {
             expr = new UplcForce(expr)

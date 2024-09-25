@@ -185,9 +185,8 @@ export class UplcProgramV1 {
             new CostModelParamsProxy(costModelParams),
             builtinsV1
         )
-        return evalProgram(builtinsV1, this.root, {
+        return evalProgram(builtinsV1, this.root, args, {
             costModel,
-            args,
             logOptions
         })
     }
