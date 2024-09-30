@@ -29,7 +29,7 @@ export class UplcBuiltin {
 
     /**
      * Optional source-map site
-     * @readonly
+     * Mutable so that SourceMap application is easier
      * @type {Option<Site>}
      */
     site
@@ -50,6 +50,13 @@ export class UplcBuiltin {
     static fromFlat(reader) {
         let id = reader.readBits(7)
         return new UplcBuiltin(id)
+    }
+
+    /**
+     * @type {UplcTerm[]}
+     */
+    get children() {
+        return []
     }
 
     /**

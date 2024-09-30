@@ -51,7 +51,8 @@ export class ForceFrame {
                 return {
                     state: {
                         error: {
-                            message: `builtin ${value.builtin.id} not found`
+                            message: `builtin ${value.builtin.id} not found`,
+                            stack: this.stack
                         }
                     }
                 }
@@ -61,7 +62,8 @@ export class ForceFrame {
                         error: {
                             message: `too many forces for builtin ${b.name}, ${
                                 value.builtin.forceCount + 1
-                            } > ${b.forceCount}`
+                            } > ${b.forceCount}`,
+                            stack: this.stack
                         }
                     }
                 }
@@ -81,7 +83,8 @@ export class ForceFrame {
             return {
                 state: {
                     error: {
-                        message: "expected delayed or builtin value for force"
+                        message: "expected delayed or builtin value for force",
+                        stack: this.stack
                     }
                 }
             }

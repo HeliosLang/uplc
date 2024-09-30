@@ -35,7 +35,7 @@ export class UplcCall {
 
     /**
      * Optional source-map site
-     * @readonly
+     * Mutable so that SourceMap application is easier
      * @type {Option<Site>}
      */
     site
@@ -75,6 +75,13 @@ export class UplcCall {
         })
 
         return expr
+    }
+
+    /**
+     * @type {UplcTerm[]}
+     */
+    get children() {
+        return [this.fn, this.arg]
     }
 
     /**

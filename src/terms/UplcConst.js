@@ -35,7 +35,8 @@ export class UplcConst {
     value
 
     /**
-     * @readonly
+     * Optional source-map site
+     * Mutable so that SourceMap application is easier
      * @type {Option<Site>}
      */
     site
@@ -60,6 +61,13 @@ export class UplcConst {
     static fromFlat(r) {
         const value = r.readValue()
         return new UplcConst(value)
+    }
+
+    /**
+     * @type {UplcTerm[]}
+     */
+    get children() {
+        return []
     }
 
     /**

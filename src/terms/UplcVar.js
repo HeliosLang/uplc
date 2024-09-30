@@ -31,7 +31,7 @@ export class UplcVar {
 
     /**
      * Optional source-map site
-     * @readonly
+     * Mutable so that SourceMap application is easier
      * @type {Option<Site>}
      */
     site
@@ -54,6 +54,13 @@ export class UplcVar {
     static fromFlat(r) {
         const index = r.readInt()
         return new UplcVar(Number(index))
+    }
+
+    /**
+     * @type {UplcTerm[]}
+     */
+    get children() {
+        return []
     }
 
     /**

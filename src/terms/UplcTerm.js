@@ -7,5 +7,6 @@ import { FlatWriter } from "../flat/index.js"
 /**
  * @typedef {CekTerm & {
  *   toFlat: (writer: FlatWriter) => void
+ *   children: UplcTerm[]
  * }} UplcTerm
  */

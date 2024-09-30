@@ -33,7 +33,7 @@ export class UplcLambda {
 
     /**
      * Optional source-map site
-     * @readonly
+     * Mutable so that SourceMap application is easier
      * @type {Option<Site>}
      */
     site
@@ -57,6 +57,13 @@ export class UplcLambda {
     static fromFlat(r) {
         const expr = r.readExpr()
         return new UplcLambda(expr)
+    }
+
+    /**
+     * @type {UplcTerm[]}
+     */
+    get children() {
+        return [this.expr]
     }
 
     /**

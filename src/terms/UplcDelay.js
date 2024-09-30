@@ -26,7 +26,7 @@ export class UplcDelay {
 
     /**
      * Optional source-map site
-     * @readonly
+     * Mutable so that SourceMap application is easier
      * @type {Option<Site>}
      */
     site
@@ -49,6 +49,13 @@ export class UplcDelay {
     static fromFlat(r) {
         const arg = r.readExpr()
         return new UplcDelay(arg)
+    }
+
+    /**
+     * @type {UplcTerm[]}
+     */
+    get children() {
+        return [this.arg]
     }
 
     /**

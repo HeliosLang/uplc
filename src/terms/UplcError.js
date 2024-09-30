@@ -3,6 +3,7 @@ import { FlatWriter } from "../flat/index.js"
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
+ * @typedef {import("../cek/index.js").CekContext} CekContext
  * @typedef {import("../cek/index.js").CekStack} CekStack
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
  * @typedef {import("../cek/index.js").CekValue} CekValue
@@ -17,27 +18,24 @@ export const UPLC_ERROR_TAG = 6
  */
 export class UplcError {
     /**
-     * Only used for debugging and doesn't actually appear in the final program
-     * TODO: should we move this to EUplc?
-     * @readonly
-     * @type {string}
-     */
-    message
-
-    /**
      * Optional source-map site
-     * @readonly
+     * Mutable so that SourceMap application is easier
      * @type {Option<Site>}
      */
     site
 
     /**
-     * @param {string} message
      * @param {Option<Site>} site
      */
-    constructor(message = "", site = None) {
-        this.message = message
+    constructor(site = None) {
         this.site = site
+    }
+
+    /**
+     * @type {UplcTerm[]}
+     */
+    get children() {
+        return []
     }
 
     /**
@@ -56,13 +54,15 @@ export class UplcError {
 
     /**
      * @param {CekStack} stack
+     * @param {CekContext} ctx
      * @returns {CekStateChange}
      */
-    compute(stack) {
+    compute(stack, ctx) {
         return {
             state: {
                 error: {
-                    message: this.message
+                    message: ctx.popLastMessage() ?? "",
+                    stack: stack
                 }
             }
         }

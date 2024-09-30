@@ -1,6 +1,8 @@
 /**
+ * @typedef {import("@helios-lang/compiler-utils").Site} Site
  * @typedef {import("./CekContext.js").CekContext} CekContext
  * @typedef {import("./types.js").CekFrame} CekFrame
+ * @typedef {import("./types.js").CekStack} CekStack
  * @typedef {import("./types.js").CekStateChange} CekStateChange
  * @typedef {import("./types.js").CekValue} CekValue
  */
@@ -10,12 +12,32 @@
  */
 export class BuiltinCallFrame {
     /**
+     * @readonly
+     * @type {number}
+     */
+    id
+
+    /**
+     * @readonly
+     * @type {CekValue[]}
+     */
+    args
+
+    /**
+     * @readonly
+     * @type {CekStack}
+     */
+    stack
+
+    /**
      * @param {number} id
      * @param {CekValue[]} args
+     * @param {CekStack} stack
      */
-    constructor(id, args) {
+    constructor(id, args, stack) {
         this.id = id
         this.args = args
+        this.stack = stack
     }
 
     /**
@@ -30,7 +52,8 @@ export class BuiltinCallFrame {
             return {
                 state: {
                     error: {
-                        message: `builtin ${this.id} not found`
+                        message: `builtin ${this.id} not found`,
+                        stack: this.stack
                     }
                 }
             }
@@ -61,16 +84,27 @@ export class BuiltinCallFrame {
             )
 
             try {
+                /**
+                 * @type {Option<Site>}
+                 */
+                const lastCallSite =
+                    this.stack.callSites[this.stack.callSites.length - 1]
+
                 return {
                     state: {
-                        reducing: b.call(args, ctx)
+                        reducing: b.call(args, {
+                            print: (message) => {
+                                ctx.print(message, lastCallSite)
+                            }
+                        })
                     }
                 }
             } catch (e) {
                 return {
                     state: {
                         error: {
-                            message: e.message
+                            message: e.message,
+                            stack: this.stack
                         }
                     }
                 }

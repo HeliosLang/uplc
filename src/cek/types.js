@@ -33,6 +33,7 @@
  * } | {
  *   error: {
  *     message: string
+ *     stack: CekStack
  *   }
  * }} CekState
  */

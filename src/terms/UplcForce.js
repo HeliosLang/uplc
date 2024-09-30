@@ -28,7 +28,7 @@ export class UplcForce {
 
     /**
      * Optional source-map site
-     * @readonly
+     * Mutable so that SourceMap application is easier
      * @type {Option<Site>}
      */
     site
@@ -49,6 +49,13 @@ export class UplcForce {
     static fromFlat(r) {
         const arg = r.readExpr()
         return new UplcForce(arg)
+    }
+
+    /**
+     * @type {UplcTerm[]}
+     */
+    get children() {
+        return [this.arg]
     }
 
     /**

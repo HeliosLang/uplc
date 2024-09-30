@@ -63,7 +63,8 @@ export class PreCallFrame {
                 return {
                     state: {
                         error: {
-                            message: `builtin ${value.builtin.id} not found`
+                            message: `builtin ${value.builtin.id} not found`,
+                            stack: this.stack
                         }
                     }
                 }
@@ -71,7 +72,8 @@ export class PreCallFrame {
                 return {
                     state: {
                         error: {
-                            message: `insufficient forces applied to ${b.name}, ${value.builtin.forceCount} < ${b.forceCount}`
+                            message: `insufficient forces applied to ${b.name}, ${value.builtin.forceCount} < ${b.forceCount}`,
+                            stack: this.stack
                         }
                     }
                 }
@@ -85,7 +87,8 @@ export class PreCallFrame {
                     },
                     frame: new BuiltinCallFrame(
                         value.builtin.id,
-                        value.builtin.args
+                        value.builtin.args,
+                        this.stack
                     )
                 }
             }
@@ -93,7 +96,8 @@ export class PreCallFrame {
             return {
                 state: {
                     error: {
-                        message: `can only call lambda or builtin terms`
+                        message: `can only call lambda or builtin terms`,
+                        stack: this.stack
                     }
                 }
             }

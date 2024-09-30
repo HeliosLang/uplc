@@ -1,17 +1,19 @@
-import { expectSome } from "@helios-lang/type-utils"
+import { None, expectSome } from "@helios-lang/type-utils"
 
 import { CostTracker, CostModel } from "../costmodel/index.js"
 
 /**
+ * @typedef {import("@helios-lang/compiler-utils").Site} Site
  * @typedef {import("../builtins/index.js").Builtin} Builtin
  * @typedef {import("../costmodel/index.js").Cost} Cost
+ * @typedef {import("../logging/index.js").UplcLoggingI} UplcLoggingI
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./CekContext.js").CekContext} CekContext
  * @typedef {import("./CekResult.js").CekResult} CekResult
  * @typedef {import("./types.js").CekFrame} CekFrame
+ * @typedef {import("./types.js").CekStack} CekStack
  * @typedef {import("./types.js").CekState} CekState
  * @typedef {import("./types.js").CekTerm} CekTerm
- * @typedef {import("../logging/UplcLoggingI.js").UplcLoggingI} UplcLoggingI
  */
 
 /**
@@ -45,7 +47,7 @@ export class CekMachine {
 
     /**
      * @private
-     * @type {String[]}     *
+     * @type {{message: string, site?: Site}[]}     *
      */
     logs
 
@@ -81,6 +83,13 @@ export class CekMachine {
     }
 
     /**
+     * @returns {string | undefined}
+     */
+    popLastMessage() {
+        return this.logs.pop()?.message
+    }
+
+    /**
      * @param {number} id
      * @returns {Builtin | undefined}
      */
@@ -94,7 +103,6 @@ export class CekMachine {
     eval() {
         this.cost.incrStartupCost()
 
-        let i = 0
         while (true) {
             if ("computing" in this.state) {
                 const { term, stack } = this.state.computing
@@ -146,21 +154,22 @@ export class CekMachine {
                     }
                 }
             } else if ("error" in this.state) {
-                return this.returnError(this.state.error.message)
+                return this.returnError(this.state.error)
             }
         }
     }
 
     /**
      * @private
-     * @param {string} msg
+     * @param {{message: string, stack: CekStack}} err
      * @returns {CekResult}
      */
-    returnError(msg) {
+    returnError(err) {
         return {
             result: {
                 left: {
-                    error: msg
+                    error: err.message,
+                    callSites: err.stack.callSites
                 }
             },
             cost: {
@@ -193,9 +202,10 @@ export class CekMachine {
 
     /**
      * @param {string} message
+     * @param {Option<Site>} site
      */
-    print(message) {
-        this.logs.push(message)
-        this.diagnostics?.logPrint(message)
+    print(message, site = None) {
+        this.logs.push({ message, site: site ?? undefined })
+        this.diagnostics?.logPrint(message, site)
     }
 }
