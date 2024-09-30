@@ -1,10 +1,13 @@
 import { decodeInt, decodeList, encodeInt, encodeList } from "@helios-lang/cbor"
 import { bytesToHex } from "@helios-lang/codec-utils"
 import { TokenSite } from "@helios-lang/compiler-utils"
-import { isStringArray } from "@helios-lang/type-utils"
-import { isString } from "@helios-lang/type-utils"
-import { isObject } from "@helios-lang/type-utils"
-import { JSON, expect, expectJsonSafe } from "@helios-lang/type-utils"
+import {
+    expect,
+    isObject,
+    isString,
+    isStringArray,
+    JSON
+} from "@helios-lang/type-utils"
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
@@ -15,17 +18,20 @@ import { JSON, expect, expectJsonSafe } from "@helios-lang/type-utils"
  * @typedef {{
  *   sourceNames: string[]
  *   indices: string // cbor encoded
- * }} SourceMapJsonSafe
+ * }} UplcSourceMapJsonSafe
  */
 
 /**
  * @typedef {{
  *   sourceNames: string[]
  *   indices: number[]
- * }} SourceMapProps
+ * }} UplcSourceMapProps
  */
 
-export class SourceMap {
+/**
+ * Named "UplcSourceMap" instead of "SourceMap" in order to avoid confusion with the Helios -> IR SourceMap type
+ */
+export class UplcSourceMap {
     /**
      * Eg. file names or helios header names
      * @readonly
@@ -45,7 +51,7 @@ export class SourceMap {
     indices
 
     /**
-     * @param {SourceMapProps} props
+     * @param {UplcSourceMapProps} props
      */
     constructor({ sourceNames, indices }) {
         this.sourceNames = sourceNames
@@ -54,7 +60,7 @@ export class SourceMap {
 
     /**
      * @param {string | JsonSafe} raw
-     * @returns {SourceMap}
+     * @returns {UplcSourceMap}
      */
     static fromJson(raw) {
         const rawObj = typeof raw == "string" ? JSON.parse(raw) : raw
@@ -63,7 +69,7 @@ export class SourceMap {
             isObject({ sourceNames: isStringArray, indices: isString })
         )(rawObj)
 
-        return new SourceMap({
+        return new UplcSourceMap({
             sourceNames: obj.sourceNames,
             indices: decodeList(obj.indices, decodeInt).map((i) => Number(i))
         })
@@ -71,7 +77,7 @@ export class SourceMap {
 
     /**
      * @param {UplcTerm} root
-     * @returns {SourceMap}
+     * @returns {UplcSourceMap}
      */
     static fromUplcTerm(root) {
         // root term index 0
@@ -110,7 +116,7 @@ export class SourceMap {
             i++
         })
 
-        return new SourceMap({
+        return new UplcSourceMap({
             sourceNames,
             indices: indices.flat()
         })
@@ -145,7 +151,7 @@ export class SourceMap {
     }
 
     /**
-     * @returns {SourceMapJsonSafe}
+     * @returns {UplcSourceMapJsonSafe}
      */
     toJsonSafe() {
         return {
