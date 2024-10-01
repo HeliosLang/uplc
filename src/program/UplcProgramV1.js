@@ -15,6 +15,7 @@ import {
     hashProgram
 } from "./UplcProgram.js"
 import { parseProgram } from "./parse.js"
+import { UplcSourceMap } from "./UplcSourceMap.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
@@ -23,6 +24,7 @@ import { parseProgram } from "./parse.js"
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcProgram.js").UplcProgramV1I} UplcProgramV1I
+ * @typedef {import("./UplcSourceMap.js").UplcSourceMapJsonSafe} UplcSourceMapJsonSafe
  */
 
 /**
@@ -30,6 +32,7 @@ import { parseProgram } from "./parse.js"
  * @typedef {{
  *   alt?: Option<UplcProgramV1I>
  *   ir?: Option<(() => string) | string>
+ *   sourceMap?: UplcSourceMapJsonSafe
  * }} UplcProgramV1Props
  */
 
@@ -80,6 +83,10 @@ export class UplcProgramV1 {
         this.alt = props.alt
         this._ir = props.ir
         this._hash = None
+
+        if (props.sourceMap) {
+            UplcSourceMap.fromJson(props.sourceMap).apply(this.root)
+        }
     }
 
     /**
