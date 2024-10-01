@@ -101,7 +101,7 @@ export class UplcSourceMap {
              */
             const site = term.site
 
-            if (site) {
+            if (site && !TokenSite.isDummy(site)) {
                 const sn = site.file
                 let j = sourceNames.indexOf(sn)
 
