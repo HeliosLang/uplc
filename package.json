@@ -1,6 +1,6 @@
 {
     "name": "@helios-lang/uplc",
-    "version": "0.3.12",
+    "version": "0.3.13",
     "description": "Cardano Untyped Plutus Core utility library",
     "main": "src/index.js",
     "types": "types/index.d.ts",
