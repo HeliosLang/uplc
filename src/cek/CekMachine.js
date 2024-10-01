@@ -1,5 +1,4 @@
 import { None, expectSome } from "@helios-lang/type-utils"
-
 import { CostTracker, CostModel } from "../costmodel/index.js"
 
 /**
@@ -9,11 +8,11 @@ import { CostTracker, CostModel } from "../costmodel/index.js"
  * @typedef {import("../logging/index.js").UplcLoggingI} UplcLoggingI
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./CekContext.js").CekContext} CekContext
+ * @typedef {import("./CekFrame.js").CekFrame} CekFrame
  * @typedef {import("./CekResult.js").CekResult} CekResult
- * @typedef {import("./types.js").CekFrame} CekFrame
- * @typedef {import("./types.js").CekStack} CekStack
- * @typedef {import("./types.js").CekState} CekState
- * @typedef {import("./types.js").CekTerm} CekTerm
+ * @typedef {import("./CekStack.js").CekStack} CekStack
+ * @typedef {import("./CekState.js").CekState} CekState
+ * @typedef {import("./CekTerm.js").CekTerm} CekTerm
  */
 
 /**

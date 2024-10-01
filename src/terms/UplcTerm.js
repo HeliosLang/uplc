@@ -1,7 +1,7 @@
 import { FlatWriter } from "../flat/index.js"
 
 /**
- * @typedef {import("../cek/types.js").CekTerm} CekTerm
+ * @typedef {import("../cek/CekTerm.js").CekTerm} CekTerm
  */
 
 /**

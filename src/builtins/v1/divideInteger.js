@@ -3,7 +3,7 @@ import { UplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../../cek/types.js").CekValue} CekValue
+ * @typedef {import("../../cek/CekValue.js").CekValue} CekValue
  * @typedef {import("../Builtin.js").Builtin} Builtin
  * @typedef {import("../BuiltinContext.js").BuiltinContext} BuiltinContext
  */

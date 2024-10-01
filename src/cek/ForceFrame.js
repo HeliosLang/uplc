@@ -1,9 +1,12 @@
+import { mixStacks, pushStackCallSite } from "./CekStack.js"
+
 /**
+ * @typedef {import("@helios-lang/compiler-utils").Site} Site
  * @typedef {import("./CekContext.js").CekContext} CekContext
- * @typedef {import("./types.js").CekFrame} CekFrame
- * @typedef {import("./types.js").CekStack} CekStack
- * @typedef {import("./types.js").CekValue} CekValue
- * @typedef {import("./types.js").CekStateChange} CekStateChange
+ * @typedef {import("./CekFrame.js").CekFrame} CekFrame
+ * @typedef {import("./CekStack.js").CekStack} CekStack
+ * @typedef {import("./CekValue.js").CekValue} CekValue
+ * @typedef {import("./CekState.js").CekStateChange} CekStateChange
  */
 
 /**
@@ -11,17 +14,26 @@
  */
 export class ForceFrame {
     /**
-     * Used for the callsites
+     * Used for the parent callsites
      * @readonly
      * @type {CekStack}
      */
     stack
 
     /**
-     * @param {CekStack} stack
+     * @private
+     * @readonly
+     * @type {Option<Site>}
      */
-    constructor(stack) {
+    callSite
+
+    /**
+     * @param {CekStack} stack
+     * @param {Option<Site>} callSite
+     */
+    constructor(stack, callSite) {
         this.stack = stack
+        this.callSite = callSite
     }
 
     /**
@@ -37,10 +49,10 @@ export class ForceFrame {
                 state: {
                     computing: {
                         term: delay.term,
-                        stack: {
-                            values: delay.stack.values,
-                            callSites: this.stack.callSites
-                        }
+                        stack: mixStacks(
+                            delay.stack,
+                            pushStackCallSite(this.stack, this.callSite)
+                        )
                     }
                 }
             }

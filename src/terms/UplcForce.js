@@ -89,10 +89,7 @@ export class UplcForce {
                     stack: stack
                 }
             },
-            frame: new ForceFrame({
-                values: stack.values,
-                callSites: stack.callSites.concat(this.site ? [this.site] : [])
-            })
+            frame: new ForceFrame(stack, this.site)
         }
     }
 }

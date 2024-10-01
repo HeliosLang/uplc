@@ -1,10 +1,12 @@
+import { pushStackCallSite } from "./CekStack.js"
+
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
  * @typedef {import("./CekContext.js").CekContext} CekContext
- * @typedef {import("./types.js").CekFrame} CekFrame
- * @typedef {import("./types.js").CekStack} CekStack
- * @typedef {import("./types.js").CekStateChange} CekStateChange
- * @typedef {import("./types.js").CekValue} CekValue
+ * @typedef {import("./CekFrame.js").CekFrame} CekFrame
+ * @typedef {import("./CekStack.js").CekStack} CekStack
+ * @typedef {import("./CekState.js").CekStateChange} CekStateChange
+ * @typedef {import("./CekValue.js").CekValue} CekValue
  */
 
 /**
@@ -30,14 +32,23 @@ export class BuiltinCallFrame {
     stack
 
     /**
+     * @private
+     * @readonly
+     * @type {Option<Site>}
+     */
+    callSite
+
+    /**
      * @param {number} id
      * @param {CekValue[]} args
      * @param {CekStack} stack
+     * @param {Option<Site>} callSite
      */
-    constructor(id, args, stack) {
+    constructor(id, args, stack, callSite) {
         this.id = id
         this.args = args
         this.stack = stack
+        this.callSite = callSite
     }
 
     /**
@@ -84,17 +95,11 @@ export class BuiltinCallFrame {
             )
 
             try {
-                /**
-                 * @type {Option<Site>}
-                 */
-                const lastCallSite =
-                    this.stack.callSites[this.stack.callSites.length - 1]
-
                 return {
                     state: {
                         reducing: b.call(args, {
                             print: (message) => {
-                                ctx.print(message, lastCallSite)
+                                ctx.print(message, this.callSite)
                             }
                         })
                     }
@@ -104,7 +109,7 @@ export class BuiltinCallFrame {
                     state: {
                         error: {
                             message: e.message,
-                            stack: this.stack
+                            stack: pushStackCallSite(this.stack, this.callSite)
                         }
                     }
                 }

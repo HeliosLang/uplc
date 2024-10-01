@@ -1,5 +1,5 @@
 /**
- * @typedef {import("../cek/types.js").CekValue} CekValue
+ * @typedef {import("../cek/CekValue.js").CekValue} CekValue
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  */
 

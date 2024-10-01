@@ -1,10 +1,13 @@
+import { pushStackValueAndCallSite } from "./CekStack.js"
+
 /**
+ * @typedef {import("@helios-lang/compiler-utils").Site} Site
  * @typedef {import("./CekContext.js").CekContext} CekContext
- * @typedef {import("./types.js").CekFrame} CekFrame
- * @typedef {import("./types.js").CekStack} CekStack
- * @typedef {import("./types.js").CekStateChange} CekStateChange
- * @typedef {import("./types.js").CekTerm} CekTerm
- * @typedef {import("./types.js").CekValue} CekValue
+ * @typedef {import("./CekFrame.js").CekFrame} CekFrame
+ * @typedef {import("./CekStack.js").CekStack} CekStack
+ * @typedef {import("./CekState.js").CekStateChange} CekStateChange
+ * @typedef {import("./CekTerm.js").CekTerm} CekTerm
+ * @typedef {import("./CekValue.js").CekValue} CekValue
  */
 
 /**
@@ -24,12 +27,21 @@ export class LambdaCallFrame {
     stack
 
     /**
+     * @private
+     * @readonly
+     * @type {Option<Site>}
+     */
+    callSite
+
+    /**
      * @param {CekTerm} term - function body
      * @param {CekStack} stack
+     * @param {Option<Site>} callSite
      */
-    constructor(term, stack) {
+    constructor(term, stack, callSite) {
         this.term = term
         this.stack = stack
+        this.callSite = callSite
     }
 
     /**
@@ -41,10 +53,11 @@ export class LambdaCallFrame {
             state: {
                 computing: {
                     term: this.term,
-                    stack: {
-                        values: this.stack.values.concat([value]),
-                        callSites: this.stack.callSites
-                    }
+                    stack: pushStackValueAndCallSite(
+                        this.stack,
+                        value,
+                        this.callSite
+                    )
                 }
             }
         }

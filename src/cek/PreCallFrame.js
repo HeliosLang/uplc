@@ -1,13 +1,15 @@
 import { BuiltinCallFrame } from "./BuiltinCallFrame.js"
 import { LambdaCallFrame } from "./LambdaCallFrame.js"
+import { mixStacks } from "./CekStack.js"
 
 /**
+ * @typedef {import("@helios-lang/compiler-utils").Site} Site
  * @typedef {import("./CekContext.js").CekContext} CekContext
- * @typedef {import("./types.js").CekFrame} CekFrame
- * @typedef {import("./types.js").CekStack} CekStack
- * @typedef {import("./types.js").CekStateChange} CekStateChange
- * @typedef {import("./types.js").CekTerm} CekTerm
- * @typedef {import("./types.js").CekValue} CekValue
+ * @typedef {import("./CekFrame.js").CekFrame} CekFrame
+ * @typedef {import("./CekStack.js").CekStack} CekStack
+ * @typedef {import("./CekState.js").CekStateChange} CekStateChange
+ * @typedef {import("./CekTerm.js").CekTerm} CekTerm
+ * @typedef {import("./CekValue.js").CekValue} CekValue
  */
 
 /**
@@ -29,12 +31,21 @@ export class PreCallFrame {
     stack
 
     /**
+     * @private
+     * @readonly
+     * @type {Option<Site>}
+     */
+    callSite
+
+    /**
      * @param {CekTerm} arg
      * @param {CekStack} stack
+     * @param {Option<Site>} callSite
      */
-    constructor(arg, stack) {
+    constructor(arg, stack, callSite) {
         this.arg = arg
         this.stack = stack
+        this.callSite = callSite
     }
 
     /**
@@ -53,7 +64,8 @@ export class PreCallFrame {
                 },
                 frame: new LambdaCallFrame(
                     value.lambda.term,
-                    value.lambda.stack
+                    mixStacks(value.lambda.stack, this.stack),
+                    this.callSite
                 )
             }
         } else if ("builtin" in value) {
@@ -88,7 +100,8 @@ export class PreCallFrame {
                     frame: new BuiltinCallFrame(
                         value.builtin.id,
                         value.builtin.args,
-                        this.stack
+                        this.stack,
+                        this.callSite
                     )
                 }
             }

@@ -1,6 +1,6 @@
 import { None } from "@helios-lang/type-utils"
-import { FlatReader, FlatWriter } from "../flat/index.js"
 import { PreCallFrame } from "../cek/index.js"
+import { FlatReader, FlatWriter } from "../flat/index.js"
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
@@ -115,10 +115,7 @@ export class UplcCall {
                     stack: stack
                 }
             },
-            frame: new PreCallFrame(this.arg, {
-                values: stack.values,
-                callSites: stack.callSites.concat(this.site ? [this.site] : [])
-            })
+            frame: new PreCallFrame(this.arg, stack, this.site)
         }
     }
 }
