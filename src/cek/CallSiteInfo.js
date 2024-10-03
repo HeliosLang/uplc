@@ -1,5 +1,3 @@
-export {}
-
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
  * @typedef {import("./CekValue.js").CekValue} CekValue
@@ -13,3 +11,19 @@ export {}
  *   argument?: CekValue
  * }} CallSiteInfo
  */
+
+/**
+ * @param {Option<CallSiteInfo>} info
+ * @returns {boolean}
+ */
+export function isEmptyCallSiteInfo(info) {
+    return !info || !info.site || !info.functionName || !info.argument
+}
+
+/**
+ * @param {Option<CallSiteInfo>} info
+ * @returns {info is CallSiteInfo}
+ */
+export function isNonEmptyCallSiteInfo(info) {
+    return !isEmptyCallSiteInfo(info)
+}

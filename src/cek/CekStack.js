@@ -1,3 +1,5 @@
+import { isNonEmptyCallSiteInfo } from "./CallSiteInfo.js"
+
 /**
  * @typedef {import("./CallSiteInfo.js").CallSiteInfo} CallSiteInfo
  * @typedef {import("./CekValue.js").CekValue} CekValue - circular import, but is allowed in JSDocs
@@ -16,7 +18,7 @@
  * @returns {CekStack}
  */
 export function pushStackCallSite(stack, callSite) {
-    if (callSite) {
+    if (isNonEmptyCallSiteInfo(callSite)) {
         return {
             values: stack.values,
             callSites: stack.callSites.concat([callSite])
@@ -34,7 +36,9 @@ export function pushStackCallSite(stack, callSite) {
 export function pushStackCallSites(stack, ...callSites) {
     return {
         values: stack.values,
-        callSites: stack.callSites.concat(callSites)
+        callSites: stack.callSites.concat(
+            callSites.filter(isNonEmptyCallSiteInfo)
+        )
     }
 }
 
@@ -59,7 +63,9 @@ export function pushStackValue(stack, value) {
 export function pushStackValueAndCallSite(stack, value, callSite) {
     return {
         values: stack.values.concat([value]),
-        callSites: stack.callSites.concat(callSite ? [callSite] : [])
+        callSites: stack.callSites.concat(
+            isNonEmptyCallSiteInfo(callSite) ? [callSite] : []
+        )
     }
 }
 

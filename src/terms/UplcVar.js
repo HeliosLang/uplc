@@ -25,6 +25,7 @@ export class UplcVar {
     index
 
     /**
+     * Only used for debugging
      * @readonly
      * @type {Option<string>}
      */
