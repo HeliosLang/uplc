@@ -1,3 +1,4 @@
+export { newUplcRuntimeError } from "./CallSiteInfo.js"
 export { CekMachine } from "./CekMachine.js"
 export { ForceFrame } from "./ForceFrame.js"
 export { PreCallFrame } from "./PreCallFrame.js"

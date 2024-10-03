@@ -1,4 +1,5 @@
 export * from "./builtins/index.js"
+export { newUplcRuntimeError } from "./cek/index.js"
 export * from "./costmodel/index.js"
 export * from "./data/index.js"
 export * from "./program/index.js"
