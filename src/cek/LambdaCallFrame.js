@@ -2,12 +2,22 @@ import { pushStackValueAndCallSite } from "./CekStack.js"
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
+ * @typedef {import("./CallSiteInfo.js").CallSiteInfo} CallSiteInfo
  * @typedef {import("./CekContext.js").CekContext} CekContext
  * @typedef {import("./CekFrame.js").CekFrame} CekFrame
  * @typedef {import("./CekStack.js").CekStack} CekStack
  * @typedef {import("./CekState.js").CekStateChange} CekStateChange
  * @typedef {import("./CekTerm.js").CekTerm} CekTerm
  * @typedef {import("./CekValue.js").CekValue} CekValue
+ */
+
+/**
+ * Information which is helpful when debugging
+ * @typedef {{
+ *   callSite?: Option<Site>
+ *   name?: Option<string>
+ *   argName?: Option<string>
+ * }} LambdaCallFrameInfo
  */
 
 /**
@@ -29,26 +39,42 @@ export class LambdaCallFrame {
     /**
      * @private
      * @readonly
-     * @type {Option<Site>}
+     * @type {LambdaCallFrameInfo}
      */
-    callSite
+    info
 
     /**
      * @param {CekTerm} term - function body
      * @param {CekStack} stack
-     * @param {Option<Site>} callSite
+     * @param {LambdaCallFrameInfo} info
      */
-    constructor(term, stack, callSite) {
+    constructor(term, stack, info = {}) {
         this.term = term
         this.stack = stack
-        this.callSite = callSite
+        this.info = info
     }
 
     /**
-     * @param {CekValue} value
+     * @param {CekValue} value - arg value
      * @returns {CekStateChange}
      */
     reduce(value) {
+        if (this.info.argName) {
+            value = {
+                ...value,
+                name: this.info.argName
+            }
+        }
+
+        /**
+         * @type {Option<CallSiteInfo>}
+         */
+        const callSite = {
+            site: this.info.callSite ?? undefined,
+            functionName: this.info.name ?? undefined,
+            argument: value
+        }
+
         return {
             state: {
                 computing: {
@@ -56,7 +82,7 @@ export class LambdaCallFrame {
                     stack: pushStackValueAndCallSite(
                         this.stack,
                         value,
-                        this.callSite
+                        callSite
                     )
                 }
             }

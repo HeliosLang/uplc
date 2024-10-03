@@ -1,5 +1,5 @@
-import { None, expectSome } from "@helios-lang/type-utils"
-import { builtinsV3, builtinsV3Map } from "../builtins/index.js"
+import { None } from "@helios-lang/type-utils"
+import { builtinsV3 } from "../builtins/index.js"
 import { FlatReader, FlatWriter } from "../flat/index.js"
 import {
     Bls12_381_G1_element,
@@ -19,13 +19,14 @@ import { UplcBuiltin } from "./UplcBuiltin.js"
  * @typedef {import("../cek/index.js").CekValue} CekValue
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
+ * @typedef {import("./UplcTerm.js").UplcConstI} UplcConstI
  */
 
 export const UPLC_CONST_TAG = 4
 
 /**
  * Plutus-core const term (i.e. a literal in conventional sense)
- * @implements {UplcTerm}
+ * @implements {UplcConstI}
  */
 export class UplcConst {
     /**
@@ -71,6 +72,13 @@ export class UplcConst {
     }
 
     /**
+     * @type {"const"}
+     */
+    get kind() {
+        return "const"
+    }
+
+    /**
      * @type {number}
      */
     get flatSize() {
@@ -84,21 +92,21 @@ export class UplcConst {
         const v = this.value
 
         if (v.kind == "bls12_381_G1_element") {
+            const builtinName = "bls12_381_G1_uncompress"
             return new UplcCall(
                 new UplcBuiltin(
-                    builtinsV3.findIndex(
-                        (bi) => bi.name == "bls12_381_G1_uncompress"
-                    )
+                    builtinsV3.findIndex((bi) => bi.name == builtinName),
+                    builtinName
                 ),
                 new UplcConst(new UplcByteArray(v.compress())),
                 this.site
             )
         } else if (v.kind == "bls12_381_G2_element") {
+            const builtinName = "bls12_381_G2_uncompress"
             return new UplcCall(
                 new UplcBuiltin(
-                    builtinsV3.findIndex(
-                        (bi) => bi.name == "bls12_381_G2_uncompress"
-                    )
+                    builtinsV3.findIndex((bi) => bi.name == builtinName),
+                    builtinName
                 ),
                 new UplcConst(new UplcByteArray(v.compress())),
                 this.site
@@ -109,10 +117,21 @@ export class UplcConst {
     }
 
     /**
-     * @returns {string}
+     *
+     * @param {CekStack} stack
+     * @param {CekContext} ctx
+     * @returns {CekStateChange}
      */
-    toString() {
-        return `(con ${this.value.type.toString()} ${this.value.toString()})`
+    compute(stack, ctx) {
+        ctx.cost.incrConstCost()
+
+        return {
+            state: {
+                reducing: {
+                    value: this.value
+                }
+            }
+        }
     }
 
     /**
@@ -138,20 +157,9 @@ export class UplcConst {
     }
 
     /**
-     *
-     * @param {CekStack} stack
-     * @param {CekContext} ctx
-     * @returns {CekStateChange}
+     * @returns {string}
      */
-    compute(stack, ctx) {
-        ctx.cost.incrConstCost()
-
-        return {
-            state: {
-                reducing: {
-                    value: this.value
-                }
-            }
-        }
+    toString() {
+        return `(con ${this.value.type.toString()} ${this.value.toString()})`
     }
 }

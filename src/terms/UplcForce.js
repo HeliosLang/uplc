@@ -10,6 +10,7 @@ import { ForceFrame } from "../cek/index.js"
  * @typedef {import("../cek/index.js").CekValue} CekValue
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
+ * @typedef {import("./UplcTerm.js").UplcForceI} UplcForceI
  */
 
 export const UPLC_FORCE_TAG = 5
@@ -17,7 +18,7 @@ export const UPLC_FORCE_TAG = 5
 /**
  * Plutus-core force term
  * @template {UplcTerm} [TArg=UplcTerm]
- * @implements {UplcTerm}
+ * @implements {UplcForceI}
  */
 export class UplcForce {
     /**
@@ -59,18 +60,10 @@ export class UplcForce {
     }
 
     /**
-     * @returns {string}
+     * @type {"force"}
      */
-    toString() {
-        return `(force ${this.arg.toString()})`
-    }
-
-    /**
-     * @param {FlatWriter} w
-     */
-    toFlat(w) {
-        w.writeTermTag(UPLC_FORCE_TAG)
-        this.arg.toFlat(w)
+    get kind() {
+        return "force"
     }
 
     /**
@@ -91,5 +84,20 @@ export class UplcForce {
             },
             frame: new ForceFrame(stack, this.site)
         }
+    }
+
+    /**
+     * @param {FlatWriter} w
+     */
+    toFlat(w) {
+        w.writeTermTag(UPLC_FORCE_TAG)
+        this.arg.toFlat(w)
+    }
+
+    /**
+     * @returns {string}
+     */
+    toString() {
+        return `(force ${this.arg.toString()})`
     }
 }

@@ -10,6 +10,7 @@ import { FlatReader, FlatWriter } from "../flat/index.js"
  * @typedef {import("../cek/index.js").CekValue} CekValue
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
+ * @typedef {import("./UplcTerm.js").UplcCallI} UplcCallI
  */
 
 export const UPLC_CALL_TAG = 3
@@ -18,7 +19,7 @@ export const UPLC_CALL_TAG = 3
  * Plutus-core function application term (i.e. function call)
  * @template {UplcTerm} [TFn=UplcTerm]
  * @template {UplcTerm} [TArg=UplcTerm]
- * @implements {UplcTerm}
+ * @implements {UplcCallI}
  */
 export class UplcCall {
     /**
@@ -85,19 +86,10 @@ export class UplcCall {
     }
 
     /**
-     * @returns {string}
+     * @type {"call"}
      */
-    toString() {
-        return `[${this.fn.toString()} ${this.arg.toString()}]`
-    }
-
-    /**
-     * @param {FlatWriter} w
-     */
-    toFlat(w) {
-        w.writeTermTag(UPLC_CALL_TAG)
-        this.fn.toFlat(w)
-        this.arg.toFlat(w)
+    get kind() {
+        return "call"
     }
 
     /**
@@ -117,5 +109,21 @@ export class UplcCall {
             },
             frame: new PreCallFrame(this.arg, stack, this.site)
         }
+    }
+
+    /**
+     * @param {FlatWriter} w
+     */
+    toFlat(w) {
+        w.writeTermTag(UPLC_CALL_TAG)
+        this.fn.toFlat(w)
+        this.arg.toFlat(w)
+    }
+
+    /**
+     * @returns {string}
+     */
+    toString() {
+        return `[${this.fn.toString()} ${this.arg.toString()}]`
     }
 }

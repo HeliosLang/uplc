@@ -6,7 +6,7 @@ import { UplcReader } from "./UplcReader.js"
 const raw = "47460b1621480581"
 describe(UplcReader.name, () => {
     it("deserializes #47460b1621480581 into version 11.22.33", () => {
-        const r = new UplcReader(decodeBytes(decodeBytes(raw)))
+        const r = new UplcReader(decodeBytes(decodeBytes(raw)), [])
 
         deepEqual(
             [r.readInt(), r.readInt(), r.readInt(), r.readExpr().toString()],

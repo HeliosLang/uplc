@@ -231,10 +231,12 @@ function parseBuiltin(r, site, ctx) {
             r.errors.syntax(site, `unrecognized builtin ${m.value}`)
             return None
         } else {
-            return new UplcBuiltin(i, site)
+            return new UplcBuiltin(i, name, site)
         }
     } else if ((m = r.matches(intlit()))) {
-        return new UplcBuiltin(m.value, site)
+        const i = m.value
+        const name = expectSome(ctx.builtins[Number(i)]).name
+        return new UplcBuiltin(m.value, name, site)
     } else {
         r.endMatch()
         return None

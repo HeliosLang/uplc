@@ -51,7 +51,10 @@ export class ForceFrame {
                         term: delay.term,
                         stack: mixStacks(
                             delay.stack,
-                            pushStackCallSite(this.stack, this.callSite)
+                            pushStackCallSite(this.stack, {
+                                site: this.callSite ?? undefined,
+                                functionName: value.name
+                            })
                         )
                     }
                 }

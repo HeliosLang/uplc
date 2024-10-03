@@ -9,12 +9,13 @@ import { FlatReader, FlatWriter } from "../flat/index.js"
  * @typedef {import("../cek/index.js").CekValue} CekValue
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
+ * @typedef {import("./UplcTerm.js").UplcVarI} UplcVarI
  */
 
 export const UPLC_VAR_TAG = 0
 
 /**
- * @implements {UplcTerm}
+ * @implements {UplcVarI}
  */
 export class UplcVar {
     /**
@@ -61,6 +62,13 @@ export class UplcVar {
      */
     get children() {
         return []
+    }
+
+    /**
+     * @type {"var"}
+     */
+    get kind() {
+        return "var"
     }
 
     /**

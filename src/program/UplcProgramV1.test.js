@@ -55,7 +55,7 @@ describe(UplcProgramV1.name, () => {
     it("correct cost for add1 program", () => {
         const term = new UplcCall(
             new UplcLambda(
-                UplcCall.multi(new UplcBuiltin(0), [
+                UplcCall.multi(new UplcBuiltin(0, "addInteger"), [
                     UplcCall.multi(new UplcVar(1), [
                         new UplcConst(new UplcInt(12)),
                         new UplcConst(new UplcInt(32))
@@ -68,8 +68,8 @@ describe(UplcProgramV1.name, () => {
             ),
             new UplcLambda(
                 new UplcLambda(
-                    UplcCall.multi(new UplcBuiltin(0), [
-                        UplcCall.multi(new UplcBuiltin(0), [
+                    UplcCall.multi(new UplcBuiltin(0, "addInteger"), [
+                        UplcCall.multi(new UplcBuiltin(0, "addInteger"), [
                             new UplcVar(2),
                             new UplcVar(1)
                         ]),

@@ -49,7 +49,7 @@ export class PreCallFrame {
     }
 
     /**
-     * @param {CekValue} value
+     * @param {CekValue} value - fn value
      * @param {CekContext} ctx
      * @returns {CekStateChange}
      */
@@ -65,7 +65,11 @@ export class PreCallFrame {
                 frame: new LambdaCallFrame(
                     value.lambda.term,
                     mixStacks(value.lambda.stack, this.stack),
-                    this.callSite
+                    {
+                        callSite: this.callSite,
+                        name: value.name,
+                        argName: value.lambda.argName
+                    }
                 )
             }
         } else if ("builtin" in value) {
@@ -99,6 +103,7 @@ export class PreCallFrame {
                     },
                     frame: new BuiltinCallFrame(
                         value.builtin.id,
+                        value.builtin.name,
                         value.builtin.args,
                         this.stack,
                         this.callSite

@@ -3,6 +3,7 @@ import { dispatchValueReader } from "../values/index.js"
 import { decodeTerm } from "./decode.js"
 
 /**
+ * @typedef {import("../builtins/Builtin.js").Builtin} Builtin
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
  */
@@ -12,9 +13,19 @@ import { decodeTerm } from "./decode.js"
  */
 export class UplcReader extends FlatReader {
     /**
-     * @param {number[] | Uint8Array} bytes
+     * this.builtins is used to get the name of a builtin using only its id
+     * @readonly
+     * @type {Builtin[]}
      */
-    constructor(bytes) {
-        super(bytes, decodeTerm, dispatchValueReader)
+    builtins
+
+    /**
+     * @param {number[] | Uint8Array} bytes
+     * @param {Builtin[]} builtins
+     */
+    constructor(bytes, builtins) {
+        super(bytes, (r) => decodeTerm(r, builtins), dispatchValueReader)
+
+        this.builtins = builtins
     }
 }

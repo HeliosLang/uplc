@@ -9,6 +9,7 @@ import { FlatReader, FlatWriter } from "../flat/index.js"
  * @typedef {import("../cek/index.js").CekValue} CekValue
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
+ * @typedef {import("./UplcTerm.js").UplcLambdaI} UplcLambdaI
  */
 
 export const UPLC_LAMBDA_TAG = 2
@@ -16,7 +17,7 @@ export const UPLC_LAMBDA_TAG = 2
 /**
  * Plutus-core lambda term, a function that takes a signle argument
  * @template {UplcTerm} [TExpr=UplcTerm]
- * @implements {UplcTerm}
+ * @implements {UplcLambdaI}
  */
 export class UplcLambda {
     /**
@@ -26,7 +27,8 @@ export class UplcLambda {
     expr
 
     /**
-     * @readonly
+     * Mutable so that SourceMap application is easier
+     * @readwrite
      * @type {Option<string>}
      */
     argName
@@ -64,6 +66,13 @@ export class UplcLambda {
      */
     get children() {
         return [this.expr]
+    }
+
+    /**
+     * @type {"lambda"}
+     */
+    get kind() {
+        return "lambda"
     }
 
     /**

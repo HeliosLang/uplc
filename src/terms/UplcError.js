@@ -8,13 +8,14 @@ import { FlatWriter } from "../flat/index.js"
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
  * @typedef {import("../cek/index.js").CekValue} CekValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
+ * @typedef {import("./UplcTerm.js").UplcErrorI} UplcErrorI
  */
 
 export const UPLC_ERROR_TAG = 6
 
 /**
  * Plutus-core error term
- * @implements {UplcTerm}
+ * @implements {UplcErrorI}
  */
 export class UplcError {
     /**
@@ -39,17 +40,10 @@ export class UplcError {
     }
 
     /**
-     * @returns {string}
+     * @type {"error"}
      */
-    toString() {
-        return "(error)"
-    }
-
-    /**
-     * @param {FlatWriter} w
-     */
-    toFlat(w) {
-        w.writeTermTag(UPLC_ERROR_TAG)
+    get kind() {
+        return "error"
     }
 
     /**
@@ -66,5 +60,19 @@ export class UplcError {
                 }
             }
         }
+    }
+
+    /**
+     * @param {FlatWriter} w
+     */
+    toFlat(w) {
+        w.writeTermTag(UPLC_ERROR_TAG)
+    }
+
+    /**
+     * @returns {string}
+     */
+    toString() {
+        return "(error)"
     }
 }

@@ -1,18 +1,18 @@
 /**
- * @typedef {import("@helios-lang/compiler-utils").Site} Site
+ * @typedef {import("./CallSiteInfo.js").CallSiteInfo} CallSiteInfo
  * @typedef {import("./CekValue.js").CekValue} CekValue - circular import, but is allowed in JSDocs
  */
 
 /**
  * @typedef {{
  *   values: CekValue[]
- *   callSites: Site[]
+ *   callSites: CallSiteInfo[]
  * }} CekStack
  */
 
 /**
  * @param {CekStack} stack
- * @param {Option<Site>} callSite
+ * @param {Option<CallSiteInfo>} callSite
  * @returns {CekStack}
  */
 export function pushStackCallSite(stack, callSite) {
@@ -23,6 +23,18 @@ export function pushStackCallSite(stack, callSite) {
         }
     } else {
         return stack
+    }
+}
+
+/**
+ * @param {CekStack} stack
+ * @param {CallSiteInfo[]} callSites
+ * @returns {CekStack}
+ */
+export function pushStackCallSites(stack, ...callSites) {
+    return {
+        values: stack.values,
+        callSites: stack.callSites.concat(callSites)
     }
 }
 
@@ -41,7 +53,7 @@ export function pushStackValue(stack, value) {
 /**
  * @param {CekStack} stack
  * @param {CekValue} value
- * @param {Option<Site>} callSite
+ * @param {Option<CallSiteInfo>} callSite
  * @returns {CekStack}
  */
 export function pushStackValueAndCallSite(stack, value, callSite) {

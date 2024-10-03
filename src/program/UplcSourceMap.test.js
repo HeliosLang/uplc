@@ -1,8 +1,9 @@
-import { describe, it } from "node:test"
-import { UplcSourceMap, traverseTerms } from "./UplcSourceMap.js"
-import { UplcProgramV1 } from "./UplcProgramV1.js"
-import { TokenSite } from "@helios-lang/compiler-utils"
 import { deepEqual } from "node:assert"
+import { describe, it } from "node:test"
+import { TokenSite } from "@helios-lang/compiler-utils"
+import { traverse } from "../terms/index.js"
+import { UplcProgramV1 } from "./UplcProgramV1.js"
+import { UplcSourceMap } from "./UplcSourceMap.js"
 
 describe(UplcSourceMap.name, () => {
     it("roundtrip", () => {
@@ -11,11 +12,10 @@ describe(UplcSourceMap.name, () => {
 
         const program = UplcProgramV1.fromString(src)
 
-        let i = 0
-        traverseTerms(program.root, (term) => {
-            term.site = new TokenSite("main", i, i)
-
-            i++
+        traverse(program.root, {
+            anyTerm: (term, i) => {
+                term.site = new TokenSite("main", i, i)
+            }
         })
 
         const srcMap = UplcSourceMap.fromUplcTerm(program.root)

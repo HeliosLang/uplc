@@ -9,13 +9,14 @@ import { FlatReader, FlatWriter } from "../flat/index.js"
  * @typedef {import("../cek/index.js").CekValue} CekValue
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
+ * @typedef {import("./UplcTerm.js").UplcDelayI} UplcDelayI
  */
 
 export const UPLC_DELAY_TAG = 1
 
 /**
  * @template {UplcTerm} [TArg=UplcTerm]
- * @implements {UplcTerm}
+ * @implements {UplcDelayI}
  */
 export class UplcDelay {
     /**
@@ -59,18 +60,10 @@ export class UplcDelay {
     }
 
     /**
-     * @returns {string}
+     * @type {"delay"}
      */
-    toString() {
-        return `(delay ${this.arg.toString()})`
-    }
-
-    /**
-     * @param {FlatWriter} w
-     */
-    toFlat(w) {
-        w.writeTermTag(UPLC_DELAY_TAG)
-        this.arg.toFlat(w)
+    get kind() {
+        return "delay"
     }
 
     /**
@@ -91,5 +84,20 @@ export class UplcDelay {
                 }
             }
         }
+    }
+
+    /**
+     * @param {FlatWriter} w
+     */
+    toFlat(w) {
+        w.writeTermTag(UPLC_DELAY_TAG)
+        this.arg.toFlat(w)
+    }
+
+    /**
+     * @returns {string}
+     */
+    toString() {
+        return `(delay ${this.arg.toString()})`
     }
 }

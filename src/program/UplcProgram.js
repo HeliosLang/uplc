@@ -77,9 +77,10 @@ import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
 /**
  * @param {ByteArrayLike} bytes
  * @param {UplcVersion} expectedUplcVersion
+ * @param {Builtin[]} builtins
  * @returns {UplcTerm}
  */
-export function decodeCborProgram(bytes, expectedUplcVersion) {
+export function decodeCborProgram(bytes, expectedUplcVersion, builtins) {
     const stream = ByteStream.from(bytes)
 
     if (!isBytes(stream)) {
@@ -92,7 +93,7 @@ export function decodeCborProgram(bytes, expectedUplcVersion) {
         scriptBytes = decodeBytes(scriptBytes)
     }
 
-    return decodeFlatProgram(scriptBytes, expectedUplcVersion)
+    return decodeFlatProgram(scriptBytes, expectedUplcVersion, builtins)
 }
 
 /**
@@ -123,10 +124,11 @@ export function encodeFlatProgram(expr, uplcVersion) {
 /**
  * @param {number[]} bytes
  * @param {UplcVersion} expectedUplcVersion
+ * @param {Builtin[]} builtins
  * @returns {UplcTerm}
  */
-export function decodeFlatProgram(bytes, expectedUplcVersion) {
-    const r = new UplcReader(bytes)
+export function decodeFlatProgram(bytes, expectedUplcVersion, builtins) {
+    const r = new UplcReader(bytes, builtins)
 
     const version = `${r.readInt()}.${r.readInt()}.${r.readInt()}`
 

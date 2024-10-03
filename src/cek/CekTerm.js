@@ -9,8 +9,8 @@ export {}
 
 /**
  * @typedef {{
- *   compute: (stack: CekStack, ctx: CekContext) => CekStateChange
  *   site: Option<Site>
- *   toString: () => string
+ *   compute(stack: CekStack, ctx: CekContext): CekStateChange
+ *   toString(): string
  * }} CekTerm
  */

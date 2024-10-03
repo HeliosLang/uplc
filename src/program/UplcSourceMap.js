@@ -1,4 +1,13 @@
-import { decodeInt, decodeList, encodeInt, encodeList } from "@helios-lang/cbor"
+import {
+    decodeInt,
+    decodeList,
+    decodeMap,
+    decodeString,
+    encodeInt,
+    encodeList,
+    encodeMap,
+    encodeString
+} from "@helios-lang/cbor"
 import { bytesToHex } from "@helios-lang/codec-utils"
 import { TokenSite } from "@helios-lang/compiler-utils"
 import {
@@ -8,16 +17,20 @@ import {
     isStringArray,
     JSON
 } from "@helios-lang/type-utils"
+import { traverse } from "../terms/index.js"
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
+ * @typedef {import("../terms/index.js").UplcBuiltinI} UplcBuiltinI
+ * @typedef {import("../terms/index.js").UplcCallI} UplcCallI
  */
 
 /**
  * @typedef {{
  *   sourceNames: string[]
  *   indices: string // cbor encoded
+ *   variableNames?: string // cbor encoded
  * }} UplcSourceMapJsonSafe
  */
 
@@ -25,6 +38,7 @@ import {
  * @typedef {{
  *   sourceNames: string[]
  *   indices: number[]
+ *   variableNames?: [number, string][]
  * }} UplcSourceMapProps
  */
 
@@ -51,11 +65,19 @@ export class UplcSourceMap {
     indices
 
     /**
+     * Tuple of uplc lambda term index and variable name
+     * @readonly
+     * @type {[number, string][]}
+     */
+    variableNames
+
+    /**
      * @param {UplcSourceMapProps} props
      */
-    constructor({ sourceNames, indices }) {
+    constructor({ sourceNames, indices, variableNames = [] }) {
         this.sourceNames = sourceNames
         this.indices = indices
+        this.variableNames = variableNames
     }
 
     /**
@@ -66,12 +88,21 @@ export class UplcSourceMap {
         const rawObj = typeof raw == "string" ? JSON.parse(raw) : raw
 
         const obj = expect(
-            isObject({ sourceNames: isStringArray, indices: isString })
+            isObject({
+                sourceNames: isStringArray,
+                indices: isString
+            })
         )(rawObj)
 
         return new UplcSourceMap({
             sourceNames: obj.sourceNames,
-            indices: decodeList(obj.indices, decodeInt).map((i) => Number(i))
+            indices: decodeList(obj.indices, decodeInt).map((i) => Number(i)),
+            variableNames:
+                "variableNames" in obj && isString(obj.variableNames)
+                    ? decodeMap(obj.variableNames, decodeInt, decodeString).map(
+                          ([key, value]) => [Number(key), value]
+                      )
+                    : []
         })
     }
 
@@ -80,11 +111,6 @@ export class UplcSourceMap {
      * @returns {UplcSourceMap}
      */
     static fromUplcTerm(root) {
-        // root term index 0
-        // the first child, if it exists, of root has index 1
-        // the first grand-child, if it exists of root has index 2
-        let i = 0
-
         /**
          * @type {string[]}
          */
@@ -95,30 +121,44 @@ export class UplcSourceMap {
          */
         const indices = []
 
-        traverseTerms(root, (term) => {
-            /**
-             * @type {Option<Site>}
-             */
-            const site = term.site
+        /**
+         * @type {[number, string][]}
+         */
+        const variableNames = []
 
-            if (site && !TokenSite.isDummy(site)) {
-                const sn = site.file
-                let j = sourceNames.indexOf(sn)
+        traverse(root, {
+            anyTerm: (term, i) => {
+                /**
+                 * @type {Option<Site>}
+                 */
+                const site = term.site
 
-                if (j == -1) {
-                    j = sourceNames.length
-                    sourceNames.push(sn)
+                if (site && !TokenSite.isDummy(site)) {
+                    const sn = site.file
+                    let j = sourceNames.indexOf(sn)
+
+                    // add source name if it wasn't added before
+                    if (j == -1) {
+                        j = sourceNames.length
+                        sourceNames.push(sn)
+                    }
+
+                    indices.push([i, j, site.line, site.column])
                 }
+            },
+            lambdaTerm: (term, i) => {
+                const name = term.argName
 
-                indices.push([i, j, site.line, site.column])
+                if (name) {
+                    variableNames.push([i, name])
+                }
             }
-
-            i++
         })
 
         return new UplcSourceMap({
             sourceNames,
-            indices: indices.flat()
+            indices: indices.flat(),
+            variableNames
         })
     }
 
@@ -127,26 +167,35 @@ export class UplcSourceMap {
      * @returns {void}
      */
     apply(root) {
-        let i = 0
+        let indicesPos = 0
+        let variableNamesPos = 0
 
-        //
-        let j = 0
+        traverse(root, {
+            anyTerm: (term, i) => {
+                while (this.indices[indicesPos] < i) {
+                    indicesPos += 4
+                }
 
-        traverseTerms(root, (term) => {
-            while (this.indices[j] < i) {
-                j += 4
+                if (this.indices[indicesPos] == i) {
+                    const [sourceId, line, column] = this.indices.slice(
+                        indicesPos + 1,
+                        indicesPos + 4
+                    )
+                    const sn = this.sourceNames[sourceId]
+                    term.site = new TokenSite(sn, line, column)
+                }
+            },
+            lambdaTerm: (term, i) => {
+                while (this.variableNames[i]?.[0] < i) {
+                    variableNamesPos += 1
+                }
+
+                if (this.variableNames[i]?.[0] == i) {
+                    const name = this.variableNames[i][1]
+
+                    term.argName = name
+                }
             }
-
-            if (this.indices[j] == i) {
-                const [sourceId, line, column] = this.indices.slice(
-                    j + 1,
-                    j + 4
-                )
-                const sn = this.sourceNames[sourceId]
-                term.site = new TokenSite(sn, line, column)
-            }
-
-            i++
         })
     }
 
@@ -158,26 +207,17 @@ export class UplcSourceMap {
             sourceNames: this.sourceNames,
             indices: bytesToHex(
                 encodeList(this.indices.map((i) => encodeInt(i)))
-            )
+            ),
+            variableNames:
+                this.variableNames.length > 0
+                    ? bytesToHex(
+                          encodeMap(
+                              this.variableNames.map(([key, value]) => {
+                                  return [encodeInt(key), encodeString(value)]
+                              })
+                          )
+                      )
+                    : undefined
         }
-    }
-}
-
-/**
- * @param {UplcTerm} root
- * @param {(term: UplcTerm) => void} callback
- */
-export function traverseTerms(root, callback) {
-    let terms = [root]
-
-    let next = terms.pop()
-
-    while (next) {
-        callback(next)
-
-        // add the children
-        terms = terms.concat(next.children.slice().reverse())
-
-        next = terms.pop()
     }
 }

@@ -10,6 +10,7 @@ import { UPLC_VAR_TAG, UplcVar } from "./UplcVar.js"
 
 /**
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
+ * @typedef {import("../builtins/index.js").Builtin} Builtin
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  */
 
@@ -17,9 +18,10 @@ import { UPLC_VAR_TAG, UplcVar } from "./UplcVar.js"
  * Reads a single UplcTerm
  * @template {UplcTerm} TExpr
  * @param {FlatReader<TExpr, UplcValue>} r
+ * @param {Builtin[]} builtins
  * @returns {UplcTerm}
  */
-export function decodeTerm(r) {
+export function decodeTerm(r, builtins) {
     const tag = r.readBits(4)
 
     switch (tag) {
@@ -38,7 +40,7 @@ export function decodeTerm(r) {
         case UPLC_ERROR_TAG:
             return new UplcError()
         case UPLC_BUILTIN_TAG:
-            return UplcBuiltin.fromFlat(r)
+            return UplcBuiltin.fromFlat(r, builtins)
         default:
             throw new Error("term tag " + tag.toString() + " unhandled")
     }

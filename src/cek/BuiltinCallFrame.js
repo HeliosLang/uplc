@@ -1,7 +1,8 @@
-import { pushStackCallSite } from "./CekStack.js"
+import { pushStackCallSites } from "./CekStack.js"
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
+ * @typedef {import("./CallSiteInfo.js").CallSiteInfo} CallSiteInfo
  * @typedef {import("./CekContext.js").CekContext} CekContext
  * @typedef {import("./CekFrame.js").CekFrame} CekFrame
  * @typedef {import("./CekStack.js").CekStack} CekStack
@@ -18,6 +19,12 @@ export class BuiltinCallFrame {
      * @type {number}
      */
     id
+
+    /**
+     * @readonly
+     * @type {string}
+     */
+    name
 
     /**
      * @readonly
@@ -40,12 +47,14 @@ export class BuiltinCallFrame {
 
     /**
      * @param {number} id
+     * @param {string} name
      * @param {CekValue[]} args
      * @param {CekStack} stack
      * @param {Option<Site>} callSite
      */
-    constructor(id, args, stack, callSite) {
+    constructor(id, name, args, stack, callSite) {
         this.id = id
+        this.name = name
         this.args = args
         this.stack = stack
         this.callSite = callSite
@@ -63,7 +72,7 @@ export class BuiltinCallFrame {
             return {
                 state: {
                     error: {
-                        message: `builtin ${this.id} not found`,
+                        message: `builtin ${this.name} (${this.id}) not found`,
                         stack: this.stack
                     }
                 }
@@ -74,6 +83,7 @@ export class BuiltinCallFrame {
                     reducing: {
                         builtin: {
                             id: this.id,
+                            name: this.name,
                             forceCount: b.forceCount,
                             args: this.args.concat([value])
                         }
@@ -94,6 +104,23 @@ export class BuiltinCallFrame {
                 })
             )
 
+            /**
+             * @type {CallSiteInfo[]}
+             */
+            const callSites = args.map((a, i) => {
+                if (i == args.length - 1) {
+                    return {
+                        site: this.callSite,
+                        functionName: b.name,
+                        argument: a
+                    }
+                } else {
+                    return {
+                        argument: a
+                    }
+                }
+            })
+
             try {
                 return {
                     state: {
@@ -109,7 +136,7 @@ export class BuiltinCallFrame {
                     state: {
                         error: {
                             message: e.message,
-                            stack: pushStackCallSite(this.stack, this.callSite)
+                            stack: pushStackCallSites(this.stack, ...callSites)
                         }
                     }
                 }

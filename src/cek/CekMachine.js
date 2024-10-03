@@ -1,5 +1,6 @@
-import { None, expectSome } from "@helios-lang/type-utils"
+import { None } from "@helios-lang/type-utils"
 import { CostTracker, CostModel } from "../costmodel/index.js"
+import { stringifyNonUplcValue } from "./CekValue.js"
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
@@ -131,26 +132,9 @@ export class CekMachine {
                         this.frames.push(newFrame)
                     }
                 } else {
-                    if ("value" in this.state.reducing) {
-                        return this.returnValue(this.state.reducing.value)
-                    } else if ("delay" in this.state.reducing) {
-                        return this.returnValue(
-                            `(delay ${this.state.reducing.delay.term.toString()})`
-                        )
-                    } else if ("builtin" in this.state.reducing) {
-                        const builtin = expectSome(
-                            this.getBuiltin(this.state.reducing.builtin.id)
-                        )
-                        return this.returnValue(builtin.name)
-                    } else {
-                        const props = this.state.reducing.lambda
-
-                        return this.returnValue(
-                            `(lam ${
-                                props.argName ? `${props.argName} ` : ""
-                            }${props.term.toString()})`
-                        )
-                    }
+                    return this.returnValue(
+                        stringifyNonUplcValue(this.state.reducing)
+                    )
                 }
             } else if ("error" in this.state) {
                 return this.returnError(this.state.error)

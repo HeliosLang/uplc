@@ -95,7 +95,10 @@ export class UplcProgramV3 {
      * @returns {UplcProgramV3}
      */
     static fromFlat(bytes, props = {}) {
-        return new UplcProgramV3(decodeFlatProgram(bytes, UPLC_VERSION), props)
+        return new UplcProgramV3(
+            decodeFlatProgram(bytes, UPLC_VERSION, builtinsV3),
+            props
+        )
     }
 
     /**
@@ -104,7 +107,10 @@ export class UplcProgramV3 {
      * @returns {UplcProgramV3}
      */
     static fromCbor(bytes, props = {}) {
-        return new UplcProgramV3(decodeCborProgram(bytes, UPLC_VERSION), props)
+        return new UplcProgramV3(
+            decodeCborProgram(bytes, UPLC_VERSION, builtinsV3),
+            props
+        )
     }
 
     /**
