@@ -27,6 +27,7 @@ describe(UplcRuntimeError.name, () => {
             site: new TokenSite("unknown", 1, 16, 1, 17),
             functionName: undefined,
             argument: {
+                name: "fn3",
                 delay: {
                     term: new UplcForce(
                         new UplcCall(
@@ -49,8 +50,9 @@ describe(UplcRuntimeError.name, () => {
             site: new TokenSite("unknown", 6, 16, 6, 17),
             functionName: undefined,
             argument: {
+                name: "fn2",
                 delay: {
-                    term: new UplcDelay(new UplcForce(new UplcVar(1, "fn2"))),
+                    term: new UplcForce(new UplcVar(1, "fn3")),
                     stack: {
                         // not used by UplcRuntimeError
                         values: [],
@@ -63,8 +65,9 @@ describe(UplcRuntimeError.name, () => {
             site: new TokenSite("unknown", 9, 16, 9, 17),
             functionName: undefined,
             argument: {
+                name: "fn1",
                 delay: {
-                    term: new UplcDelay(new UplcForce(new UplcVar(1, "fn1"))),
+                    term: new UplcForce(new UplcVar(1, "fn2")),
                     stack: {
                         // not used by UplcRuntimeError
                         values: [],
@@ -111,10 +114,10 @@ describe(UplcRuntimeError.name, () => {
             )
             strictEqual(
                 lines[4].trim(),
-                "at <anonymous> (helios:unknown:10:17)"
+                "at <anonymous> (helios:unknown:10:17) [fn1=(delay (force fn2))]"
             )
-            strictEqual(lines[5].trim(), "at <anonymous> (helios:unknown:7:17)")
-            strictEqual(lines[6].trim(), "at <anonymous> (helios:unknown:2:17)")
+            strictEqual(lines[5].trim(), "at <anonymous> (helios:unknown:7:17) [fn2=(delay (force fn3))]")
+            strictEqual(lines[6].trim(), "at <anonymous> (helios:unknown:2:17) [fn3=(delay (force [[(force (builtin 28)) (con string \"my error\")] (delay (error))]))]")
             match(lines[7], /UplcRuntimeError.test.js/)
         } else {
             throw new Error(
