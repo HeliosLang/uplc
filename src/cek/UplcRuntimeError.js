@@ -45,7 +45,7 @@ export class UplcRuntimeError extends Error {
         /**
          * @type {CekValue[]}
          */
-        let argumentsWithoutSites = []
+        let unhandledArgs = []
 
         /**
          * @type {Option<string>}
@@ -54,9 +54,7 @@ export class UplcRuntimeError extends Error {
 
         for (let cs of callSites) {
             if (cs.site) {
-                const allArguments = argumentsWithoutSites
-                    .concat(cs.argument ? [cs.argument] : [])
-                    .filter((a) => !!a.name)
+                const allArguments = unhandledArgs.filter((a) => !!a.name)
 
                 const sitePart = [`${cs.site.toString()}`]
                 const varsPart =
@@ -91,9 +89,9 @@ export class UplcRuntimeError extends Error {
                     )
                 }
 
-                argumentsWithoutSites = []
+                unhandledArgs = cs.argument ? [cs.argument] : [] // argument is only relevant to the next call
             } else if (cs.argument) {
-                argumentsWithoutSites.push(cs.argument)
+                unhandledArgs.push(cs.argument)
             }
 
             parentFunctionName = cs.functionName
