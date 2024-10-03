@@ -14,7 +14,11 @@ describe(UplcSourceMap.name, () => {
 
         traverse(program.root, {
             anyTerm: (term, i) => {
-                term.site = new TokenSite("main", i, i)
+                term.site = new TokenSite({
+                    file: "main",
+                    startLine: i,
+                    startColumn: i
+                })
             }
         })
 

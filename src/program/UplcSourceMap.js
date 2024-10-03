@@ -182,7 +182,11 @@ export class UplcSourceMap {
                         indicesPos + 4
                     )
                     const sn = this.sourceNames[sourceId]
-                    term.site = new TokenSite(sn, line, column)
+                    term.site = new TokenSite({
+                        file: sn,
+                        startLine: line,
+                        startColumn: column
+                    })
                 }
             },
             lambdaTerm: (term, i) => {

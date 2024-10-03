@@ -24,7 +24,13 @@ describe(UplcRuntimeError.name, () => {
      */
     const callSites = [
         {
-            site: new TokenSite("unknown", 1, 16, 1, 17),
+            site: new TokenSite({
+                file: "unknown",
+                startLine: 1,
+                startColumn: 16,
+                endLine: 1,
+                endColumn: 17
+            }),
             functionName: undefined,
             argument: {
                 name: "fn3",
@@ -47,7 +53,13 @@ describe(UplcRuntimeError.name, () => {
             }
         },
         {
-            site: new TokenSite("unknown", 6, 16, 6, 17),
+            site: new TokenSite({
+                file: "unknown",
+                startLine: 6,
+                startColumn: 16,
+                endLine: 6,
+                endColumn: 17
+            }),
             functionName: undefined,
             argument: {
                 name: "fn2",
@@ -62,7 +74,13 @@ describe(UplcRuntimeError.name, () => {
             }
         },
         {
-            site: new TokenSite("unknown", 9, 16, 9, 17),
+            site: new TokenSite({
+                file: "unknown",
+                startLine: 9,
+                startColumn: 16,
+                endLine: 9,
+                endColumn: 17
+            }),
             functionName: undefined,
             argument: {
                 name: "fn1",
@@ -77,19 +95,43 @@ describe(UplcRuntimeError.name, () => {
             }
         },
         {
-            site: new TokenSite("unknown", 12, 15, 12, 16),
+            site: new TokenSite({
+                file: "unknown",
+                startLine: 12,
+                startColumn: 15,
+                endLine: 12,
+                endColumn: 16
+            }),
             functionName: "fn1"
         },
         {
-            site: new TokenSite("unknown", 10, 19, 10, 20),
+            site: new TokenSite({
+                file: "unknown",
+                startLine: 10,
+                startColumn: 19,
+                endLine: 10,
+                endColumn: 20
+            }),
             functionName: "fn2"
         },
         {
-            site: new TokenSite("unknown", 7, 19, 7, 20),
+            site: new TokenSite({
+                file: "unknown",
+                startLine: 7,
+                startColumn: 19,
+                endLine: 7,
+                endColumn: 20
+            }),
             functionName: "fn3"
         },
         {
-            site: new TokenSite("unknown", 4, 18, 4, 19),
+            site: new TokenSite({
+                file: "unknown",
+                startLine: 4,
+                startColumn: 18,
+                endLine: 4,
+                endColumn: 19
+            }),
             functionName: undefined
         }
     ]
@@ -116,8 +158,14 @@ describe(UplcRuntimeError.name, () => {
                 lines[4].trim(),
                 "at <anonymous> (helios:unknown:10:17) [fn1=(delay (force fn2))]"
             )
-            strictEqual(lines[5].trim(), "at <anonymous> (helios:unknown:7:17) [fn2=(delay (force fn3))]")
-            strictEqual(lines[6].trim(), "at <anonymous> (helios:unknown:2:17) [fn3=(delay (force [[(force (builtin 28)) (con string \"my error\")] (delay (error))]))]")
+            strictEqual(
+                lines[5].trim(),
+                "at <anonymous> (helios:unknown:7:17) [fn2=(delay (force fn3))]"
+            )
+            strictEqual(
+                lines[6].trim(),
+                'at <anonymous> (helios:unknown:2:17) [fn3=(delay (force [[(force (builtin 28)) (con string "my error")] (delay (error))]))]'
+            )
             match(lines[7], /UplcRuntimeError.test.js/)
         } else {
             throw new Error(
