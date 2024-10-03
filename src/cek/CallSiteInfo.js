@@ -17,7 +17,7 @@
  * @returns {boolean}
  */
 export function isEmptyCallSiteInfo(info) {
-    return !info || !info.site || !info.functionName || !info.argument
+    return !info || (!info.site && !info.functionName && !info.argument)
 }
 
 /**
