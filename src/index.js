@@ -1,5 +1,5 @@
 export * from "./builtins/index.js"
-export { newUplcRuntimeError } from "./cek/index.js"
+export { UplcRuntimeError } from "./cek/index.js"
 export * from "./costmodel/index.js"
 export * from "./data/index.js"
 export * from "./program/index.js"
@@ -8,6 +8,7 @@ export * from "./values/index.js"
 export * from "./logging/index.js"
 
 /**
+ * @typedef {import("./cek/index.js").CallSiteInfo} CallSiteInfo
  * @typedef {import("./cek/index.js").CekResult} CekResult
  * @typedef {import("./data/index.js").UplcData} UplcData
  * @typedef {import("./costmodel/index.js").Cost} Cost
