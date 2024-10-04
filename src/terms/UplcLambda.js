@@ -86,6 +86,7 @@ export class UplcLambda {
         return {
             state: {
                 reducing: {
+                    name: this.site?.alias,
                     lambda: {
                         term: this.expr,
                         argName: this.argName ?? undefined,

@@ -77,6 +77,7 @@ export class UplcDelay {
         return {
             state: {
                 reducing: {
+                    name: this.site?.alias,
                     delay: {
                         term: this.arg,
                         stack: stack

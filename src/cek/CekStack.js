@@ -1,3 +1,4 @@
+import { None } from "@helios-lang/type-utils"
 import { isNonEmptyCallSiteInfo } from "./CallSiteInfo.js"
 
 /**
@@ -70,6 +71,19 @@ export function pushStackValueAndCallSite(stack, value, callSite) {
 }
 
 /**
+ * @param {CekStack} stack
+ * @param {CekValue} value
+ * @param {CallSiteInfo[]} callSites
+ * @returns {CekStack}
+ */
+export function pushStackValueAndCallSites(stack, value, ...callSites) {
+    return {
+        values: stack.values.concat([value]),
+        callSites: stack.callSites.concat(callSites)
+    }
+}
+
+/**
  * @param {CekStack} stackWithValues
  * @param {CekStack} stackWithCallSites
  * @returns {CekStack}
@@ -79,4 +93,43 @@ export function mixStacks(stackWithValues, stackWithCallSites) {
         values: stackWithValues.values,
         callSites: stackWithCallSites.callSites
     }
+}
+
+/**
+ * Only needed for debugging
+ * Needed to add stack trace frames for variables like `self`
+ * TODO: might introduce unnecessary overhead and thus require a flag to switch off
+ * @param {CekStack} stack
+ * @returns {CekValue[]}
+ */
+export function findUnreportedNamedValues(stack) {
+    /**
+     * @type {Option<CekValue>}
+     */
+    let lastArg = None
+
+    for (let i = stack.callSites.length - 1; i >= 0; i--) {
+        const cs = stack.callSites[i]
+
+        if (cs.argument) {
+            lastArg = cs.argument
+            break
+        }
+    }
+
+    if (!lastArg) {
+        console.log("no unreported named values found")
+        return []
+    }
+
+    // find the arg in the stack values
+    for (let i = stack.values.length - 1; i >= 0; i--) {
+        const v = stack.values[i]
+
+        if (v == lastArg) {
+            return stack.values.slice(i + 1)
+        }
+    }
+
+    return []
 }
