@@ -25,9 +25,13 @@ describe(isEmptyCallSiteInfo.name, () => {
         strictEqual(isEmptyCallSiteInfo({ functionName: "fn" }), false)
     })
 
-    it("returns false if argument is defined", () => {
+    it("returns false if arguments is an empty list", () => {
+        strictEqual(isEmptyCallSiteInfo({ arguments: [] }), false)
+    })
+
+    it("returns false if arguments is a non-empty list", () => {
         strictEqual(
-            isEmptyCallSiteInfo({ argument: { value: new UplcInt(0) } }),
+            isEmptyCallSiteInfo({ arguments: [{ value: new UplcInt(0) }] }),
             false
         )
     })
@@ -58,14 +62,18 @@ describe(isNonEmptyCallSiteInfo.name, () => {
         strictEqual(isNonEmptyCallSiteInfo({ functionName: "fn" }), true)
     })
 
-    it("returns false if argument is defined", () => {
+    it("returns true if arguments is a non-empty list", () => {
         strictEqual(
-            isNonEmptyCallSiteInfo({ argument: { value: new UplcInt(0) } }),
+            isNonEmptyCallSiteInfo({ arguments: [{ value: new UplcInt(0) }] }),
             true
         )
     })
 
-    it("returns false if site is defined", () => {
+    it("returns true if arguments is an empty list", () => {
+        strictEqual(isNonEmptyCallSiteInfo({ arguments: [] }), true)
+    })
+
+    it("returns true if site is defined", () => {
         strictEqual(isNonEmptyCallSiteInfo({ site: TokenSite.dummy() }), true)
     })
 })

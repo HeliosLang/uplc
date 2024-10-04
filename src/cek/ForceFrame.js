@@ -1,4 +1,4 @@
-import { mixStacks, pushStackCallSite } from "./CekStack.js"
+import { getLastSelfValue, mixStacks, pushStackCallSite } from "./CekStack.js"
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
@@ -45,6 +45,12 @@ export class ForceFrame {
         if ("delay" in value) {
             const delay = value.delay
 
+            /**
+             * TODO: cleaner way of getting `self` and other variables that are in the stacks of callbacks
+             * @type {Option<CekValue>}
+             */
+            const lastSelfValue = getLastSelfValue(delay.stack)
+
             return {
                 state: {
                     computing: {
@@ -53,7 +59,10 @@ export class ForceFrame {
                             delay.stack,
                             pushStackCallSite(this.stack, {
                                 site: this.callSite ?? undefined,
-                                functionName: value.name
+                                functionName: value.name,
+                                arguments: lastSelfValue
+                                    ? [lastSelfValue]
+                                    : undefined
                             })
                         )
                     }

@@ -32,25 +32,27 @@ describe(UplcRuntimeError.name, () => {
                 endColumn: 17
             }),
             functionName: undefined,
-            argument: {
-                name: "fn3",
-                delay: {
-                    term: new UplcForce(
-                        new UplcCall(
+            arguments: [
+                {
+                    name: "fn3",
+                    delay: {
+                        term: new UplcForce(
                             new UplcCall(
-                                new UplcForce(new UplcBuiltin(28, "trace")),
-                                new UplcConst(new UplcString("my error"))
-                            ),
-                            new UplcDelay(new UplcError())
-                        )
-                    ),
-                    stack: {
-                        // not used by UplcRuntimeError
-                        values: [],
-                        callSites: []
+                                new UplcCall(
+                                    new UplcForce(new UplcBuiltin(28, "trace")),
+                                    new UplcConst(new UplcString("my error"))
+                                ),
+                                new UplcDelay(new UplcError())
+                            )
+                        ),
+                        stack: {
+                            // not used by UplcRuntimeError
+                            values: [],
+                            callSites: []
+                        }
                     }
                 }
-            }
+            ]
         },
         {
             site: new TokenSite({
@@ -61,17 +63,19 @@ describe(UplcRuntimeError.name, () => {
                 endColumn: 17
             }),
             functionName: undefined,
-            argument: {
-                name: "fn2",
-                delay: {
-                    term: new UplcForce(new UplcVar(1, "fn3")),
-                    stack: {
-                        // not used by UplcRuntimeError
-                        values: [],
-                        callSites: []
+            arguments: [
+                {
+                    name: "fn2",
+                    delay: {
+                        term: new UplcForce(new UplcVar(1, "fn3")),
+                        stack: {
+                            // not used by UplcRuntimeError
+                            values: [],
+                            callSites: []
+                        }
                     }
                 }
-            }
+            ]
         },
         {
             site: new TokenSite({
@@ -82,17 +86,19 @@ describe(UplcRuntimeError.name, () => {
                 endColumn: 17
             }),
             functionName: undefined,
-            argument: {
-                name: "fn1",
-                delay: {
-                    term: new UplcForce(new UplcVar(1, "fn2")),
-                    stack: {
-                        // not used by UplcRuntimeError
-                        values: [],
-                        callSites: []
+            arguments: [
+                {
+                    name: "fn1",
+                    delay: {
+                        term: new UplcForce(new UplcVar(1, "fn2")),
+                        stack: {
+                            // not used by UplcRuntimeError
+                            values: [],
+                            callSites: []
+                        }
                     }
                 }
-            }
+            ]
         },
         {
             site: new TokenSite({

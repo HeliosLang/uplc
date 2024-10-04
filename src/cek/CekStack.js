@@ -100,35 +100,14 @@ export function mixStacks(stackWithValues, stackWithCallSites) {
  * Needed to add stack trace frames for variables like `self`
  * TODO: might introduce unnecessary overhead and thus require a flag to switch off
  * @param {CekStack} stack
- * @returns {CekValue[]}
+ * @returns {Option<CekValue>}
  */
-export function findUnreportedNamedValues(stack) {
-    /**
-     * @type {Option<CekValue>}
-     */
-    let lastArg = None
+export function getLastSelfValue(stack) {
+    const last = stack.values[stack.values.length - 1]
 
-    for (let i = stack.callSites.length - 1; i >= 0; i--) {
-        const cs = stack.callSites[i]
-
-        if (cs.argument) {
-            lastArg = cs.argument
-            break
-        }
+    if (last?.name == "self") {
+        return last
+    } else {
+        None
     }
-
-    if (!lastArg) {
-        return []
-    }
-
-    // find the arg in the stack values
-    for (let i = stack.values.length - 1; i >= 0; i--) {
-        const v = stack.values[i]
-
-        if (v == lastArg) {
-            return stack.values.slice(i + 1)
-        }
-    }
-
-    return []
 }

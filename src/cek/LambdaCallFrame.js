@@ -1,7 +1,4 @@
-import {
-    findUnreportedNamedValues,
-    pushStackValueAndCallSites
-} from "./CekStack.js"
+import { getLastSelfValue, pushStackValueAndCallSite } from "./CekStack.js"
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
@@ -70,30 +67,28 @@ export class LambdaCallFrame {
         }
 
         /**
-         * This is needed to report variables like `self`
-         * @type {CallSiteInfo[]}
+         * TODO: cleaner way of getting `self` and other variables that are in the stacks of callbacks
+         * @type {Option<CekValue>}
          */
-        const callSites = findUnreportedNamedValues(this.stack).map((v) => ({
-            argument: v
-        }))
+        const lastSelfValue = getLastSelfValue(this.stack)
 
         /**
          * @type {CallSiteInfo}
          */
-        callSites.push({
+        const callSite = {
             site: this.info.callSite ?? undefined,
             functionName: this.info.name ?? undefined,
-            argument: value
-        })
+            arguments: lastSelfValue ? [lastSelfValue, value] : [value]
+        }
 
         return {
             state: {
                 computing: {
                     term: this.term,
-                    stack: pushStackValueAndCallSites(
+                    stack: pushStackValueAndCallSite(
                         this.stack,
                         value,
-                        ...callSites
+                        callSite
                     )
                 }
             }

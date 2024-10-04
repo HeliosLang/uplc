@@ -8,7 +8,7 @@
  * @typedef {{
  *   site?: Option<Site>
  *   functionName?: string
- *   argument?: CekValue
+ *   arguments?: CekValue[]
  * }} CallSiteInfo
  */
 
@@ -17,7 +17,7 @@
  * @returns {boolean}
  */
 export function isEmptyCallSiteInfo(info) {
-    return !info || (!info.site && !info.functionName && !info.argument)
+    return !info || (!info.site && !info.functionName && !info.arguments)
 }
 
 /**

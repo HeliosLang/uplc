@@ -89,9 +89,9 @@ export class UplcRuntimeError extends Error {
                     )
                 }
 
-                unhandledArgs = cs.argument ? [cs.argument] : [] // argument is only relevant to the next call
-            } else if (cs.argument) {
-                unhandledArgs.push(cs.argument)
+                unhandledArgs = cs.arguments ? cs.arguments.slice() : [] // argument is only relevant to the next call
+            } else if (cs.arguments) {
+                unhandledArgs = unhandledArgs.concat(cs.arguments)
             }
 
             parentFunctionName = cs.functionName
