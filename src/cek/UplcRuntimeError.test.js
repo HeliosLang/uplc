@@ -1,5 +1,5 @@
-import { strictEqual, match } from "node:assert"
-import { describe } from "node:test"
+import { strictEqual, match, deepEqual } from "node:assert"
+import { describe, it } from "node:test"
 import { TokenSite } from "@helios-lang/compiler-utils"
 import { expectSome } from "@helios-lang/type-utils"
 import {
@@ -145,31 +145,45 @@ describe(UplcRuntimeError.name, () => {
     try {
         throw new UplcRuntimeError("my error", callSites)
     } catch (err) {
-        if (err instanceof Error) {
+        if (err instanceof UplcRuntimeError) {
             const stack = expectSome(err.stack)
 
             // in Node the error message is part of the stack itself, so we ignore it for the sake of the test (checking the err.message field directly instead)
-            strictEqual(err.message, "my error")
+            it("message property correctly set", () => {
+                strictEqual(err.message, "my error")
+            })
+
+            it("frames property correctly set", () => {
+                deepEqual(err.frames, callSites)
+            })
 
             const lines = stack.split("\n").slice(1)
 
-            strictEqual(lines[0].trim(), "at fn3 (helios:unknown:5:19)")
-            strictEqual(lines[1].trim(), "at fn2 (helios:unknown:8:20)")
-            strictEqual(lines[2].trim(), "at fn1 (helios:unknown:11:20)")
-            strictEqual(
-                lines[3].trim(),
-                "at <anonymous> (helios:unknown:13:16) [fn1=(delay (force fn2))]"
-            )
-            strictEqual(
-                lines[4].trim(),
-                "at <anonymous> (helios:unknown:10:17) [fn2=(delay (force fn3))]"
-            )
-            strictEqual(
-                lines[5].trim(),
-                'at <anonymous> (helios:unknown:7:17) [fn3=(delay (force [[(force (builtin 28)) (con string "my error")] (delay (error))]))]'
-            )
-            strictEqual(lines[6].trim(), "at <anonymous> (helios:unknown:2:17)")
-            match(lines[7], /UplcRuntimeError.test.js/)
+            it("stack trace lines related to UPLC evaluation have expected format", () => {
+                strictEqual(lines[0].trim(), "at fn3 (helios:unknown:5:19)")
+                strictEqual(lines[1].trim(), "at fn2 (helios:unknown:8:20)")
+                strictEqual(lines[2].trim(), "at fn1 (helios:unknown:11:20)")
+                strictEqual(
+                    lines[3].trim(),
+                    "at <anonymous> (helios:unknown:13:16) [fn1=(delay (force fn2))]"
+                )
+                strictEqual(
+                    lines[4].trim(),
+                    "at <anonymous> (helios:unknown:10:17) [fn2=(delay (force fn3))]"
+                )
+                strictEqual(
+                    lines[5].trim(),
+                    'at <anonymous> (helios:unknown:7:17) [fn3=(delay (force [[(force (builtin 28)) (con string "my error")] (delay (error))]))]'
+                )
+                strictEqual(
+                    lines[6].trim(),
+                    "at <anonymous> (helios:unknown:2:17)"
+                )
+            })
+
+            it("stack trace continues with JS stack trace in this file", () => {
+                match(lines[7], /UplcRuntimeError.test.js/)
+            })
         } else {
             throw new Error(
                 "expected an instance of Error, got " + err.toString()

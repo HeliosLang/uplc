@@ -31,6 +31,7 @@ import { traverse } from "../terms/index.js"
  *   sourceNames: string[]
  *   indices: string // cbor encoded
  *   variableNames?: string // cbor encoded
+ *   termDescriptions?: string // cbor encoded
  * }} UplcSourceMapJsonSafe
  */
 
@@ -39,6 +40,7 @@ import { traverse } from "../terms/index.js"
  *   sourceNames: string[]
  *   indices: number[]
  *   variableNames?: [number, string][]
+ *   termDescriptions?: [number, string][]
  * }} UplcSourceMapProps
  */
 
@@ -72,12 +74,25 @@ export class UplcSourceMap {
     variableNames
 
     /**
+     * Tuple of uplc term index and description string
+     * @readonly
+     * @type {[number, string][]}
+     */
+    termDescriptions
+
+    /**
      * @param {UplcSourceMapProps} props
      */
-    constructor({ sourceNames, indices, variableNames = [] }) {
+    constructor({
+        sourceNames,
+        indices,
+        variableNames = [],
+        termDescriptions = []
+    }) {
         this.sourceNames = sourceNames
         this.indices = indices
         this.variableNames = variableNames
+        this.termDescriptions = termDescriptions
     }
 
     /**
@@ -102,6 +117,14 @@ export class UplcSourceMap {
                     ? decodeMap(obj.variableNames, decodeInt, decodeString).map(
                           ([key, value]) => [Number(key), value]
                       )
+                    : [],
+            termDescriptions:
+                "termDescriptions" in obj && isString(obj.termDescriptions)
+                    ? decodeMap(
+                          obj.termDescriptions,
+                          decodeInt,
+                          decodeString
+                      ).map(([key, value]) => [Number(key), value])
                     : []
         })
     }
@@ -126,6 +149,11 @@ export class UplcSourceMap {
          */
         const variableNames = []
 
+        /**
+         * @type {[number, string][]}
+         */
+        const termDescriptions = []
+
         traverse(root, {
             anyTerm: (term, i) => {
                 /**
@@ -133,17 +161,23 @@ export class UplcSourceMap {
                  */
                 const site = term.site
 
-                if (site && !TokenSite.isDummy(site)) {
-                    const sn = site.file
-                    let j = sourceNames.indexOf(sn)
+                if (site) {
+                    if (!TokenSite.isDummy(site)) {
+                        const sn = site.file
+                        let j = sourceNames.indexOf(sn)
 
-                    // add source name if it wasn't added before
-                    if (j == -1) {
-                        j = sourceNames.length
-                        sourceNames.push(sn)
+                        // add source name if it wasn't added before
+                        if (j == -1) {
+                            j = sourceNames.length
+                            sourceNames.push(sn)
+                        }
+
+                        indices.push([i, j, site.line, site.column])
                     }
 
-                    indices.push([i, j, site.line, site.column])
+                    if (site.alias) {
+                        termDescriptions.push([i, site.alias])
+                    }
                 }
             },
             lambdaTerm: (term, i) => {
@@ -158,7 +192,8 @@ export class UplcSourceMap {
         return new UplcSourceMap({
             sourceNames,
             indices: indices.flat(),
-            variableNames
+            variableNames,
+            termDescriptions
         })
     }
 
@@ -169,6 +204,7 @@ export class UplcSourceMap {
     apply(root) {
         let indicesPos = 0
         let variableNamesPos = 0
+        let termDescriptionsPos = 0
 
         traverse(root, {
             anyTerm: (term, i) => {
@@ -188,14 +224,31 @@ export class UplcSourceMap {
                         startColumn: column
                     })
                 }
+
+                while (this.termDescriptions[termDescriptionsPos]?.[0] < i) {
+                    termDescriptionsPos += 1
+                }
+
+                if (this.termDescriptions[termDescriptionsPos]?.[0] == i) {
+                    const description =
+                        this.termDescriptions[termDescriptionsPos][1]
+
+                    if (term.site) {
+                        term.site = TokenSite.fromSite(term.site).withAlias(
+                            description
+                        )
+                    } else {
+                        term.site = TokenSite.dummy().withAlias(description)
+                    }
+                }
             },
             lambdaTerm: (term, i) => {
-                while (this.variableNames[i]?.[0] < i) {
+                while (this.variableNames[variableNamesPos]?.[0] < i) {
                     variableNamesPos += 1
                 }
 
-                if (this.variableNames[i]?.[0] == i) {
-                    const name = this.variableNames[i][1]
+                if (this.variableNames[variableNamesPos]?.[0] == i) {
+                    const name = this.variableNames[variableNamesPos][1]
 
                     term.argName = name
                 }
@@ -217,6 +270,16 @@ export class UplcSourceMap {
                     ? bytesToHex(
                           encodeMap(
                               this.variableNames.map(([key, value]) => {
+                                  return [encodeInt(key), encodeString(value)]
+                              })
+                          )
+                      )
+                    : undefined,
+            termDescriptions:
+                this.termDescriptions.length > 0
+                    ? bytesToHex(
+                          encodeMap(
+                              this.termDescriptions.map(([key, value]) => {
                                   return [encodeInt(key), encodeString(value)]
                               })
                           )

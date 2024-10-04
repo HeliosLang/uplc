@@ -8,11 +8,19 @@ import { stringifyCekValue } from "./CekValue.js"
 
 export class UplcRuntimeError extends Error {
     /**
+     * @readonly
+     * @type {CallSiteInfo[]}
+     */
+    frames
+
+    /**
      * @param {string} message
      * @param {CallSiteInfo[]} callSites
      */
     constructor(message, callSites = []) {
         super(message)
+
+        this.frames = callSites
 
         UplcRuntimeError.prepareHeliosStackTrace(this, callSites)
     }
