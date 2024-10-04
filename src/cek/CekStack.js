@@ -118,7 +118,6 @@ export function findUnreportedNamedValues(stack) {
     }
 
     if (!lastArg) {
-        console.log("no unreported named values found")
         return []
     }
 
