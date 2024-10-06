@@ -2,6 +2,7 @@ import { deepEqual, strictEqual, throws } from "node:assert"
 import { describe, it } from "node:test"
 import { hexToBytes } from "@helios-lang/codec-utils"
 import { expectLeft, expectRight } from "@helios-lang/type-utils"
+import { BABBAGE_COST_MODEL_PARAMS_V1 } from "../costmodel/index.js"
 import {
     ByteArrayData,
     ConstrData,
@@ -81,7 +82,9 @@ describe(UplcProgramV1.name, () => {
 
         const program = new UplcProgramV1(term)
 
-        const { result, cost } = program.eval(undefined)
+        const { result, cost } = program.eval(undefined, {
+            costModelParams: BABBAGE_COST_MODEL_PARAMS_V1
+        })
 
         strictEqual(expectRight(result).toString(), "55")
         deepEqual(cost, { mem: 3710n, cpu: 1860485n })
@@ -1285,7 +1288,9 @@ describe(`${UplcProgramV1.name} conformance`, () => {
         it(src, () => {
             const program = UplcProgramV1.fromString(src)
 
-            const { result, cost } = program.eval(undefined)
+            const { result, cost } = program.eval(undefined, {
+                costModelParams: BABBAGE_COST_MODEL_PARAMS_V1
+            })
 
             const resultRight = expectRight(result)
             const expectedResultRight = expectedResult

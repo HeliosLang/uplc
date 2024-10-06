@@ -4,9 +4,8 @@ import { ERA } from "@helios-lang/era"
  * @returns {number[]}
  */
 export function DEFAULT_COST_MODEL_PARAMS_V2() {
+    // kept as a switch to make future hard-forks epoch boundaries easier to handle
     switch (ERA) {
-        case "Babbage":
-            return BABBAGE_COST_MODEL_PARAMS_V2
         case "Conway":
             return CONWAY_COST_MODEL_PARAMS_V2
     }

@@ -1,6 +1,7 @@
 import { strictEqual, throws } from "node:assert"
 import { describe, it } from "node:test"
 import { expectLeft, expectRight } from "@helios-lang/type-utils"
+import { BABBAGE_COST_MODEL_PARAMS_V2 } from "../costmodel/index.js"
 import { UplcBool, UplcInt } from "../values/index.js"
 import { UplcProgramV2 } from "./UplcProgramV2.js"
 
@@ -254,7 +255,9 @@ describe(`${UplcProgramV2.name} conformance`, () => {
         it(src, () => {
             const program = UplcProgramV2.fromString(src)
 
-            const { result, cost } = program.eval(undefined)
+            const { result, cost } = program.eval(undefined, {
+                costModelParams: BABBAGE_COST_MODEL_PARAMS_V2
+            })
 
             const resultRight = expectRight(result)
             const expectedResultRight = expectedResult
