@@ -6,7 +6,7 @@ import {
 } from "@helios-lang/cbor"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
+ * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
  */
 
 /**
@@ -18,7 +18,7 @@ import {
 
 /**
  * Decode Cost CBOR bytes
- * @param {ByteArrayLike} bytes
+ * @param {BytesLike} bytes
  * @returns {Cost}
  */
 export function decodeCost(bytes) {

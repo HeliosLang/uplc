@@ -1,10 +1,11 @@
 import { decodeConstr, encodeConstr } from "@helios-lang/cbor"
-import { ByteStream, toInt } from "@helios-lang/codec-utils"
+import { toInt } from "@helios-lang/codec-utils"
 import { isSome, None } from "@helios-lang/type-utils"
 import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
+ * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
+ * @typedef {import("@helios-lang/codec-utils").ByteStreamI} ByteStreamI
  * @typedef {import("@helios-lang/codec-utils").IntLike} IntLike
  * @typedef {import("./UplcData.js").ConstrDataI} ConstrDataI
  * @typedef {import("./UplcData.js").UplcData} UplcData
@@ -80,8 +81,8 @@ export class ConstrData {
     }
 
     /**
-     * @param {ByteArrayLike} bytes
-     * @param {(bytes: ByteStream) => UplcData} itemDecoder
+     * @param {BytesLike} bytes
+     * @param {(bytes: ByteStreamI) => UplcData} itemDecoder
      * @returns {ConstrData}
      */
     static fromCbor(bytes, itemDecoder) {

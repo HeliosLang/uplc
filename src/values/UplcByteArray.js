@@ -4,7 +4,7 @@ import { bytesFlatSize, FlatReader, FlatWriter } from "../flat/index.js"
 import { UplcType } from "./UplcType.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
+ * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
  * @typedef {import("./UplcValue.js").UplcByteArrayI} UplcByteArrayI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
@@ -21,7 +21,7 @@ export class UplcByteArray {
     bytes
 
     /**
-     * @param {ByteArrayLike} bytes
+     * @param {BytesLike} bytes
      */
     constructor(bytes) {
         this.bytes = toBytes(bytes)

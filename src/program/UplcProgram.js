@@ -7,7 +7,7 @@ import { FlatWriter } from "../flat/index.js"
 import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
+ * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
  * @typedef {import("../logging/UplcLoggingI.js").UplcLoggingI} UplcLoggingI
  * @typedef {import("../builtins/index.js").Builtin} Builtin
  * @typedef {import("../cek/index.js").CekResult} CekResult
@@ -74,7 +74,7 @@ import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
  */
 
 /**
- * @param {ByteArrayLike} bytes
+ * @param {BytesLike} bytes
  * @param {UplcVersion} expectedUplcVersion
  * @param {Builtin[]} builtins
  * @returns {UplcTerm}

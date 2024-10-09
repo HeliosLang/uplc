@@ -18,7 +18,7 @@ import {
 import { UplcSourceMap } from "./UplcSourceMap.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
+ * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
  * @typedef {import("../logging/UplcLoggingI.js").UplcLoggingI} UplcLoggingI
  * @typedef {import("../cek/index.js").CekResult} CekResult
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
@@ -102,7 +102,7 @@ export class UplcProgramV2 {
     }
 
     /**
-     * @param {ByteArrayLike} bytes
+     * @param {BytesLike} bytes
      * @param {UplcProgramV2Props} props
      * @returns {UplcProgramV2}
      */

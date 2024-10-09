@@ -1,27 +1,24 @@
 import {
-    isList,
+    isConstr,
     isDefBytes,
     isIndefBytes,
-    isMap,
-    isConstr
+    isList,
+    isMap
 } from "@helios-lang/cbor"
-import { ListData } from "./ListData.js"
-import { IntData } from "./IntData.js"
 import { ByteStream } from "@helios-lang/codec-utils"
 import { ByteArrayData } from "./ByteArrayData.js"
-import { MapData } from "./MapData.js"
 import { ConstrData } from "./ConstrData.js"
+import { IntData } from "./IntData.js"
+import { MapData } from "./MapData.js"
+import { ListData } from "./ListData.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
- */
-
-/**
+ * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
 
 /**
- * @param {ByteArrayLike} bytes - in cbor format
+ * @param {BytesLike} bytes - in cbor format
  * @returns {UplcData}
  */
 export function decodeUplcData(bytes) {

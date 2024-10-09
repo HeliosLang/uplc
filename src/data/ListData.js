@@ -1,9 +1,9 @@
-import { ByteStream } from "@helios-lang/codec-utils"
 import { decodeList, encodeList } from "@helios-lang/cbor"
 import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
+ * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
+ * @typedef {import("@helios-lang/codec-utils").ByteStreamI} ByteStreamI
  * @typedef {import("./UplcData.js").ListDataI} ListDataI
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
@@ -57,8 +57,8 @@ export class ListData {
     }
 
     /**
-     * @param {ByteArrayLike} bytes
-     * @param {(bytes: ByteStream) => UplcData} itemDecoder
+     * @param {BytesLike} bytes
+     * @param {(bytes: ByteStreamI) => UplcData} itemDecoder
      * @returns {ListData}
      */
     static fromCbor(bytes, itemDecoder) {

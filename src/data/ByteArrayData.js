@@ -8,7 +8,7 @@ import { decodeBytes, encodeBytes } from "@helios-lang/cbor"
 import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").ByteArrayLike} ByteArrayLike
+ * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
  * @typedef {import("./UplcData.js").ByteArrayDataI} ByteArrayDataI
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
@@ -24,7 +24,7 @@ export class ByteArrayData {
     bytes
 
     /**
-     * @param {ByteArrayLike} bytes
+     * @param {BytesLike} bytes
      */
     constructor(bytes) {
         this.bytes = toBytes(bytes)
@@ -68,7 +68,7 @@ export class ByteArrayData {
     }
 
     /**
-     * @param {ByteArrayLike} bytes
+     * @param {BytesLike} bytes
      * @returns {ByteArrayData}
      */
     static fromCbor(bytes) {
