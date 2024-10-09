@@ -22,7 +22,7 @@ import { UPLC_VAR_TAG, UplcVar } from "./UplcVar.js"
  * @returns {UplcTerm}
  */
 export function decodeTerm(r, builtins) {
-    const tag = r.readBits(4)
+    const tag = r.readTag()
 
     switch (tag) {
         case UPLC_VAR_TAG:

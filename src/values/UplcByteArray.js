@@ -1,11 +1,6 @@
-import {
-    bytesToHex,
-    BitReader,
-    equalsBytes,
-    toBytes
-} from "@helios-lang/codec-utils"
+import { bytesToHex, equalsBytes, toBytes } from "@helios-lang/codec-utils"
 import { ByteArrayData } from "../data/index.js"
-import { decodeFlatBytes, bytesFlatSize, FlatWriter } from "../flat/index.js"
+import { bytesFlatSize, FlatReader, FlatWriter } from "../flat/index.js"
 import { UplcType } from "./UplcType.js"
 
 /**
@@ -40,11 +35,11 @@ export class UplcByteArray {
     }
 
     /**
-     * @param {BitReader} reader
+     * @param {FlatReader<any, UplcValue>} reader
      * @returns {UplcByteArray}
      */
     static fromFlat(reader) {
-        return new UplcByteArray(decodeFlatBytes(reader))
+        return new UplcByteArray(reader.readBytes())
     }
 
     /**

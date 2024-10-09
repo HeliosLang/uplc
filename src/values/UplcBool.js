@@ -37,8 +37,7 @@ export class UplcBool {
      * @returns {UplcBool}
      */
     static fromFlat(r) {
-        const b = r.readBits(1) == 1
-        return new UplcBool(b)
+        return new UplcBool(r.readBool())
     }
 
     /**

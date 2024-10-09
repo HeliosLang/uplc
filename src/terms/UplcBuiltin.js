@@ -61,7 +61,7 @@ export class UplcBuiltin {
      * @returns {UplcBuiltin}
      */
     static fromFlat(reader, builtins) {
-        let id = reader.readBits(7)
+        let id = reader.readBuiltinId()
 
         return new UplcBuiltin(id, expectSome(builtins[id]).name)
     }

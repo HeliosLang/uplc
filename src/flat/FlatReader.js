@@ -16,12 +16,19 @@ import { decodeFlatSite } from "./site.js"
  * @template TExpr
  * @template TValue
  */
-export class FlatReader extends BitReader {
+export class FlatReader {
     /**
      * @readonly
      * @type {() => TExpr}
      */
     readExpr
+
+    /**
+     * @private
+     * @readonly
+     * @type {BitReader}
+     */
+    _bitReader
 
     /**
      * @private
@@ -36,30 +43,51 @@ export class FlatReader extends BitReader {
      * @param {(r: FlatReader<any, any>, typeList: number[]) => ValueReader<TValue>} dispatchValueReader
      */
     constructor(bytes, readExpr, dispatchValueReader) {
-        super(bytes)
         this.readExpr = () => readExpr(this)
+        this._bitReader = new BitReader(bytes)
         this._dispatchValueReader = dispatchValueReader
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    readBool() {
+        return this._bitReader.readBits(1) == 1
+    }
+
+    /**
+     * @returns {number}
+     */
+    readBuiltinId() {
+        return this._bitReader.readBits(7)
     }
 
     /**
      * @returns {number[]}
      */
     readBytes() {
-        return decodeFlatBytes(this)
+        return decodeFlatBytes(this._bitReader)
     }
 
     /**
      * @returns {bigint}
      */
     readInt() {
-        return decodeFlatInt(this)
+        return decodeFlatInt(this._bitReader)
     }
 
     /**
      * @returns {Site}
      */
     readSite() {
-        return decodeFlatSite(this)
+        return decodeFlatSite(this._bitReader)
+    }
+
+    /**
+     * @returns {number}
+     */
+    readTag() {
+        return this._bitReader.readBits(4)
     }
 
     /**
@@ -72,12 +100,12 @@ export class FlatReader extends BitReader {
         // Cons and Nil constructors come from Lisp/Haskell
         //  cons 'a' creates a linked list node,
         //  nil      creates an empty linked list
-        let nilOrCons = this.readBits(1)
+        let nilOrCons = this._bitReader.readBits(1)
 
         if (nilOrCons == 0) {
             return []
         } else {
-            return [this.readBits(elemSize)].concat(
+            return [this._bitReader.readBits(elemSize)].concat(
                 this.readLinkedList(elemSize)
             )
         }

@@ -57,7 +57,7 @@ export class UplcList {
          */
         const items = []
 
-        while (r.readBits(1) == 1) {
+        while (r.readBool()) {
             items.push(itemReader())
         }
 
