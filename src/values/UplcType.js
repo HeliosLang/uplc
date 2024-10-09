@@ -5,8 +5,6 @@ import { byteToBits } from "@helios-lang/codec-utils"
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
-
-
 // common type bits
 const INT = "0000"
 const BYTE_ARRAY = "0001"

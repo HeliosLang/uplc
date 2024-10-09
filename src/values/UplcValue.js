@@ -13,13 +13,13 @@ import { FlatWriter } from "../flat/index.js"
 
 /**
  * @typedef {{
-*   typeBits: string
-*   isData(): boolean
-*   isDataPair(): boolean
-*   isEqual(other: UplcTypeI): boolean
-*   toString(): string
-* }} UplcTypeI
-*/
+ *   typeBits: string
+ *   isData(): boolean
+ *   isDataPair(): boolean
+ *   isEqual(other: UplcTypeI): boolean
+ *   toString(): string
+ * }} UplcTypeI
+ */
 
 /**
  * UplcValue instances are passed around by Uplc terms.
