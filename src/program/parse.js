@@ -51,6 +51,7 @@ import {
  * @typedef {import("../builtins/index.js").Builtin} Builtin
  * @typedef {import("../data/index.js").UplcData} UplcData
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
+ * @typedef {import("../values/index.js").UplcTypeI} UplcTypeI
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcProgram.js").UplcVersion} UplcVersion
  */
@@ -289,7 +290,7 @@ function parseConst(r, site) {
  */
 /**
  * @param {TokenReader} r
- * @returns {Option<[UplcType, ValueParser]>}
+ * @returns {Option<[UplcTypeI, ValueParser]>}
  */
 function parseTypedValue(r) {
     let m
@@ -314,7 +315,7 @@ function parseTypedValue(r) {
         r = m.fields[0]
 
         /**
-         * @type {Option<[UplcType, ValueParser]>}
+         * @type {Option<[UplcTypeI, ValueParser]>}
          */
         let result = parseContainer(r)
 
@@ -328,7 +329,7 @@ function parseTypedValue(r) {
 
 /**
  * @param {TokenReader} r
- * @returns {Option<[UplcType, ValueParser]>}
+ * @returns {Option<[UplcTypeI, ValueParser]>}
  */
 function parseContainer(r) {
     if (r.matches(word("list"))) {
@@ -344,7 +345,7 @@ function parseContainer(r) {
 /**
  *
  * @param {TokenReader} r
- * @returns {Option<[UplcType, ValueParser]>}
+ * @returns {Option<[UplcTypeI, ValueParser]>}
  */
 function parseList(r) {
     const itemDetails = parseTypedValue(r)
@@ -379,7 +380,7 @@ function parseList(r) {
 /**
  *
  * @param {TokenReader} r
- * @returns {Option<[UplcType, ValueParser]>}
+ * @returns {Option<[UplcTypeI, ValueParser]>}
  */
 function parsePair(r) {
     const firstDetails = parseTypedValue(r)

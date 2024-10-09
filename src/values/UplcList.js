@@ -8,6 +8,7 @@ import { UplcType } from "./UplcType.js"
 
 /**
  * @typedef {import("./UplcValue.js").UplcListI} UplcListI
+ * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
@@ -19,7 +20,7 @@ import { UplcType } from "./UplcType.js"
 export class UplcList {
     /**
      * @readonly
-     * @type {UplcType}
+     * @type {UplcTypeI}
      */
     itemType
 
@@ -30,7 +31,7 @@ export class UplcList {
     items
 
     /**
-     * @param {UplcType} itemType
+     * @param {UplcTypeI} itemType
      * @param {UplcValue[]} items
      */
     constructor(itemType, items) {
@@ -47,7 +48,7 @@ export class UplcList {
 
     /**
      * @param {FlatReader<any, UplcValue>} r
-     * @param {UplcType} itemType
+     * @param {UplcTypeI} itemType
      * @param {ValueReader<UplcValue>} itemReader
      * @returns {UplcList}
      */

@@ -1,8 +1,11 @@
 import { byteToBits } from "@helios-lang/codec-utils"
 
 /**
+ * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
+
+
 
 // common type bits
 const INT = "0000"
@@ -20,6 +23,7 @@ const BLS12_381_ML_RESULT = "1011"
 
 /**
  * Represents the typeBits of a UPLC primitive.
+ * @implements {UplcTypeI}
  */
 export class UplcType {
     /**
@@ -93,7 +97,7 @@ export class UplcType {
     }
 
     /**
-     * @param {UplcType} itemType
+     * @param {UplcTypeI} itemType
      * @returns {UplcType}
      */
     static list(itemType) {
@@ -101,8 +105,8 @@ export class UplcType {
     }
 
     /**
-     * @param {UplcType} firstType
-     * @param {UplcType} secondType
+     * @param {UplcTypeI} firstType
+     * @param {UplcTypeI} secondType
      * @returns {UplcType}
      */
     static pair(firstType, secondType) {
@@ -147,14 +151,6 @@ export class UplcType {
     }
 
     /**
-     * @param {UplcType} value
-     * @returns {boolean}
-     */
-    isEqual(value) {
-        return this._typeBits == value.typeBits
-    }
-
-    /**
      * @returns {boolean}
      */
     isData() {
@@ -168,6 +164,17 @@ export class UplcType {
         return this._typeBits == UplcType.dataPair()._typeBits
     }
 
+    /**
+     * @param {UplcTypeI} value
+     * @returns {boolean}
+     */
+    isEqual(value) {
+        return this._typeBits == value.typeBits
+    }
+
+    /**
+     * @returns {string}
+     */
     toString() {
         let typeBits = this._typeBits
 

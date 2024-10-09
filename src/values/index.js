@@ -14,5 +14,6 @@ export { UplcUnit } from "./UplcUnit.js"
 export { dispatchValueReader } from "./reader.js"
 
 /**
+ * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */

@@ -1,5 +1,4 @@
 import { FlatWriter } from "../flat/index.js"
-import { UplcType } from "./UplcType.js"
 
 /**
  * @typedef {import("@helios-lang/crypto").FieldElement12} FieldElement12
@@ -13,6 +12,16 @@ import { UplcType } from "./UplcType.js"
  */
 
 /**
+ * @typedef {{
+*   typeBits: string
+*   isData(): boolean
+*   isDataPair(): boolean
+*   isEqual(other: UplcTypeI): boolean
+*   toString(): string
+* }} UplcTypeI
+*/
+
+/**
  * UplcValue instances are passed around by Uplc terms.
  *   - memSize: size in words (8 bytes, 64 bits) occupied during on-chain evaluation
  *   - flatSize: size taken up in serialized Uplc program (number of bits)
@@ -22,7 +31,7 @@ import { UplcType } from "./UplcType.js"
  * @typedef {{
  *   memSize: number
  *   flatSize: number
- *   type: UplcType
+ *   type: UplcTypeI
  *   isEqual: (other: UplcValue) => boolean
  *   toFlat: (writer: FlatWriter) => void
  *   toString: () => string
@@ -89,7 +98,7 @@ import { UplcType } from "./UplcType.js"
 /**
  * @typedef {CommonUplcValueProps & {
  *   kind: "list"
- *   itemType: UplcType
+ *   itemType: UplcTypeI
  *   items: UplcValue[]
  *   length: number
  *   isDataList: () => boolean
