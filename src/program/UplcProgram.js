@@ -1,5 +1,4 @@
 import { decodeBytes, encodeBytes, isBytes } from "@helios-lang/cbor"
-import { BasicUplcLogger } from "../logging/BasicUplcLogger.js"
 import { ByteStream } from "@helios-lang/codec-utils"
 import { blake2b } from "@helios-lang/crypto"
 import { CekMachine } from "../cek/index.js"

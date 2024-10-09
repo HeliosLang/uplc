@@ -43,7 +43,7 @@ export class BuiltinCallFrame {
      * @readonly
      * @type {Option<Site>}
      */
-    callSite
+    _callSite
 
     /**
      * @param {number} id
@@ -57,7 +57,7 @@ export class BuiltinCallFrame {
         this.name = name
         this.args = args
         this.stack = stack
-        this.callSite = callSite
+        this._callSite = callSite
     }
 
     /**
@@ -110,7 +110,7 @@ export class BuiltinCallFrame {
             const callSites = args.map((a, i) => {
                 if (i == args.length - 1) {
                     return {
-                        site: this.callSite,
+                        site: this._callSite,
                         functionName: b.name,
                         argument: a
                     }
@@ -126,7 +126,7 @@ export class BuiltinCallFrame {
                     state: {
                         reducing: b.call(args, {
                             print: (message) => {
-                                ctx.print(message, this.callSite)
+                                ctx.print(message, this._callSite)
                             }
                         })
                     }

@@ -1,5 +1,3 @@
-import { CostModelParamsProxy } from "./CostModelParamsProxy.js"
-
 /**
  * @typedef {import("./ArgSizesCost.js").ArgSizesCost} ArgSizesCost
  */

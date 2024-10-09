@@ -1,7 +1,7 @@
+import { prepadBytes } from "@helios-lang/codec-utils"
 import { G2, decodeG2Point, encodeG2Point } from "@helios-lang/crypto"
 import { FlatWriter, bytesFlatSize } from "../flat/index.js"
 import { UplcType } from "./UplcType.js"
-import { prepadBytes } from "@helios-lang/codec-utils"
 
 /**
  * @typedef {import("@helios-lang/crypto").Point3<[bigint, bigint]>} Point3

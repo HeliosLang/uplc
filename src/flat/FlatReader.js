@@ -1,7 +1,7 @@
 import { BitReader } from "@helios-lang/codec-utils"
-import { decodeFlatSite } from "./site.js"
 import { decodeFlatBytes } from "./bytes.js"
 import { decodeFlatInt } from "./int.js"
+import { decodeFlatSite } from "./site.js"
 
 /**
  * @typedef {import("./site.js").Site} Site
@@ -28,7 +28,7 @@ export class FlatReader extends BitReader {
      * @readonly
      * @type {(r: FlatReader<any, any>, typeList: number[]) => ValueReader<TValue>}
      */
-    dispatchValueReader
+    _dispatchValueReader
 
     /**
      * @param {number[] | Uint8Array} bytes
@@ -38,7 +38,7 @@ export class FlatReader extends BitReader {
     constructor(bytes, readExpr, dispatchValueReader) {
         super(bytes)
         this.readExpr = () => readExpr(this)
-        this.dispatchValueReader = dispatchValueReader
+        this._dispatchValueReader = dispatchValueReader
     }
 
     /**
@@ -89,7 +89,7 @@ export class FlatReader extends BitReader {
     readValue() {
         let typeList = this.readLinkedList(4)
 
-        const valueReader = this.dispatchValueReader(this, typeList)
+        const valueReader = this._dispatchValueReader(this, typeList)
 
         if (typeList.length != 0) {
             throw new Error("did not consume all type parameters")

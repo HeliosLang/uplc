@@ -41,7 +41,7 @@ export class LambdaCallFrame {
      * @readonly
      * @type {LambdaCallFrameInfo}
      */
-    info
+    _info
 
     /**
      * @param {CekTerm} term - function body
@@ -51,7 +51,7 @@ export class LambdaCallFrame {
     constructor(term, stack, info = {}) {
         this.term = term
         this.stack = stack
-        this.info = info
+        this._info = info
     }
 
     /**
@@ -59,10 +59,10 @@ export class LambdaCallFrame {
      * @returns {CekStateChange}
      */
     reduce(value) {
-        if (this.info.argName) {
+        if (this._info.argName) {
             value = {
                 ...value,
-                name: this.info.argName
+                name: this._info.argName
             }
         }
 
@@ -76,8 +76,8 @@ export class LambdaCallFrame {
          * @type {CallSiteInfo}
          */
         const callSite = {
-            site: this.info.callSite ?? undefined,
-            functionName: this.info.name ?? undefined,
+            site: this._info.callSite ?? undefined,
+            functionName: this._info.name ?? undefined,
             arguments: lastSelfValue ? [lastSelfValue, value] : [value]
         }
 

@@ -1,5 +1,5 @@
-import { describe, it } from "node:test"
 import { strictEqual, throws } from "node:assert"
+import { describe, it } from "node:test"
 import { builtinsV1, builtinsV3 } from "../builtins/index.js"
 import { parseProgram } from "./parse.js"
 

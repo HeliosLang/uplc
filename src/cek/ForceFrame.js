@@ -25,7 +25,7 @@ export class ForceFrame {
      * @readonly
      * @type {Option<Site>}
      */
-    callSite
+    _callSite
 
     /**
      * @param {CekStack} stack
@@ -33,7 +33,7 @@ export class ForceFrame {
      */
     constructor(stack, callSite) {
         this.stack = stack
-        this.callSite = callSite
+        this._callSite = callSite
     }
 
     /**
@@ -58,7 +58,7 @@ export class ForceFrame {
                         stack: mixStacks(
                             delay.stack,
                             pushStackCallSite(this.stack, {
-                                site: this.callSite ?? undefined,
+                                site: this._callSite ?? undefined,
                                 functionName: value.name,
                                 arguments: lastSelfValue
                                     ? [lastSelfValue]

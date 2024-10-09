@@ -22,13 +22,18 @@ const BLS12_381_ML_RESULT = "1011"
  * Represents the typeBits of a UPLC primitive.
  */
 export class UplcType {
-    #typeBits
+    /**
+     * @private
+     * @readonly
+     * @type {string}
+     */
+    _typeBits
 
     /**
      * @param {string} typeBits
      */
     constructor(typeBits) {
-        this.#typeBits = typeBits
+        this._typeBits = typeBits
     }
 
     /**
@@ -138,7 +143,7 @@ export class UplcType {
      * @type {string}
      */
     get typeBits() {
-        return this.#typeBits
+        return this._typeBits
     }
 
     /**
@@ -146,25 +151,25 @@ export class UplcType {
      * @returns {boolean}
      */
     isEqual(value) {
-        return this.#typeBits == value.typeBits
+        return this._typeBits == value.typeBits
     }
 
     /**
      * @returns {boolean}
      */
     isData() {
-        return this.#typeBits == UplcType.data().#typeBits
+        return this._typeBits == UplcType.data()._typeBits
     }
 
     /**
      * @returns {boolean}
      */
     isDataPair() {
-        return this.#typeBits == UplcType.dataPair().#typeBits
+        return this._typeBits == UplcType.dataPair()._typeBits
     }
 
     toString() {
-        let typeBits = this.#typeBits
+        let typeBits = this._typeBits
 
         /**
          * @type {string[]}
@@ -227,7 +232,7 @@ export class UplcType {
                             break
                         default:
                             throw new Error(
-                                `invalid UplcType ${this.#typeBits}`
+                                `invalid UplcType ${this._typeBits}`
                             )
                     }
                     break

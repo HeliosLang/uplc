@@ -1,11 +1,11 @@
 import { describe, it } from "node:test"
+import { None } from "@helios-lang/type-utils"
 import { builtinsV1, builtinsV2, builtinsV3 } from "../builtins/index.js"
 import { CostModel } from "./CostModel.js"
 import { CostModelParamsProxy } from "./CostModelParamsProxy.js"
 import { BABBAGE_COST_MODEL_PARAMS_V1 } from "./CostModelParamsV1.js"
 import { BABBAGE_COST_MODEL_PARAMS_V2 } from "./CostModelParamsV2.js"
 import { CONWAY_COST_MODEL_PARAMS_V3 } from "./CostModelParamsV3.js"
-import { None } from "@helios-lang/type-utils"
 
 describe(`${CostModel.name} for V1`, () => {
     it("all params used exactly once", () => {

@@ -8,11 +8,10 @@ import { stringifyCekValue } from "./CekValue.js"
 
 export class UplcRuntimeError extends Error {
     /**
-     * private field so that it doesn't show up when the error isn't caught (i.e. not enumerable)
      * @readonly
      * @type {CallSiteInfo[]}
      */
-    #frames
+    frames
 
     /**
      * @param {string} message
@@ -21,16 +20,15 @@ export class UplcRuntimeError extends Error {
     constructor(message, callSites = []) {
         super(message)
 
-        this.#frames = callSites
+        this.frames = callSites
+
+        Object.defineProperty(this, "frames", {
+            enumerable: false,
+            writable: true,
+            configurable: false
+        })
 
         UplcRuntimeError.prepareHeliosStackTrace(this, callSites)
-    }
-
-    /**
-     * @type {CallSiteInfo[]}
-     */
-    get frames() {
-        return this.#frames
     }
 
     /**

@@ -37,19 +37,19 @@ export class CekMachine {
      * @readonly
      * @type {CekFrame[]}
      */
-    frames
+    _frames
 
     /**
      * @private
      * @type {CekState}
      */
-    state
+    _state
 
     /**
      * @private
      * @type {{message: string, site?: Site}[]}     *
      */
-    logs
+    _logs
 
     /**
      * @type {Option<UplcLoggingI>}
@@ -66,12 +66,12 @@ export class CekMachine {
     constructor(term, builtins, costModel, diagnostics) {
         this.builtins = builtins
         this.cost = new CostTracker(costModel)
-        this.frames = []
-        this.logs = []
+        this._frames = []
+        this._logs = []
 
         this.diagnostics = diagnostics
 
-        this.state = {
+        this._state = {
             computing: {
                 term,
                 stack: {
@@ -86,7 +86,7 @@ export class CekMachine {
      * @returns {string | undefined}
      */
     popLastMessage() {
-        return this.logs.pop()?.message
+        return this._logs.pop()?.message
     }
 
     /**
@@ -104,40 +104,40 @@ export class CekMachine {
         this.cost.incrStartupCost()
 
         while (true) {
-            if ("computing" in this.state) {
-                const { term, stack } = this.state.computing
+            if ("computing" in this._state) {
+                const { term, stack } = this._state.computing
 
                 const { state: newState, frame: newFrame } = term.compute(
                     stack,
                     this
                 )
 
-                this.state = newState
+                this._state = newState
 
                 if (newFrame) {
-                    this.frames.push(newFrame)
+                    this._frames.push(newFrame)
                 }
-            } else if ("reducing" in this.state) {
-                const f = this.frames.pop()
+            } else if ("reducing" in this._state) {
+                const f = this._frames.pop()
 
                 if (f) {
                     const { state: newState, frame: newFrame } = f.reduce(
-                        this.state.reducing,
+                        this._state.reducing,
                         this
                     )
 
-                    this.state = newState
+                    this._state = newState
 
                     if (newFrame) {
-                        this.frames.push(newFrame)
+                        this._frames.push(newFrame)
                     }
                 } else {
                     return this.returnValue(
-                        stringifyNonUplcValue(this.state.reducing)
+                        stringifyNonUplcValue(this._state.reducing)
                     )
                 }
-            } else if ("error" in this.state) {
-                return this.returnError(this.state.error)
+            } else if ("error" in this._state) {
+                return this.returnError(this._state.error)
             }
         }
     }
@@ -159,7 +159,7 @@ export class CekMachine {
                 mem: this.cost.mem,
                 cpu: this.cost.cpu
             },
-            logs: this.logs,
+            logs: this._logs,
             breakdown: this.cost.breakdown
         }
     }
@@ -178,7 +178,7 @@ export class CekMachine {
                 mem: this.cost.mem,
                 cpu: this.cost.cpu
             },
-            logs: this.logs,
+            logs: this._logs,
             breakdown: this.cost.breakdown
         }
     }
@@ -188,7 +188,7 @@ export class CekMachine {
      * @param {Option<Site>} site
      */
     print(message, site = None) {
-        this.logs.push({ message, site: site ?? undefined })
+        this._logs.push({ message, site: site ?? undefined })
         this.diagnostics?.logPrint(message, site)
     }
 }

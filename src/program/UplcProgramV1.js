@@ -6,6 +6,7 @@ import {
     DEFAULT_COST_MODEL_PARAMS_V1
 } from "../costmodel/index.js"
 import { apply } from "../terms/index.js"
+import { parseProgram } from "./parse.js"
 import {
     decodeCborProgram,
     decodeFlatProgram,
@@ -14,7 +15,6 @@ import {
     evalProgram,
     hashProgram
 } from "./UplcProgram.js"
-import { parseProgram } from "./parse.js"
 import { UplcSourceMap } from "./UplcSourceMap.js"
 
 /**

@@ -1,7 +1,7 @@
 /**
  * Methods for parsing the string representation of a program
  */
-import { bytesToHex, encodeIntBE, padBytes } from "@helios-lang/codec-utils"
+import { encodeIntBE } from "@helios-lang/codec-utils"
 import {
     Source,
     TokenReader,

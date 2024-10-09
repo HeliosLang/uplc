@@ -21,21 +21,21 @@ export class PreCallFrame {
      * @readonly
      * @type {CekTerm}
      */
-    arg
+    _arg
 
     /**
      * @private
      * @readonly
      * @type {CekStack}
      */
-    stack
+    _stack
 
     /**
      * @private
      * @readonly
      * @type {Option<Site>}
      */
-    callSite
+    _callSite
 
     /**
      * @param {CekTerm} arg
@@ -43,9 +43,9 @@ export class PreCallFrame {
      * @param {Option<Site>} callSite
      */
     constructor(arg, stack, callSite) {
-        this.arg = arg
-        this.stack = stack
-        this.callSite = callSite
+        this._arg = arg
+        this._stack = stack
+        this._callSite = callSite
     }
 
     /**
@@ -58,15 +58,15 @@ export class PreCallFrame {
             return {
                 state: {
                     computing: {
-                        term: this.arg,
-                        stack: this.stack
+                        term: this._arg,
+                        stack: this._stack
                     }
                 },
                 frame: new LambdaCallFrame(
                     value.lambda.term,
-                    mixStacks(value.lambda.stack, this.stack),
+                    mixStacks(value.lambda.stack, this._stack),
                     {
-                        callSite: this.callSite,
+                        callSite: this._callSite,
                         name: value.name,
                         argName: value.lambda.argName
                     }
@@ -80,7 +80,7 @@ export class PreCallFrame {
                     state: {
                         error: {
                             message: `builtin ${value.builtin.id} not found`,
-                            stack: this.stack
+                            stack: this._stack
                         }
                     }
                 }
@@ -89,7 +89,7 @@ export class PreCallFrame {
                     state: {
                         error: {
                             message: `insufficient forces applied to ${b.name}, ${value.builtin.forceCount} < ${b.forceCount}`,
-                            stack: this.stack
+                            stack: this._stack
                         }
                     }
                 }
@@ -97,16 +97,16 @@ export class PreCallFrame {
                 return {
                     state: {
                         computing: {
-                            term: this.arg,
-                            stack: this.stack
+                            term: this._arg,
+                            stack: this._stack
                         }
                     },
                     frame: new BuiltinCallFrame(
                         value.builtin.id,
                         value.builtin.name,
                         value.builtin.args,
-                        this.stack,
-                        this.callSite
+                        this._stack,
+                        this._callSite
                     )
                 }
             }
@@ -115,7 +115,7 @@ export class PreCallFrame {
                 state: {
                     error: {
                         message: `can only call lambda or builtin terms`,
-                        stack: this.stack
+                        stack: this._stack
                     }
                 }
             }

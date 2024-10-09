@@ -1,11 +1,4 @@
-import {
-    ByteArrayData,
-    ConstrData,
-    IntData,
-    ListData,
-    MapData,
-    decodeUplcData
-} from "../data/index.js"
+import { decodeUplcData } from "../data/index.js"
 import { FlatReader, FlatWriter, bytesFlatSize } from "../flat/index.js"
 import { UplcType } from "./UplcType.js"
 

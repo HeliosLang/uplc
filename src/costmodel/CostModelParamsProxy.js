@@ -19,13 +19,13 @@ export class CostModelParamsProxy {
      * @readonly
      * @type {number[]}
      */
-    params
+    _params
 
     /**
      * @param {number[]} params
      */
     constructor(params) {
-        this.params = params
+        this._params = params
     }
 
     /**
@@ -35,7 +35,7 @@ export class CostModelParamsProxy {
      * @returns {bigint}
      */
     get(key, def = None) {
-        const v = this.params[key]
+        const v = this._params[key]
 
         if (isNone(v)) {
             if (isSome(def)) {

@@ -1,6 +1,6 @@
+import { strictEqual } from "node:assert"
 import { describe, it } from "node:test"
 import { UplcInt } from "./UplcInt.js"
-import { strictEqual } from "node:assert"
 
 const roundtripTestVector = [-1n, -2n, -3n, -4n]
 
