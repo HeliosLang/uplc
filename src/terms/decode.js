@@ -1,4 +1,3 @@
-import { FlatReader } from "../flat/index.js"
 import { UPLC_BUILTIN_TAG, UplcBuiltin } from "./UplcBuiltin.js"
 import { UPLC_CALL_TAG, UplcCall } from "./UplcCall.js"
 import { UPLC_CONST_TAG, UplcConst } from "./UplcConst.js"
@@ -9,6 +8,12 @@ import { UPLC_LAMBDA_TAG, UplcLambda } from "./UplcLambda.js"
 import { UPLC_VAR_TAG, UplcVar } from "./UplcVar.js"
 
 /**
+ * @template TExpr
+ * @template TValue
+ * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ */
+
+/**
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
  * @typedef {import("../builtins/index.js").Builtin} Builtin
  * @typedef {import("../values/index.js").UplcValue} UplcValue
@@ -17,7 +22,7 @@ import { UPLC_VAR_TAG, UplcVar } from "./UplcVar.js"
 /**
  * Reads a single UplcTerm
  * @template {UplcTerm} TExpr
- * @param {FlatReader<TExpr, UplcValue>} r
+ * @param {FlatReaderI<TExpr, UplcValue>} r
  * @param {Builtin[]} builtins
  * @returns {UplcTerm}
  */

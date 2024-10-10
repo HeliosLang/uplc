@@ -1,4 +1,9 @@
-import { BitReader, BitWriter, padBits } from "@helios-lang/codec-utils"
+import { padBits } from "@helios-lang/codec-utils"
+
+/**
+ * @typedef {import("@helios-lang/codec-utils").BitReaderI} BitReaderI
+ * @typedef {import("@helios-lang/codec-utils").BitWriterI} BitWriterI
+ */
 
 /**
  * 2 to the power 'p' for bigint.
@@ -50,7 +55,7 @@ function rawByteIsLast(b) {
 
 /**
  * Returns an unsigned (zigzag encoded) bigint
- * @param {BitReader} reader
+ * @param {BitReaderI} reader
  * @returns {bigint}
  */
 export function decodeFlatInt(reader) {
@@ -69,7 +74,7 @@ export function decodeFlatInt(reader) {
 }
 
 /**
- * @param {BitWriter} bitWriter
+ * @param {BitWriterI} bitWriter
  * @param {bigint} x
  */
 export function encodeFlatInt(bitWriter, x) {

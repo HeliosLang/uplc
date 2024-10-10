@@ -1,10 +1,6 @@
 import { G1, G2, millerLoop } from "@helios-lang/crypto"
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import {
-    Bls12_381_G1_element,
-    Bls12_381_G2_element,
-    Bls12_381_MlResult
-} from "../../values/index.js"
+import { Bls12_381_MlResult } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -20,7 +16,7 @@ export const bls12_381_millerLoop = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesConstCost(params.get(231)),
     memModel: (params) => new ArgSizesConstCost(params.get(232)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "bls12_381_G1_element") {

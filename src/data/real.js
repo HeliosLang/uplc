@@ -3,6 +3,7 @@ import { IntData } from "./IntData.js"
 
 /**
  * @typedef {import("./UplcData.js").UplcData} UplcData
+ * @typedef {import("./UplcData.js").IntDataI} IntDataI
  */
 
 /**
@@ -15,7 +16,7 @@ export function decodeRealData(data) {
 
 /**
  * @param {number} x
- * @returns {IntData}
+ * @returns {IntDataI}
  */
 export function encodeRealData(x) {
     return new IntData(Math.round(x * Math.pow(10, REAL_PRECISION)))

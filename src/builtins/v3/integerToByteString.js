@@ -8,7 +8,7 @@ import {
     ArgSizesLiteralYOrLinearZCost,
     ArgSizesQuadZCost
 } from "../../costmodel/index.js"
-import { UplcBool, UplcByteArray, UplcInt } from "../../values/index.js"
+import { UplcByteArray } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -30,7 +30,7 @@ export const integerToByteString = {
         }),
     memModel: (params) =>
         new ArgSizesLiteralYOrLinearZCost(params.get(245), params.get(244)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b, c] = asUplcValues(args)
 
         if (a?.kind != "bool") {

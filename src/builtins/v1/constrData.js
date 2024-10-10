@@ -1,6 +1,6 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
 import { ConstrData } from "../../data/index.js"
-import { UplcDataValue, UplcInt, UplcList } from "../../values/index.js"
+import { UplcDataValue } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -16,7 +16,7 @@ export const constrData = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesConstCost(params.get(43)),
     memModel: (params) => new ArgSizesConstCost(params.get(44)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [tag, fields] = asUplcValues(args)
 
         if (tag?.kind != "int") {

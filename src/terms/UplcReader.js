@@ -9,6 +9,7 @@ import { decodeTerm } from "./decode.js"
  */
 
 /**
+ * TODO: don't extend, use composition instead
  * @extends {FlatReader<UplcTerm, UplcValue>}
  */
 export class UplcReader extends FlatReader {

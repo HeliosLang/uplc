@@ -1,6 +1,6 @@
 import { decodeIntBE, decodeIntLE } from "@helios-lang/codec-utils"
 import { ArgSizesQuadYCost, ArgSizesSecondCost } from "../../costmodel/index.js"
-import { UplcBool, UplcByteArray, UplcInt } from "../../values/index.js"
+import { UplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -22,7 +22,7 @@ export const byteStringToInteger = {
         }),
     memModel: (params) =>
         new ArgSizesSecondCost(params.get(250), params.get(249)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "bool") {

@@ -18,6 +18,25 @@
  * }} BuiltinCostModel
  */
 
+/**
+ * @typedef {{
+ *   builtinTerm: Cost
+ *   callTerm: Cost
+ *   constTerm: Cost
+ *   delayTerm: Cost
+ *   forceTerm: Cost
+ *   lambdaTerm: Cost
+ *   startupTerm: Cost
+ *   varTerm: Cost
+ *   constrTerm: Cost
+ *   caseTerm: Cost
+ *   builtins: Record<string, (argSizes: bigint[]) => Cost>
+ * }} CostModelI
+ */
+
+/**
+ * @implements {CostModelI}
+ */
 export class CostModel {
     /**
      * @readonly
@@ -81,7 +100,7 @@ export class CostModel {
 
     /**
      * @readonly
-     * @type {{[name: string]: (argSizes: bigint[]) => Cost}}
+     * @type {Record<string, (argSizes: bigint[]) => Cost>}
      */
     builtins
 

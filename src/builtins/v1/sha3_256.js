@@ -17,7 +17,7 @@ export const sha3_256 = {
     cpuModel: (params) =>
         new ArgSizesFirstCost(params.get(137), params.get(136)),
     memModel: (params) => new ArgSizesConstCost(params.get(138)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a] = asUplcValues(args)
 
         if (a?.kind != "bytes") {

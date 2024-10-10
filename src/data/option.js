@@ -3,6 +3,7 @@ import { ConstrData } from "./ConstrData.js"
 
 /**
  * @typedef {import("./UplcData.js").UplcData} UplcData
+ * @typedef {import("./UplcData.js").ConstrDataI} ConstrDataI
  */
 
 /**
@@ -46,7 +47,7 @@ export function decodeOptionData(data, strict = false) {
 
 /**
  * @param {Option<UplcData>} data
- * @returns {ConstrData}
+ * @returns {ConstrDataI}
  */
 export function encodeOptionData(data) {
     if (data) {

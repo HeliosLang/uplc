@@ -1,13 +1,14 @@
-import { FlatWriter } from "../flat/index.js"
+export {}
 
 /**
  * @typedef {import("../cek/CekTerm.js").CekTerm} CekTerm
+ * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  */
 
 /**
  * @typedef {CekTerm & {
- *   toFlat: (writer: FlatWriter) => void
+ *   toFlat: (writer: FlatWriterI) => void
  *   children: UplcTerm[]
  * }} CommonUplcTermProps
  */

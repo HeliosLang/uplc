@@ -1,6 +1,6 @@
 import { ECDSASecp256k1 } from "@helios-lang/crypto"
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcBool, UplcByteArray } from "../../values/index.js"
+import { UplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -16,7 +16,7 @@ export const verifyEcdsaSecp256k1Signature = {
     nArgs: 3,
     cpuModel: (params) => new ArgSizesConstCost(params.get(167)),
     memModel: (params) => new ArgSizesConstCost(params.get(168)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [publicKey, message, signature] = asUplcValues(args)
 
         if (publicKey?.kind != "bytes") {

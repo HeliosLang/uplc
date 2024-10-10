@@ -1,6 +1,6 @@
 import { ArgSizesConstCost, ArgSizesDiagCost } from "../../costmodel/index.js"
 import { ByteArrayData } from "../../data/index.js"
-import { UplcBool, UplcByteArray } from "../../values/index.js"
+import { UplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -17,7 +17,7 @@ export const equalsByteString = {
     cpuModel: (params) =>
         new ArgSizesDiagCost(params.get(61), params.get(60), params.get(59)),
     memModel: (params) => new ArgSizesConstCost(params.get(62)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "bytes") {

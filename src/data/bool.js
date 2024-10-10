@@ -2,6 +2,7 @@ import { ConstrData } from "./ConstrData.js"
 
 /**
  * @typedef {import("./UplcData.js").UplcData} UplcData
+ * @typedef {import("./UplcData.js").ConstrDataI} ConstrDataI
  */
 
 /**
@@ -37,7 +38,7 @@ export function decodeBoolData(data, strict = false) {
 /**
  *
  * @param {boolean} b
- * @returns {ConstrData}
+ * @returns {ConstrDataI}
  */
 export function encodeBoolData(b) {
     return new ConstrData(b ? 1 : 0, [])

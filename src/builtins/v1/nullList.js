@@ -1,5 +1,5 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcBool, UplcList } from "../../values/index.js"
+import { UplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -15,7 +15,7 @@ export const nullList = {
     nArgs: 1,
     cpuModel: (params) => new ArgSizesConstCost(params.get(119)),
     memModel: (params) => new ArgSizesConstCost(params.get(120)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [list] = asUplcValues(args)
 
         if (list?.kind != "list") {

@@ -24,10 +24,10 @@ export const modInteger = {
 
 /**
  * @param {CekValue[]} args
- * @param {BuiltinContext} ctx
+ * @param {BuiltinContext} _ctx
  * @returns {CekValue}
  */
-export function evalModInteger(args, ctx) {
+export function evalModInteger(args, _ctx) {
     const [a, b] = asUplcValues(args)
 
     if (a?.kind != "int") {

@@ -178,7 +178,7 @@ export class UplcProgramV3 {
 
     /**
      * @param {undefined | UplcValue[]} args - if undefined, eval the root term without any applications, if empty: apply a force to the root term
-     * @param {Object} [options]
+     * @param {object} [options]
      * @param {UplcLoggingI} [options.logOptions]
      * @param {number[]} [options.costModelParams]
      * @returns {CekResult}

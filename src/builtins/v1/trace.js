@@ -1,5 +1,4 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcString } from "../../values/UplcString.js"
 import { asUplcValue } from "../cast.js"
 
 /**

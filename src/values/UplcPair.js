@@ -1,8 +1,9 @@
-import { FlatWriter } from "../flat/index.js"
 import { UplcType } from "./UplcType.js"
 
 /**
+ * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
  * @typedef {import("./UplcValue.js").UplcPairI} UplcPairI
+ * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
@@ -56,7 +57,7 @@ export class UplcPair {
 
     /**
      * 7 (7 (6) (fst)) (snd)
-     * @returns {UplcType}
+     * @returns {UplcTypeI}
      */
     get type() {
         return UplcType.pair(this.first.type, this.second.type)
@@ -75,7 +76,7 @@ export class UplcPair {
     }
 
     /**
-     * @param {FlatWriter} w
+     * @param {FlatWriterI} w
      */
     toFlat(w) {
         this.first.toFlat(w)

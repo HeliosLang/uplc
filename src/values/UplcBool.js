@@ -1,9 +1,17 @@
 import { ConstrData } from "../data/index.js"
-import { FlatReader, FlatWriter } from "../flat/index.js"
 import { UplcType } from "./UplcType.js"
 
 /**
+ * @template TExpr
+ * @template TValue
+ * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ */
+
+/**
+ * @typedef {import("../data/index.js").ConstrDataI} ConstrDataI
+ * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
  * @typedef {import("./UplcValue.js").UplcBoolI} UplcBoolI
+ * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
@@ -33,7 +41,7 @@ export class UplcBool {
     }
 
     /**
-     * @param {FlatReader<any, UplcValue>} r
+     * @param {FlatReaderI<any, UplcValue>} r
      * @returns {UplcBool}
      */
     static fromFlat(r) {
@@ -56,7 +64,7 @@ export class UplcBool {
     }
 
     /**
-     * @returns {UplcType}
+     * @returns {UplcTypeI}
      */
     get type() {
         return UplcType.bool()
@@ -78,7 +86,7 @@ export class UplcBool {
     }
 
     /**
-     * @param {FlatWriter} w
+     * @param {FlatWriterI} w
      */
     toFlat(w) {
         w.writeBool(this.value)
@@ -92,7 +100,7 @@ export class UplcBool {
     }
 
     /**
-     * @returns {ConstrData}
+     * @returns {ConstrDataI}
      */
     toUplcData() {
         return new ConstrData(this.value ? 1 : 0, [])

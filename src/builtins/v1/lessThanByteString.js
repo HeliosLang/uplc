@@ -1,6 +1,6 @@
 import { ArgSizesConstCost, ArgSizesMinCost } from "../../costmodel/index.js"
 import { ByteArrayData } from "../../data/index.js"
-import { UplcBool, UplcByteArray } from "../../values/index.js"
+import { UplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -16,7 +16,7 @@ export const lessThanByteString = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesMinCost(params.get(86), params.get(85)),
     memModel: (params) => new ArgSizesConstCost(params.get(87)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "bytes") {

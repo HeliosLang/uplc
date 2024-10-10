@@ -15,7 +15,7 @@ export const subtractInteger = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesMaxCost(params.get(146), params.get(145)),
     memModel: (params) => new ArgSizesMaxCost(params.get(148), params.get(147)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "int") {

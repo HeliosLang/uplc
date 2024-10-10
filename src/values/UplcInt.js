@@ -1,11 +1,18 @@
 import { encodeZigZag, decodeZigZag } from "@helios-lang/codec-utils"
 import { IntData } from "../data/index.js"
-import { FlatReader, FlatWriter } from "../flat/index.js"
 import { UplcType } from "./UplcType.js"
 
 /**
+ * @template TExpr
+ * @template TValue
+ * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ */
+
+/**
  * @typedef {import("@helios-lang/codec-utils").IntLike} IntLike
+ * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
  * @typedef {import("./UplcValue.js").UplcIntI} UplcIntI
+ * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
@@ -55,18 +62,18 @@ export class UplcInt {
     }
 
     /**
-     * @param {FlatReader<any, UplcValue>} r
+     * @param {FlatReaderI<any, UplcValue>} r
      * @param {boolean} signed
      * @returns {UplcInt}
      */
     static fromFlat(r, signed = false) {
-        let res = new UplcInt(r.readInt(), false)
+        const i = r.readInt()
 
         if (signed) {
-            res = res.toSigned() // unzigzag is performed here
+            return new UplcInt(decodeZigZag(i), true)
+        } else {
+            return new UplcInt(i, false)
         }
-
-        return res
     }
 
     /**
@@ -86,7 +93,7 @@ export class UplcInt {
     }
 
     /**
-     * @returns {UplcType}
+     * @returns {UplcTypeI}
      */
     get type() {
         return UplcType.int()
@@ -101,7 +108,7 @@ export class UplcInt {
     }
 
     /**
-     * @param {FlatWriter} w
+     * @param {FlatWriterI} w
      */
     toFlat(w) {
         if (!this.signed) {
@@ -115,7 +122,7 @@ export class UplcInt {
      * Encodes unsigned integer with plutus flat encoding.
      * Throws error if signed.
      * Used by encoding plutus core program version and debruijn indices.
-     * @param {FlatWriter} w
+     * @param {FlatWriterI} w
      */
     toFlatUnsigned(w) {
         if (this.signed) {
@@ -134,7 +141,7 @@ export class UplcInt {
 
     /**
      * Unapplies zigzag encoding
-     * @returns {UplcInt}
+     * @returns {UplcIntI}
      */
     toSigned() {
         if (this.signed) {
@@ -146,7 +153,7 @@ export class UplcInt {
 
     /**
      * Applies zigzag encoding
-     * @returns {UplcInt}
+     * @returns {UplcIntI}
      */
     toUnsigned() {
         if (this.signed) {

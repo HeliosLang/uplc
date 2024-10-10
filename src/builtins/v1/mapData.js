@@ -1,6 +1,6 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
 import { MapData } from "../../data/index.js"
-import { UplcDataValue, UplcList, UplcPair } from "../../values/index.js"
+import { UplcDataValue } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -16,7 +16,7 @@ export const mapData = {
     nArgs: 1,
     cpuModel: (params) => new ArgSizesConstCost(params.get(99)),
     memModel: (params) => new ArgSizesConstCost(params.get(100)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [list] = asUplcValues(args)
 
         if (list?.kind != "list") {

@@ -1,5 +1,5 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcList, UplcType, UplcUnit } from "../../values/index.js"
+import { UplcList, UplcType } from "../../values/index.js"
 import { asCekValue, asUplcValue } from "../cast.js"
 
 /**
@@ -15,7 +15,7 @@ export const mkNilPairData = {
     nArgs: 1,
     cpuModel: (params) => new ArgSizesConstCost(params.get(105)),
     memModel: (params) => new ArgSizesConstCost(params.get(106)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const a = asUplcValue(args[0])
 
         if (a?.kind != "unit") {

@@ -1,9 +1,5 @@
-import {
-    ArgSizesConstCost,
-    ArgSizesDiffCost,
-    ArgSizesMinCost
-} from "../../costmodel/index.js"
-import { UplcBool, UplcInt } from "../../values/index.js"
+import { ArgSizesConstCost, ArgSizesMinCost } from "../../costmodel/index.js"
+import { UplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -19,7 +15,7 @@ export const lessThanInteger = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesMinCost(params.get(95), params.get(94)),
     memModel: (params) => new ArgSizesConstCost(params.get(96)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "int") {

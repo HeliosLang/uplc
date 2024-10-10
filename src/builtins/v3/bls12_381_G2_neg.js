@@ -16,7 +16,7 @@ export const bls12_381_G2_neg = {
     nArgs: 1,
     cpuModel: (params) => new ArgSizesConstCost(params.get(222)),
     memModel: (params) => new ArgSizesConstCost(params.get(223)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a] = asUplcValues(args)
 
         if (a?.kind != "bls12_381_G2_element") {

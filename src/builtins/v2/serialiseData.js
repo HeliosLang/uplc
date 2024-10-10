@@ -1,5 +1,5 @@
 import { ArgSizesFirstCost } from "../../costmodel/index.js"
-import { UplcByteArray, UplcDataValue } from "../../values/index.js"
+import { UplcByteArray } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -17,7 +17,7 @@ export const serialiseData = {
         new ArgSizesFirstCost(params.get(134), params.get(133)),
     memModel: (params) =>
         new ArgSizesFirstCost(params.get(136), params.get(135)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a] = asUplcValues(args)
 
         if (a?.kind != "data") {

@@ -1,6 +1,6 @@
 import { G1 } from "@helios-lang/crypto"
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { Bls12_381_G1_element, UplcBool } from "../../values/index.js"
+import { UplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -16,7 +16,7 @@ export const bls12_381_G1_equal = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesConstCost(params.get(201)),
     memModel: (params) => new ArgSizesConstCost(params.get(202)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "bls12_381_G1_element") {

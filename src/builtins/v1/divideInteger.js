@@ -25,10 +25,10 @@ export const divideInteger = {
 /**
  *
  * @param {CekValue[]} args
- * @param {BuiltinContext} ctx
+ * @param {BuiltinContext} _ctx
  * @returns {CekValue}
  */
-export function evalDivideInteger(args, ctx) {
+export function evalDivideInteger(args, _ctx) {
     const [a, b] = asUplcValues(args)
 
     if (a?.kind != "int") {

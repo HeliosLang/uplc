@@ -48,10 +48,20 @@ import {
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
+ * @typedef {import("@helios-lang/compiler-utils").TokenReaderI} TokenReaderI
  * @typedef {import("../builtins/index.js").Builtin} Builtin
  * @typedef {import("../data/index.js").UplcData} UplcData
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
+ * @typedef {import("../terms/index.js").UplcLambdaI} UplcLambdaI
+ * @typedef {import("../values/index.js").Bls12_381_G1_elementI} Bls12_381_G1_elementI
+ * @typedef {import("../values/index.js").Bls12_381_G2_elementI} Bls12_381_G2_elementI
+ * @typedef {import("../values/index.js").UplcBoolI} UplcBoolI
+ * @typedef {import("../values/index.js").UplcByteArrayI} UplcByteArrayI
+ * @typedef {import("../values/index.js").UplcDataValueI} UplcDataValueI
+ * @typedef {import("../values/index.js").UplcIntI} UplcIntI
+ * @typedef {import("../values/index.js").UplcStringI} UplcStringI
  * @typedef {import("../values/index.js").UplcTypeI} UplcTypeI
+ * @typedef {import("../values/index.js").UplcUnitI} UplcUnitI
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcProgram.js").UplcVersion} UplcVersion
  */
@@ -110,6 +120,9 @@ export function parseProgram(s, ctx) {
 
     tokenizer.errors.throw()
 
+    /**
+     * @type {TokenReaderI}
+     */
     let r = new TokenReader(tokens)
     let m
 
@@ -142,7 +155,7 @@ export function parseProgram(s, ctx) {
 }
 
 /**
- * @param {TokenReader} r
+ * @param {TokenReaderI} r
  * @param {ParseContext} ctx
  * @returns {Option<UplcTerm>}
  */
@@ -216,7 +229,7 @@ function parseTerm(r, ctx) {
 }
 
 /**
- * @param {TokenReader} r
+ * @param {TokenReaderI} r
  * @param {Site} site
  * @param {ParseContext} ctx
  * @returns {Option<UplcTerm>}
@@ -246,10 +259,10 @@ function parseBuiltin(r, site, ctx) {
 
 /**
  *
- * @param {TokenReader} r
+ * @param {TokenReaderI} r
  * @param {Site} site
  * @param {ParseContext} ctx
- * @returns {Option<UplcLambda>}
+ * @returns {Option<UplcLambdaI>}
  */
 function parseLambda(r, site, ctx) {
     let m
@@ -266,7 +279,7 @@ function parseLambda(r, site, ctx) {
 }
 
 /**
- * @param {TokenReader} r
+ * @param {TokenReaderI} r
  * @param {Site} site
  * @returns {Option<UplcTerm>}
  */
@@ -286,10 +299,10 @@ function parseConst(r, site) {
 }
 
 /**
- * @typedef {(r: TokenReader) => Option<UplcValue>} ValueParser
+ * @typedef {(r: TokenReaderI) => Option<UplcValue>} ValueParser
  */
 /**
- * @param {TokenReader} r
+ * @param {TokenReaderI} r
  * @returns {Option<[UplcTypeI, ValueParser]>}
  */
 function parseTypedValue(r) {
@@ -328,7 +341,7 @@ function parseTypedValue(r) {
 }
 
 /**
- * @param {TokenReader} r
+ * @param {TokenReaderI} r
  * @returns {Option<[UplcTypeI, ValueParser]>}
  */
 function parseContainer(r) {
@@ -344,7 +357,7 @@ function parseContainer(r) {
 
 /**
  *
- * @param {TokenReader} r
+ * @param {TokenReaderI} r
  * @returns {Option<[UplcTypeI, ValueParser]>}
  */
 function parseList(r) {
@@ -359,7 +372,7 @@ function parseList(r) {
     const listType = UplcType.list(itemType)
 
     /**
-     * @param {TokenReader} r
+     * @param {TokenReaderI} r
      * @returns {Option<UplcValue>}
      */
     const listParser = (r) => {
@@ -379,7 +392,7 @@ function parseList(r) {
 
 /**
  *
- * @param {TokenReader} r
+ * @param {TokenReaderI} r
  * @returns {Option<[UplcTypeI, ValueParser]>}
  */
 function parsePair(r) {
@@ -396,7 +409,7 @@ function parsePair(r) {
     const pairType = UplcType.pair(firstType, secondType)
 
     /**
-     * @param {TokenReader} r
+     * @param {TokenReaderI} r
      * @returns {Option<UplcValue>}
      */
     const pairParser = (r) => {
@@ -421,8 +434,8 @@ function parsePair(r) {
 }
 
 /**
- * @param {TokenReader} r
- * @returns {Option<UplcBool>}
+ * @param {TokenReaderI} r
+ * @returns {Option<UplcBoolI>}
  */
 function parseBool(r) {
     if (r.matches(word("false", { caseInsensitive: true }))) {
@@ -436,8 +449,8 @@ function parseBool(r) {
 }
 
 /**
- * @param {TokenReader} r
- * @returns {Option<UplcByteArray>}
+ * @param {TokenReaderI} r
+ * @returns {Option<UplcByteArrayI>}
  */
 function parseByteArray(r) {
     let m
@@ -450,8 +463,8 @@ function parseByteArray(r) {
 }
 
 /**
- * @param {TokenReader} r
- * @returns {Option<UplcDataValue>}
+ * @param {TokenReaderI} r
+ * @returns {Option<UplcDataValueI>}
  */
 function parseDataValue(r) {
     let m
@@ -476,7 +489,7 @@ function parseDataValue(r) {
 
 /**
  *
- * @param {TokenReader} r
+ * @param {TokenReaderI} r
  * @returns {Option<UplcData>}
  */
 function parseData(r) {
@@ -514,7 +527,7 @@ function parseData(r) {
 
 /**
  *
- * @param {TokenReader} r
+ * @param {TokenReaderI} r
  * @returns {Option<[UplcData, UplcData]>}
  */
 function parseDataPair(r) {
@@ -532,8 +545,8 @@ function parseDataPair(r) {
 }
 
 /**
- * @param {TokenReader} r
- * @returns {Option<Bls12_381_G1_element>}
+ * @param {TokenReaderI} r
+ * @returns {Option<Bls12_381_G1_elementI>}
  */
 function parseBls12_381_G1_element(r) {
     let m
@@ -549,8 +562,8 @@ function parseBls12_381_G1_element(r) {
 }
 
 /**
- * @param {TokenReader} r
- * @returns {Option<Bls12_381_G2_element>}
+ * @param {TokenReaderI} r
+ * @returns {Option<Bls12_381_G2_elementI>}
  */
 function parseBls12_381_G2_element(r) {
     let m
@@ -567,8 +580,8 @@ function parseBls12_381_G2_element(r) {
 
 /**
  *
- * @param {TokenReader} r
- * @returns {Option<UplcInt>}
+ * @param {TokenReaderI} r
+ * @returns {Option<UplcIntI>}
  */
 function parseInt(r) {
     let m
@@ -584,8 +597,8 @@ function parseInt(r) {
 }
 
 /**
- * @param {TokenReader} r
- * @returns {Option<UplcString>}
+ * @param {TokenReaderI} r
+ * @returns {Option<UplcStringI>}
  */
 function parseString(r) {
     let m
@@ -598,12 +611,11 @@ function parseString(r) {
 }
 
 /**
- * @param {TokenReader} r
- * @returns {Option<UplcUnit>}
+ * @param {TokenReaderI} r
+ * @returns {Option<UplcUnitI>}
  */
 function parseUnit(r) {
-    let m
-    if ((m = r.matches(group("(", { length: 0 })))) {
+    if (r.matches(group("(", { length: 0 }))) {
         return new UplcUnit()
     } else {
         r.endMatch()

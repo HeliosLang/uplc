@@ -1,9 +1,10 @@
-import { FlatWriter } from "../flat/index.js"
+export {}
 
 /**
  * @typedef {import("@helios-lang/crypto").FieldElement12} FieldElement12
  * @typedef {import("../data/index.js").ConstrDataI} ConstrDataI
  * @typedef {import("../data/index.js").UplcData} UplcData
+ * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
  */
 
 /**
@@ -33,7 +34,7 @@ import { FlatWriter } from "../flat/index.js"
  *   flatSize: number
  *   type: UplcTypeI
  *   isEqual: (other: UplcValue) => boolean
- *   toFlat: (writer: FlatWriter) => void
+ *   toFlat: (writer: FlatWriterI) => void
  *   toString: () => string
  * }} CommonUplcValueProps
  */
@@ -59,7 +60,7 @@ import { FlatWriter } from "../flat/index.js"
  *   kind: "int"
  *   value: bigint
  *   signed: boolean
- *   toFlatUnsigned: (w: FlatWriter) => void
+ *   toFlatUnsigned: (w: FlatWriterI) => void
  *   toSigned: () => UplcIntI
  *   toUnsigned: () => UplcIntI
  * }} UplcIntI

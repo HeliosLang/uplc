@@ -1,5 +1,5 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { Bls12_381_G2_element, UplcByteArray } from "../../values/index.js"
+import { UplcByteArray } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -15,7 +15,7 @@ export const bls12_381_G2_compress = {
     nArgs: 1,
     cpuModel: (params) => new ArgSizesConstCost(params.get(215)),
     memModel: (params) => new ArgSizesConstCost(params.get(216)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a] = asUplcValues(args)
 
         if (a?.kind != "bls12_381_G2_element") {

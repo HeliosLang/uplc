@@ -178,7 +178,7 @@ export class UplcProgramV2 {
 
     /**
      * @param {Option<UplcValue[]>} args - if None, eval the root term without any applications, if empy: apply a force to the root term
-     * @param {Object} [options]
+     * @param {object} [options]
      * @param {UplcLoggingI} [options.logOptions]
      * @param {number[]} [options.costModelParams]
      * @returns {CekResult}

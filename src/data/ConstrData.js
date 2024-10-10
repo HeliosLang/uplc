@@ -129,7 +129,7 @@ export class ConstrData {
 
     /**
      * @param {number} n
-     * @returns {ConstrData}
+     * @returns {ConstrDataI}
      */
     expectFields(
         n,
@@ -145,7 +145,7 @@ export class ConstrData {
     /**
      * @param {number} tag
      * @param {string} msg
-     * @returns {ConstrData}
+     * @returns {ConstrDataI}
      */
     expectTag(tag, msg = `expected ConstrData tag ${tag}, got ${this.tag}`) {
         if (this.tag != tag) {

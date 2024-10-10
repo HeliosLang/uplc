@@ -1,5 +1,10 @@
-import { FlatReader, FlatWriter } from "../flat/index.js"
 import { UplcType } from "./UplcType.js"
+
+/**
+ * @template TExpr
+ * @template TValue
+ * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ */
 
 /**
  * @template T
@@ -7,6 +12,7 @@ import { UplcType } from "./UplcType.js"
  */
 
 /**
+ * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
  * @typedef {import("./UplcValue.js").UplcListI} UplcListI
  * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
@@ -47,7 +53,7 @@ export class UplcList {
     }
 
     /**
-     * @param {FlatReader<any, UplcValue>} r
+     * @param {FlatReaderI<any, UplcValue>} r
      * @param {UplcTypeI} itemType
      * @param {ValueReader<UplcValue>} itemReader
      * @returns {UplcList}
@@ -104,7 +110,7 @@ export class UplcList {
 
     /**
      * 7 (5) (type bits of content)
-     * @returns {UplcType}
+     * @returns {UplcTypeI}
      */
     get type() {
         return UplcType.list(this.itemType)
@@ -137,7 +143,7 @@ export class UplcList {
     }
 
     /**
-     * @param {FlatWriter} w
+     * @param {FlatWriterI} w
      */
     toFlat(w) {
         w.writeList(this.items)

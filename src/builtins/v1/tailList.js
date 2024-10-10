@@ -15,7 +15,7 @@ export const tailList = {
     nArgs: 1,
     cpuModel: (params) => new ArgSizesConstCost(params.get(149)),
     memModel: (params) => new ArgSizesConstCost(params.get(150)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [list] = asUplcValues(args)
 
         if (list?.kind != "list") {

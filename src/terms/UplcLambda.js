@@ -1,5 +1,10 @@
 import { None } from "@helios-lang/type-utils"
-import { FlatReader, FlatWriter } from "../flat/index.js"
+
+/**
+ * @template TExpr
+ * @template TValue
+ * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ */
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
@@ -7,6 +12,7 @@ import { FlatReader, FlatWriter } from "../flat/index.js"
  * @typedef {import("../cek/index.js").CekStack} CekStack
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
  * @typedef {import("../cek/index.js").CekValue} CekValue
+ * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
  * @typedef {import("./UplcTerm.js").UplcLambdaI} UplcLambdaI
@@ -53,7 +59,7 @@ export class UplcLambda {
 
     /**
      * @template {UplcTerm} TExpr
-     * @param {FlatReader<TExpr, UplcValue>} r
+     * @param {FlatReaderI<TExpr, UplcValue>} r
      * @returns {UplcLambda<TExpr>}
      */
     static fromFlat(r) {
@@ -98,7 +104,7 @@ export class UplcLambda {
     }
 
     /**
-     * @param {FlatWriter} w
+     * @param {FlatWriterI} w
      */
     toFlat(w) {
         w.writeTermTag(UPLC_LAMBDA_TAG)

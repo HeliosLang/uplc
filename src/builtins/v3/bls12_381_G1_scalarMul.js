@@ -1,6 +1,6 @@
 import { G1 } from "@helios-lang/crypto"
 import { ArgSizesConstCost, ArgSizesFirstCost } from "../../costmodel/index.js"
-import { Bls12_381_G1_element, UplcInt } from "../../values/index.js"
+import { Bls12_381_G1_element } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -17,7 +17,7 @@ export const bls12_381_G1_scalarMul = {
     cpuModel: (params) =>
         new ArgSizesFirstCost(params.get(209), params.get(208)),
     memModel: (params) => new ArgSizesConstCost(params.get(210)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [n, a] = asUplcValues(args)
 
         if (n?.kind != "int") {

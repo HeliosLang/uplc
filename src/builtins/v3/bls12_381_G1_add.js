@@ -16,7 +16,7 @@ export const bls12_381_G1_add = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesConstCost(params.get(197)),
     memModel: (params) => new ArgSizesConstCost(params.get(198)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "bls12_381_G1_element") {

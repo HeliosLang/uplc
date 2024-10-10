@@ -20,10 +20,10 @@ export class ArgSizesConstCost {
     }
 
     /**
-     * @param {bigint[]} argSizes
+     * @param {bigint[]} _argSizes
      * @returns {bigint}
      */
-    calcCost(argSizes) {
+    calcCost(_argSizes) {
         return this.constant
     }
 }

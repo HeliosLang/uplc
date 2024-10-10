@@ -7,51 +7,54 @@ import { UplcProgramV3 } from "./UplcProgramV3.js"
  * @typedef {import("./UplcProgram.js").PlutusVersion} PlutusVersion
  * @typedef {import("./UplcProgram.js").UplcProgram} UplcProgram
  * @typedef {import("./UplcProgramV1.js").PlutusVersionV1} PlutusVersionV1
+ * @typedef {import("./UplcProgramV1.js").UplcProgramV1I} UplcProgramV1I
  * @typedef {import("./UplcProgramV1.js").UplcProgramV1Props} UplcProgramV1Props
  * @typedef {import("./UplcProgramV2.js").PlutusVersionV2} PlutusVersionV2
  * @typedef {import("./UplcProgramV2.js").UplcProgramV2Props} UplcProgramV2Props
+ * @typedef {import("./UplcProgramV2.js").UplcProgramV2I} UplcProgramV2I
  * @typedef {import("./UplcProgramV3.js").PlutusVersionV3} PlutusVersionV3
  * @typedef {import("./UplcProgramV3.js").UplcProgramV3Props} UplcProgramV3Props
+ * @typedef {import("./UplcProgramV3.js").UplcProgramV3I} UplcProgramV3I
  */
 
 /**
  * @overload
  * @param {PlutusVersionV1} version
  * @param {BytesLike} cbor
- * @returns {UplcProgramV1}
+ * @returns {UplcProgramV1I}
  */
 /**
  * @overload
  * @param {PlutusVersionV1} version
  * @param {BytesLike} cbor
  * @param {UplcProgramV1Props} props
- * @returns {UplcProgramV1}
+ * @returns {UplcProgramV1I}
  */
 /**
  * @overload
  * @param {PlutusVersionV2} version
  * @param {BytesLike} cbor
- * @returns {UplcProgramV2}
+ * @returns {UplcProgramV2I}
  */
 /**
  * @overload
  * @param {PlutusVersionV2} version
  * @param {BytesLike} cbor
  * @param {UplcProgramV2Props} props
- * @returns {UplcProgramV2}
+ * @returns {UplcProgramV2I}
  */
 /**
  * @overload
  * @param {PlutusVersionV3} version
  * @param {BytesLike} cbor
- * @returns {UplcProgramV3}
+ * @returns {UplcProgramV3I}
  */
 /**
  * @overload
  * @param {PlutusVersionV3} version
  * @param {BytesLike} cbor
  * @param {UplcProgramV3Props} props
- * @returns {UplcProgramV3}
+ * @returns {UplcProgramV3I}
  */
 /**
  * Deserializes a UplcProgram from its CBOR representation with no available IR or alternate/unoptimized version

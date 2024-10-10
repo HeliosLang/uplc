@@ -1,9 +1,17 @@
 import { decodeUtf8, encodeUtf8 } from "@helios-lang/codec-utils"
-import { FlatReader, FlatWriter, bytesFlatSize } from "../flat/index.js"
+import { bytesFlatSize } from "../flat/index.js"
 import { UplcType } from "./UplcType.js"
 
 /**
+ * @template TExpr
+ * @template TValue
+ * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ */
+
+/**
+ * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
  * @typedef {import("./UplcValue.js").UplcStringI} UplcStringI
+ * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
@@ -33,7 +41,7 @@ export class UplcString {
     }
 
     /**
-     * @param {FlatReader<any, UplcValue>} r
+     * @param {FlatReaderI<any, UplcValue>} r
      * @returns {UplcString}
      */
     static fromFlat(r) {
@@ -65,7 +73,7 @@ export class UplcString {
     }
 
     /**
-     * @returns {UplcType}
+     * @returns {UplcTypeI}
      */
     get type() {
         return UplcType.string()
@@ -80,7 +88,7 @@ export class UplcString {
     }
 
     /**
-     * @param {FlatWriter} w
+     * @param {FlatWriterI} w
      */
     toFlat(w) {
         const bytes = encodeUtf8(this.value)

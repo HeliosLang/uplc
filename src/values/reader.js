@@ -1,4 +1,3 @@
-import { FlatReader } from "../flat/index.js"
 import { UplcBool } from "./UplcBool.js"
 import { UplcByteArray } from "./UplcByteArray.js"
 import { UplcDataValue } from "./UplcDataValue.js"
@@ -10,6 +9,12 @@ import { UplcType } from "./UplcType.js"
 import { UplcUnit } from "./UplcUnit.js"
 
 /**
+ * @template TExpr
+ * @template TValue
+ * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ */
+
+/**
  * @template T
  * @typedef {import("../flat/index.js").ValueReader<T>} ValueReader
  */
@@ -19,7 +24,7 @@ import { UplcUnit } from "./UplcUnit.js"
  */
 
 /**
- * @param {FlatReader<any, UplcValue>} r
+ * @param {FlatReaderI<any, UplcValue>} r
  * @param {number[]} typeList
  * @returns {ValueReader<UplcValue>}
  */

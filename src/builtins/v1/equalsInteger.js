@@ -1,5 +1,5 @@
 import { ArgSizesConstCost, ArgSizesMinCost } from "../../costmodel/index.js"
-import { UplcBool, UplcInt } from "../../values/index.js"
+import { UplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -15,7 +15,7 @@ export const equalsInteger = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesMinCost(params.get(67), params.get(66)),
     memModel: (params) => new ArgSizesConstCost(params.get(68)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "int") {

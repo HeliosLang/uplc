@@ -1,5 +1,4 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcUnit } from "../../values/index.js"
 import { asUplcValue } from "../cast.js"
 
 /**
@@ -15,7 +14,7 @@ export const chooseUnit = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesConstCost(params.get(37)),
     memModel: (params) => new ArgSizesConstCost(params.get(38)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const a = asUplcValue(args[0])
 
         if (a?.kind != "unit") {

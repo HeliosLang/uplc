@@ -1,6 +1,6 @@
 import { Ed25519 } from "@helios-lang/crypto"
 import { ArgSizesConstCost, ArgSizesThirdCost } from "../../costmodel/index.js"
-import { UplcBool, UplcByteArray } from "../../values/index.js"
+import { UplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -17,7 +17,7 @@ export const verifyEd25519Signature = {
     cpuModel: (params) =>
         new ArgSizesThirdCost(params.get(164), params.get(163)),
     memModel: (params) => new ArgSizesConstCost(params.get(165)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [publicKey, message, signature] = asUplcValues(args)
 
         if (publicKey?.kind != "bytes") {

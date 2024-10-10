@@ -15,7 +15,7 @@ export const appendByteString = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesSumCost(params.get(5), params.get(4)),
     memModel: (params) => new ArgSizesSumCost(params.get(7), params.get(6)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "bytes") {

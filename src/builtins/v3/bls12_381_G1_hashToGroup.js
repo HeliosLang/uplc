@@ -1,6 +1,6 @@
 import { hashToG1 } from "@helios-lang/crypto"
 import { ArgSizesConstCost, ArgSizesFirstCost } from "../../costmodel/index.js"
-import { Bls12_381_G1_element, UplcByteArray } from "../../values/index.js"
+import { Bls12_381_G1_element } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -17,7 +17,7 @@ export const bls12_381_G1_hashToGroup = {
     cpuModel: (params) =>
         new ArgSizesFirstCost(params.get(204), params.get(203)),
     memModel: (params) => new ArgSizesConstCost(params.get(205)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "bytes") {

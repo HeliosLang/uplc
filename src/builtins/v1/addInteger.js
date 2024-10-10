@@ -15,7 +15,7 @@ export const addInteger = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesMaxCost(params.get(1), params.get(0)),
     memModel: (params) => new ArgSizesMaxCost(params.get(3), params.get(2)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "int") {

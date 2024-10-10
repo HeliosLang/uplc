@@ -1,12 +1,27 @@
-import { CostModel } from "./CostModel.js"
-
 /**
  * @typedef {import("./Cost.js").Cost} Cost
+ * @typedef {import("./CostModel.js").CostModelI} CostModelI
  * @typedef {import("./CostBreakdown.js").CostBreakdown} CostBreakdown
  */
 
 /**
- * @implements {Cost}
+ * @typedef {Cost & {
+ *   costModel: CostModelI
+ *   breakdown: CostBreakdown
+ *   incrBuiltinCost(): void
+ *   incrCallCost(): void
+ *   incrConstCost(): void
+ *   incrDelayCost(): void
+ *   incrForceCost(): void
+ *   incrLambdaCost(): void
+ *   incrStartupCost(): void
+ *   incrVarCost(): void
+ *   incrArgSizesCost(name: string, argSizes: bigint[]): void
+ * }} CostTrackerI
+ */
+
+/**
+ * @implements {CostTrackerI}
  */
 export class CostTracker {
     /**
@@ -21,7 +36,7 @@ export class CostTracker {
 
     /**
      * @readonly
-     * @type {CostModel}
+     * @type {CostModelI}
      */
     costModel
 
@@ -32,7 +47,7 @@ export class CostTracker {
     breakdown
 
     /**
-     * @param {CostModel} costModel
+     * @param {CostModelI} costModel
      */
     constructor(costModel) {
         this.costModel = costModel

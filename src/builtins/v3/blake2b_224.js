@@ -17,7 +17,7 @@ export const blake2b_224 = {
     cpuModel: (params) =>
         new ArgSizesFirstCost(params.get(239), params.get(238)),
     memModel: (params) => new ArgSizesConstCost(params.get(240)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a] = asUplcValues(args)
 
         if (a?.kind != "bytes") {

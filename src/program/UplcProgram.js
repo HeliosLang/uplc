@@ -2,15 +2,16 @@ import { decodeBytes, encodeBytes, isBytes } from "@helios-lang/cbor"
 import { ByteStream } from "@helios-lang/codec-utils"
 import { blake2b } from "@helios-lang/crypto"
 import { CekMachine } from "../cek/index.js"
-import { CostModel } from "../costmodel/index.js"
 import { FlatWriter } from "../flat/index.js"
 import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- * @typedef {import("../logging/UplcLoggingI.js").UplcLoggingI} UplcLoggingI
  * @typedef {import("../builtins/index.js").Builtin} Builtin
  * @typedef {import("../cek/index.js").CekResult} CekResult
+ * @typedef {import("../cek/index.js").CekTerm} CekTerm
+ * @typedef {import("../costmodel/index.js").CostModelI} CostModelI
+ * @typedef {import("../logging/UplcLoggingI.js").UplcLoggingI} UplcLoggingI
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  */
@@ -146,8 +147,8 @@ export function decodeFlatProgram(bytes, expectedUplcVersion, builtins) {
  * @param {Builtin[]} builtins
  * @param {UplcTerm} expr
  * @param {Option<UplcValue[]>} args
- * @param {Object} options
- * @param {CostModel} options.costModel
+ * @param {object} options
+ * @param {CostModelI} options.costModel
  * @param {UplcLoggingI} [options.logOptions]
  * @returns {CekResult}
  */

@@ -1,6 +1,11 @@
 import { None } from "@helios-lang/type-utils"
-import { FlatReader, FlatWriter } from "../flat/index.js"
 import { ForceFrame } from "../cek/index.js"
+
+/**
+ * @template TExpr
+ * @template TValue
+ * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ */
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
@@ -8,6 +13,7 @@ import { ForceFrame } from "../cek/index.js"
  * @typedef {import("../cek/index.js").CekStack} CekStack
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
  * @typedef {import("../cek/index.js").CekValue} CekValue
+ * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
  * @typedef {import("./UplcTerm.js").UplcForceI} UplcForceI
@@ -45,7 +51,8 @@ export class UplcForce {
 
     /**
      * @template {UplcTerm} TArg
-     * @param {FlatReader<TArg, UplcValue>} r
+     * @param {FlatReaderI<TArg, UplcValue>} r
+     * @returns {UplcForce<TArg>}
      */
     static fromFlat(r) {
         const arg = r.readExpr()
@@ -87,7 +94,7 @@ export class UplcForce {
     }
 
     /**
-     * @param {FlatWriter} w
+     * @param {FlatWriterI} w
      */
     toFlat(w) {
         w.writeTermTag(UPLC_FORCE_TAG)

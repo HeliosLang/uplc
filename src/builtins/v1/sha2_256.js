@@ -17,7 +17,7 @@ export const sha2_256 = {
     cpuModel: (params) =>
         new ArgSizesFirstCost(params.get(134), params.get(133)),
     memModel: (params) => new ArgSizesConstCost(params.get(135)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a] = asUplcValues(args)
 
         if (a?.kind != "bytes") {

@@ -15,7 +15,7 @@ export const appendStringV1 = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesSumCost(params.get(9), params.get(8)),
     memModel: (params) => new ArgSizesSumCost(params.get(11), params.get(10)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "string") {

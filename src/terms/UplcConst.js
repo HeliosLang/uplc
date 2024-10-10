@@ -1,15 +1,14 @@
 import { None } from "@helios-lang/type-utils"
 import { builtinsV3 } from "../builtins/index.js"
-import { FlatReader, FlatWriter } from "../flat/index.js"
-import {
-    Bls12_381_G1_element,
-    Bls12_381_G2_element,
-    Bls12_381_MlResult,
-    UplcByteArray,
-    UplcInt
-} from "../values/index.js"
+import { UplcByteArray } from "../values/index.js"
 import { UplcCall } from "./UplcCall.js"
 import { UplcBuiltin } from "./UplcBuiltin.js"
+
+/**
+ * @template TExpr
+ * @template TValue
+ * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ */
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
@@ -17,6 +16,7 @@ import { UplcBuiltin } from "./UplcBuiltin.js"
  * @typedef {import("../cek/index.js").CekStack} CekStack
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
  * @typedef {import("../cek/index.js").CekValue} CekValue
+ * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
  * @typedef {import("./UplcTerm.js").UplcConstI} UplcConstI
@@ -56,7 +56,7 @@ export class UplcConst {
     }
 
     /**
-     * @param {FlatReader<UplcTerm, UplcValue>} r
+     * @param {FlatReaderI<UplcTerm, UplcValue>} r
      * @returns {UplcConst}
      */
     static fromFlat(r) {
@@ -135,7 +135,7 @@ export class UplcConst {
     }
 
     /**
-     * @param {FlatWriter} w
+     * @param {FlatWriterI} w
      */
     toFlat(w) {
         const v = this.value

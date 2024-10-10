@@ -1,5 +1,5 @@
 import { ArgSizesConstCost, ArgSizesDiagCost } from "../../costmodel/index.js"
-import { UplcBool, UplcString } from "../../values/index.js"
+import { UplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -16,7 +16,7 @@ export const equalsString = {
     cpuModel: (params) =>
         new ArgSizesDiagCost(params.get(71), params.get(70), params.get(69)),
     memModel: (params) => new ArgSizesConstCost(params.get(72)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "string") {

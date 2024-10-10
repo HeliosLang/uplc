@@ -1,5 +1,5 @@
 import { ArgSizesThirdCost } from "../../costmodel/index.js"
-import { UplcByteArray, UplcInt } from "../../values/index.js"
+import { UplcByteArray } from "../../values/index.js"
 import { asCekValue } from "../cast.js"
 import { asUplcValues } from "../cast.js"
 
@@ -18,7 +18,7 @@ export const sliceByteString = {
         new ArgSizesThirdCost(params.get(140), params.get(139)),
     memModel: (params) =>
         new ArgSizesThirdCost(params.get(142), params.get(141)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b, c] = asUplcValues(args)
 
         if (a?.kind != "int") {

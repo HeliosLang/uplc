@@ -1,11 +1,12 @@
 import { None } from "@helios-lang/type-utils"
-import { CostTracker, CostModel } from "../costmodel/index.js"
+import { CostTracker } from "../costmodel/index.js"
 import { stringifyNonUplcValue } from "./CekValue.js"
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
  * @typedef {import("../builtins/index.js").Builtin} Builtin
  * @typedef {import("../costmodel/index.js").Cost} Cost
+ * @typedef {import("../costmodel/index.js").CostModelI} CostModelI
  * @typedef {import("../logging/index.js").UplcLoggingI} UplcLoggingI
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./CekContext.js").CekContext} CekContext
@@ -60,7 +61,7 @@ export class CekMachine {
      * Initializes in computing state
      * @param {CekTerm} term
      * @param {Builtin[]} builtins
-     * @param {CostModel} costModel
+     * @param {CostModelI} costModel
      * @param {UplcLoggingI} [diagnostics]
      */
     constructor(term, builtins, costModel, diagnostics) {

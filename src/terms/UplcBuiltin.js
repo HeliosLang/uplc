@@ -1,6 +1,11 @@
 import { toInt } from "@helios-lang/codec-utils"
 import { expectSome, None } from "@helios-lang/type-utils"
-import { FlatReader, FlatWriter } from "../flat/index.js"
+
+/**
+ * @template TExpr
+ * @template TValue
+ * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ */
 
 /**
  * @typedef {import("@helios-lang/codec-utils").IntLike} IntLike
@@ -10,6 +15,7 @@ import { FlatReader, FlatWriter } from "../flat/index.js"
  * @typedef {import("../cek/index.js").CekStack} CekStack
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
  * @typedef {import("../cek/index.js").CekValue} CekValue
+ * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
  * @typedef {import("./UplcTerm.js").UplcBuiltinI} UplcBuiltinI
@@ -56,8 +62,8 @@ export class UplcBuiltin {
     }
 
     /**
-     * @param {FlatReader<UplcTerm, UplcValue>} reader
-     * @param {import("../builtins/Builtin.js").Builtin[]} builtins
+     * @param {FlatReaderI<UplcTerm, UplcValue>} reader
+     * @param {Builtin[]} builtins
      * @returns {UplcBuiltin}
      */
     static fromFlat(reader, builtins) {
@@ -88,7 +94,7 @@ export class UplcBuiltin {
     }
 
     /**
-     * @param {FlatWriter} w
+     * @param {FlatWriterI} w
      */
     toFlat(w) {
         w.writeTermTag(UPLC_BUILTIN_TAG)

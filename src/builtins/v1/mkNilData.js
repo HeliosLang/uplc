@@ -15,7 +15,7 @@ export const mkNilData = {
     nArgs: 1,
     cpuModel: (params) => new ArgSizesConstCost(params.get(103)),
     memModel: (params) => new ArgSizesConstCost(params.get(104)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const a = asUplcValue(args[0])
 
         if (a?.kind != "unit") {

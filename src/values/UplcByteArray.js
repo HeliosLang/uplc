@@ -1,11 +1,19 @@
 import { bytesToHex, equalsBytes, toBytes } from "@helios-lang/codec-utils"
 import { ByteArrayData } from "../data/index.js"
-import { bytesFlatSize, FlatReader, FlatWriter } from "../flat/index.js"
+import { bytesFlatSize } from "../flat/index.js"
 import { UplcType } from "./UplcType.js"
 
 /**
+ * @template TExpr
+ * @template TValue
+ * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ */
+
+/**
  * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
+ * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
  * @typedef {import("./UplcValue.js").UplcByteArrayI} UplcByteArrayI
+ * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
@@ -35,7 +43,7 @@ export class UplcByteArray {
     }
 
     /**
-     * @param {FlatReader<any, UplcValue>} reader
+     * @param {FlatReaderI<any, UplcValue>} reader
      * @returns {UplcByteArray}
      */
     static fromFlat(reader) {
@@ -58,7 +66,7 @@ export class UplcByteArray {
     }
 
     /**
-     * @returns {UplcType}
+     * @returns {UplcTypeI}
      */
     get type() {
         return UplcType.byteArray()
@@ -73,7 +81,7 @@ export class UplcByteArray {
     }
 
     /**
-     * @param {FlatWriter} w
+     * @param {FlatWriterI} w
      */
     toFlat(w) {
         w.writeBytes(this.bytes)

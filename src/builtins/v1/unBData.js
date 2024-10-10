@@ -1,6 +1,5 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { ByteArrayData } from "../../data/index.js"
-import { UplcByteArray, UplcDataValue } from "../../values/index.js"
+import { UplcByteArray } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -16,7 +15,7 @@ export const unBData = {
     nArgs: 1,
     cpuModel: (params) => new ArgSizesConstCost(params.get(153)),
     memModel: (params) => new ArgSizesConstCost(params.get(154)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [dataValue] = asUplcValues(args)
 
         if (dataValue?.kind != "data") {

@@ -1,5 +1,4 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcBool } from "../../values/UplcBool.js"
 import { asUplcValue } from "../cast.js"
 
 /**
@@ -15,7 +14,7 @@ export const ifThenElse = {
     nArgs: 3,
     cpuModel: (params) => new ArgSizesConstCost(params.get(79)),
     memModel: (params) => new ArgSizesConstCost(params.get(80)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const cond = asUplcValue(args[0])
 
         if (cond?.kind != "bool") {

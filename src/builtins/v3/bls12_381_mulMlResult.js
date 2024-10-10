@@ -16,7 +16,7 @@ export const bls12_381_mulMlResult = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesConstCost(params.get(233)),
     memModel: (params) => new ArgSizesConstCost(params.get(234)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "bls12_381_mlresult") {

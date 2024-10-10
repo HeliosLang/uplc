@@ -1,5 +1,4 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { MapData } from "../../data/index.js"
 import {
     UplcDataValue,
     UplcList,
@@ -21,7 +20,7 @@ export const unMapData = {
     nArgs: 1,
     cpuModel: (params) => new ArgSizesConstCost(params.get(161)),
     memModel: (params) => new ArgSizesConstCost(params.get(162)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [dataValue] = asUplcValues(args)
 
         if (dataValue?.kind != "data") {

@@ -24,10 +24,10 @@ export const quotientInteger = {
 
 /**
  * @param {CekValue[]} args
- * @param {BuiltinContext} ctx
+ * @param {BuiltinContext} _ctx
  * @returns {CekValue}
  */
-export function evalQuotientInteger(args, ctx) {
+export function evalQuotientInteger(args, _ctx) {
     const [a, b] = asUplcValues(args)
 
     if (a?.kind != "int") {

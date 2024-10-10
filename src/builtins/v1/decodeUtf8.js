@@ -1,6 +1,6 @@
 import { decodeUtf8 as decode } from "@helios-lang/codec-utils"
 import { ArgSizesFirstCost } from "../../costmodel/index.js"
-import { UplcByteArray, UplcString } from "../../values/index.js"
+import { UplcString } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -16,7 +16,7 @@ export const decodeUtf8 = {
     nArgs: 1,
     cpuModel: (params) => new ArgSizesFirstCost(params.get(46), params.get(45)),
     memModel: (params) => new ArgSizesFirstCost(params.get(48), params.get(47)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a] = asUplcValues(args)
 
         if (a?.kind != "bytes") {

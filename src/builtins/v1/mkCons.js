@@ -16,7 +16,7 @@ export const mkCons = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesConstCost(params.get(101)),
     memModel: (params) => new ArgSizesConstCost(params.get(102)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [item, list] = asUplcValues(args)
 
         if (list?.kind != "list") {

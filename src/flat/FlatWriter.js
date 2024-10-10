@@ -1,29 +1,37 @@
 import { BitWriter, padBits } from "@helios-lang/codec-utils"
 import { encodeFlatBytes } from "./bytes.js"
 import { encodeFlatInt } from "./int.js"
-import { encodeFlatSite } from "./site.js"
 
 /**
- * @typedef {import("./site.js").Site} Site
+ * @typedef {import("@helios-lang/codec-utils").BitWriterI} BitWriterI
  */
 
+/**
+ * @typedef {{
+ *   writeBool(b: boolean): void
+ *   writeBytes(bytes: number[]): void
+ *   writeInt(x: bigint): void
+ *   writeList(items: {toFlat: (w: FlatWriterI) => void}[]): void
+ *   writeTermTag(tag: number): void
+ *   writeTypeBits(typeBits: string): void
+ *   writeBuiltinId(id: number): void
+ *   finalize(): number[]
+ * }} FlatWriterI
+ */
+
+/**
+ * @implements {FlatWriterI}
+ */
 export class FlatWriter {
     /**
      * @private
      * @readonly
-     * @type {BitWriter}
+     * @type {BitWriterI}
      */
     _bitWriter
 
     constructor() {
         this._bitWriter = new BitWriter()
-    }
-
-    /**
-     * @param {Site} site
-     */
-    writeSite(site) {
-        encodeFlatSite(this._bitWriter, site)
     }
 
     /**
@@ -52,7 +60,7 @@ export class FlatWriter {
     }
 
     /**
-     * @param {{toFlat: (w: FlatWriter) => void}[]} items
+     * @param {{toFlat: (w: FlatWriterI) => void}[]} items
      */
     writeList(items) {
         items.forEach((item) => {

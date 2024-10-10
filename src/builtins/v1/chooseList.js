@@ -14,7 +14,7 @@ export const chooseList = {
     nArgs: 3,
     cpuModel: (params) => new ArgSizesConstCost(params.get(35)),
     memModel: (params) => new ArgSizesConstCost(params.get(36)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const list = asUplcValue(args[0])
 
         if (list?.kind != "list") {

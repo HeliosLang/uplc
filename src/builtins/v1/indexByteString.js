@@ -1,5 +1,5 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcByteArray, UplcInt } from "../../values/index.js"
+import { UplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -15,7 +15,7 @@ export const indexByteString = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesConstCost(params.get(81)),
     memModel: (params) => new ArgSizesConstCost(params.get(82)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "bytes") {

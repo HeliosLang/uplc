@@ -1,5 +1,4 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcPair } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -15,7 +14,7 @@ export const fstPair = {
     nArgs: 1,
     cpuModel: (params) => new ArgSizesConstCost(params.get(73)),
     memModel: (params) => new ArgSizesConstCost(params.get(74)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a] = asUplcValues(args)
 
         if (a?.kind != "pair") {

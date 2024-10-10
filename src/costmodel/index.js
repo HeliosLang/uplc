@@ -34,4 +34,6 @@ export { CostTracker } from "./CostTracker.js"
  * @typedef {import("./ArgSizesCost.js").ArgSizesCostClass} ArgSizesCostClass
  * @typedef {import("./Cost.js").Cost} Cost
  * @typedef {import("./CostBreakdown.js").CostBreakdown} CostBreakdown
+ * @typedef {import("./CostModel.js").CostModelI} CostModelI
+ * @typedef {import("./CostTracker.js").CostTrackerI} CostTrackerI
  */

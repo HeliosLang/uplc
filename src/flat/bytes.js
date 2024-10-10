@@ -1,7 +1,12 @@
-import { BitReader, BitWriter, padBits } from "@helios-lang/codec-utils"
+import { padBits } from "@helios-lang/codec-utils"
 
 /**
- * @param {BitReader} reader
+ * @typedef {import("@helios-lang/codec-utils").BitReaderI} BitReaderI
+ * @typedef {import("@helios-lang/codec-utils").BitWriterI} BitWriterI
+ */
+
+/**
+ * @param {BitReaderI} reader
  * @returns {number[]}
  */
 export function decodeFlatBytes(reader) {
@@ -26,7 +31,7 @@ export function decodeFlatBytes(reader) {
  * Write a list of bytes to the bitWriter using flat encoding.
  * Used by UplcString, UplcByteArray and UplcDataValue
  * Equivalent to E_B* function in Plutus-core docs
- * @param {BitWriter} writer
+ * @param {BitWriterI} writer
  * @param {number[]} bytes
  * @param {boolean} pad
  */

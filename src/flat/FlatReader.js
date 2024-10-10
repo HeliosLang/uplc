@@ -1,10 +1,9 @@
 import { BitReader } from "@helios-lang/codec-utils"
 import { decodeFlatBytes } from "./bytes.js"
 import { decodeFlatInt } from "./int.js"
-import { decodeFlatSite } from "./site.js"
 
 /**
- * @typedef {import("./site.js").Site} Site
+ * @typedef {import("@helios-lang/codec-utils").BitReaderI} BitReaderI
  */
 
 /**
@@ -15,6 +14,22 @@ import { decodeFlatSite } from "./site.js"
 /**
  * @template TExpr
  * @template TValue
+ * @typedef {{
+ *   readBool(): boolean
+ *   readBuiltinId(): number
+ *   readBytes(): number[]
+ *   readInt(): bigint
+ *   readTag(): number
+ *   readLinkedList(elemSize: number): number[]
+ *   readValue(): TValue
+ *   readExpr(): TExpr
+ * }} FlatReaderI
+ */
+
+/**
+ * @template TExpr
+ * @template TValue
+ * @implements {FlatReaderI<TExpr, TValue>}
  */
 export class FlatReader {
     /**
@@ -26,21 +41,21 @@ export class FlatReader {
     /**
      * @private
      * @readonly
-     * @type {BitReader}
+     * @type {BitReaderI}
      */
     _bitReader
 
     /**
      * @private
      * @readonly
-     * @type {(r: FlatReader<any, any>, typeList: number[]) => ValueReader<TValue>}
+     * @type {(r: FlatReaderI<any, any>, typeList: number[]) => ValueReader<TValue>}
      */
     _dispatchValueReader
 
     /**
      * @param {number[] | Uint8Array} bytes
-     * @param {(r: FlatReader<any, any>) => TExpr} readExpr
-     * @param {(r: FlatReader<any, any>, typeList: number[]) => ValueReader<TValue>} dispatchValueReader
+     * @param {(r: FlatReaderI<any, any>) => TExpr} readExpr
+     * @param {(r: FlatReaderI<any, any>, typeList: number[]) => ValueReader<TValue>} dispatchValueReader
      */
     constructor(bytes, readExpr, dispatchValueReader) {
         this.readExpr = () => readExpr(this)
@@ -74,13 +89,6 @@ export class FlatReader {
      */
     readInt() {
         return decodeFlatInt(this._bitReader)
-    }
-
-    /**
-     * @returns {Site}
-     */
-    readSite() {
-        return decodeFlatSite(this._bitReader)
     }
 
     /**

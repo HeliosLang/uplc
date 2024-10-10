@@ -1,5 +1,4 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { ConstrData } from "../../data/index.js"
 import {
     UplcDataValue,
     UplcInt,
@@ -22,7 +21,7 @@ export const unConstrData = {
     nArgs: 1,
     cpuModel: (params) => new ArgSizesConstCost(params.get(155)),
     memModel: (params) => new ArgSizesConstCost(params.get(156)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [dataValue] = asUplcValues(args)
 
         if (dataValue?.kind != "data") {

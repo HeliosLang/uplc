@@ -1,11 +1,13 @@
 import { prepadBytes } from "@helios-lang/codec-utils"
 import { G2, decodeG2Point, encodeG2Point } from "@helios-lang/crypto"
-import { FlatWriter, bytesFlatSize } from "../flat/index.js"
+import { bytesFlatSize } from "../flat/index.js"
 import { UplcType } from "./UplcType.js"
 
 /**
  * @typedef {import("@helios-lang/crypto").Point3<[bigint, bigint]>} Point3
+ * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
  * @typedef {import("./UplcValue.js").Bls12_381_G2_elementI} Bls12_381_G2_elementI
+ * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
@@ -60,7 +62,7 @@ export class Bls12_381_G2_element {
     }
 
     /**
-     * @type {UplcType}
+     * @type {UplcTypeI}
      */
     get type() {
         return UplcType.bls12_381_G2_element()
@@ -86,9 +88,9 @@ export class Bls12_381_G2_element {
 
     /**
      * Throws an error, serialization can only be done using data and the uncompress function
-     * @param {FlatWriter} writer
+     * @param {FlatWriterI} _writer
      */
-    toFlat(writer) {
+    toFlat(_writer) {
         throw new Error("can't be serialized")
     }
 

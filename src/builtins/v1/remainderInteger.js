@@ -24,10 +24,10 @@ export const remainderInteger = {
 
 /**
  * @param {CekValue[]} args
- * @param {BuiltinContext} ctx
+ * @param {BuiltinContext} _ctx
  * @returns {CekValue}
  */
-export function evalRemainderInteger(args, ctx) {
+export function evalRemainderInteger(args, _ctx) {
     const [a, b] = asUplcValues(args)
 
     if (a?.kind != "int") {

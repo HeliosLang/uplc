@@ -1,6 +1,6 @@
 import { finalVerify } from "@helios-lang/crypto"
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { Bls12_381_MlResult, UplcBool } from "../../values/index.js"
+import { UplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -16,7 +16,7 @@ export const bls12_381_finalVerify = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesConstCost(params.get(229)),
     memModel: (params) => new ArgSizesConstCost(params.get(230)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "bls12_381_mlresult") {

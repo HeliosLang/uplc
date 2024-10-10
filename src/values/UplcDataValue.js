@@ -1,13 +1,18 @@
 import { decodeUplcData } from "../data/index.js"
-import { FlatReader, FlatWriter, bytesFlatSize } from "../flat/index.js"
+import { bytesFlatSize } from "../flat/index.js"
 import { UplcType } from "./UplcType.js"
 
 /**
- * @typedef {import("../data/index.js").UplcData} UplcData
+ * @template TExpr
+ * @template TValue
+ * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
  */
 
 /**
+ * @typedef {import("../data/index.js").UplcData} UplcData
+ * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
  * @typedef {import("./UplcValue.js").UplcDataValueI} UplcDataValueI
+ * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
@@ -37,7 +42,7 @@ export class UplcDataValue {
     }
 
     /**
-     * @param {FlatReader<any, UplcValue>} r
+     * @param {FlatReaderI<any, UplcValue>} r
      * @returns {UplcDataValue}
      */
     static fromFlat(r) {
@@ -47,7 +52,7 @@ export class UplcDataValue {
     }
 
     /**
-     * @param {UplcDataValue | UplcData} data
+     * @param {UplcDataValueI | UplcData} data
      * @returns {UplcData}
      */
     static unwrap(data) {
@@ -75,7 +80,7 @@ export class UplcDataValue {
     }
 
     /**
-     * @returns {UplcType}
+     * @returns {UplcTypeI}
      */
     get type() {
         return UplcType.data()
@@ -90,7 +95,7 @@ export class UplcDataValue {
     }
 
     /**
-     * @param {FlatWriter} w
+     * @param {FlatWriterI} w
      */
     toFlat(w) {
         w.writeBytes(this.value.toCbor())

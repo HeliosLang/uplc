@@ -20,6 +20,7 @@ describe(`${CostModel.name} for V1`, () => {
             {
                 /**
                  * @param {number} key
+                 * @param {Option<bigint>} def
                  * @returns {bigint}
                  */
                 get: (key, def = None) => {
@@ -93,6 +94,7 @@ describe(`${CostModel.name} for V3`, () => {
             {
                 /**
                  * @param {number} key
+                 * @param {Option<bigint>} def
                  * @returns {bigint}
                  */
                 get: (key, def = None) => {

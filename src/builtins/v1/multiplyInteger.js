@@ -15,7 +15,7 @@ export const multiplyInteger = {
     nArgs: 2,
     cpuModel: (params) => new ArgSizesSumCost(params.get(116), params.get(115)),
     memModel: (params) => new ArgSizesSumCost(params.get(118), params.get(117)),
-    call: (args, ctx) => {
+    call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 
         if (a?.kind != "int") {
