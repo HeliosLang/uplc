@@ -68,13 +68,15 @@ export class UplcRuntimeError extends Error {
 
         for (let cs of callSites) {
             if (cs.site) {
-                const allArguments = unhandledArgs.filter((a) => !!a.name)
+                const allArguments = unhandledArgs.filter(
+                    (a) => !!a.name && !a.name.startsWith("__")
+                )
 
                 const sitePart = [`${cs.site.toString()}`]
                 const varsPart =
                     allArguments.length > 0
                         ? [
-                              `[${allArguments.map((a) => `${a.name}=${stringifyCekValue(a)}`).join(", ")}]`
+                              `[${allArguments.map((a) => `${a.name}=${stringifyCekValue(a, true)}`).join(", ")}]`
                           ]
                         : []
                 const atPart = parentFunctionName

@@ -35,30 +35,40 @@ export {}
 
 /**
  * @param {CekValue} value
+ * @param {boolean} simplify
  * @returns {string | UplcValue}
  */
-export function stringifyNonUplcValue(value) {
+export function stringifyNonUplcValue(value, simplify = false) {
     if ("value" in value) {
         return value.value
     } else if ("delay" in value) {
-        return `(delay ${value.delay.term.toString()})`
+        if (simplify) {
+            return "<fn>"
+        } else {
+            return `(delay ${value.delay.term.toString()})`
+        }
     } else if ("builtin" in value) {
         return value.builtin.name
     } else {
         const props = value.lambda
 
-        return `(lam ${
-            props.argName ? `${props.argName} ` : ""
-        }${props.term.toString()})`
+        if (simplify) {
+            return "<fn>"
+        } else {
+            return `(lam ${
+                props.argName ? `${props.argName} ` : ""
+            }${props.term.toString()})`
+        }
     }
 }
 
 /**
  * @param {CekValue} value
+ * @param {boolean} simplify
  * @returns {string}
  */
-export function stringifyCekValue(value) {
-    const s = stringifyNonUplcValue(value)
+export function stringifyCekValue(value, simplify = false) {
+    const s = stringifyNonUplcValue(value, simplify)
 
     if (typeof s == "string") {
         return s
