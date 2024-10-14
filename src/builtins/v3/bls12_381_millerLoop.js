@@ -1,6 +1,6 @@
 import { G1, G2, millerLoop } from "@helios-lang/crypto"
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { Bls12_381_MlResult } from "../../values/index.js"
+import { makeBls12_381_MlResult } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -33,6 +33,6 @@ export const bls12_381_millerLoop = {
 
         const elem = millerLoop(G1.toAffine(a.point), G2.toAffine(b.point))
 
-        return asCekValue(new Bls12_381_MlResult(elem))
+        return asCekValue(makeBls12_381_MlResult(elem))
     }
 }

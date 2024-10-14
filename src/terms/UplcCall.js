@@ -4,7 +4,7 @@ import { PreCallFrame } from "../cek/index.js"
 /**
  * @template TExpr
  * @template TValue
- * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
  */
 
 /**
@@ -13,30 +13,63 @@ import { PreCallFrame } from "../cek/index.js"
  * @typedef {import("../cek/index.js").CekStack} CekStack
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
  * @typedef {import("../cek/index.js").CekValue} CekValue
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
  * @typedef {import("../values/index.js").UplcValue} UplcValue
+ * @typedef {import("./UplcTerm.js").UplcCall} UplcCall
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- * @typedef {import("./UplcTerm.js").UplcCallI} UplcCallI
  */
 
 export const UPLC_CALL_TAG = 3
 
 /**
- * Plutus-core function application term (i.e. function call)
- * @template {UplcTerm} [TFn=UplcTerm]
- * @template {UplcTerm} [TArg=UplcTerm]
- * @implements {UplcCallI}
+ * @param {{
+ *   fn: UplcTerm
+ *   arg: UplcTerm
+ *   site?: Option<Site>
+ * } | {
+ *   fn: UplcTerm
+ *   args: UplcTerm[]
+ *   site?: Option<Site>
+ * }} props
+ * @returns {UplcCall}
  */
-export class UplcCall {
+export function makeUplcCall(props) {
+    if ("arg" in props) {
+        return new UplcCallImpl(props.fn, props.arg, props.site)
+    } else {
+        const site = props.site
+        let expr = new UplcCallImpl(props.fn, props.args[0], site)
+
+        props.args.slice(1).forEach((arg) => {
+            expr = new UplcCallImpl(expr, arg, site)
+        })
+
+        return expr
+    }
+}
+
+/**
+ * @param {FlatReader<UplcTerm, UplcValue>} r
+ * @returns {UplcCall}
+ */
+export function decodeUplcCallFromFlat(r) {
+    return makeUplcCall({ fn: r.readExpr(), arg: r.readExpr() })
+}
+
+/**
+ * Plutus-core function application term (i.e. function call)
+ * @implements {UplcCall}
+ */
+class UplcCallImpl {
     /**
      * @readonly
-     * @type {TFn}
+     * @type {UplcTerm}
      */
     fn
 
     /**
      * @readonly
-     * @type {TArg}
+     * @type {UplcTerm}
      */
     arg
 
@@ -48,40 +81,14 @@ export class UplcCall {
     site
 
     /**
-     * @param {TFn} fn
-     * @param {TArg} arg
+     * @param {UplcTerm} fn
+     * @param {UplcTerm} arg
      * @param {Option<Site>} site
      */
     constructor(fn, arg, site = None) {
         this.fn = fn
         this.arg = arg
         this.site = site
-    }
-
-    /**
-     * @template {UplcTerm} T
-     * @param {FlatReaderI<T, UplcValue>} r
-     * @returns {UplcCall<T, T>}
-     */
-    static fromFlat(r) {
-        return new UplcCall(r.readExpr(), r.readExpr())
-    }
-
-    /**
-     * Usefull when creating a Uplc AST directly
-     * @param {UplcTerm} fn
-     * @param {UplcTerm[]} args
-     * @param {Option<Site>} site
-     * @returns {UplcCall<UplcTerm, UplcTerm>}
-     */
-    static multi(fn, args, site = None) {
-        let expr = new UplcCall(fn, args[0], site)
-
-        args.slice(1).forEach((arg) => {
-            expr = new UplcCall(expr, arg, site)
-        })
-
-        return expr
     }
 
     /**
@@ -118,7 +125,7 @@ export class UplcCall {
     }
 
     /**
-     * @param {FlatWriterI} w
+     * @param {FlatWriter} w
      */
     toFlat(w) {
         w.writeTermTag(UPLC_CALL_TAG)

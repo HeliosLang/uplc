@@ -6,18 +6,26 @@ import { None } from "@helios-lang/type-utils"
  * @typedef {import("../cek/index.js").CekStack} CekStack
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
  * @typedef {import("../cek/index.js").CekValue} CekValue
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- * @typedef {import("./UplcTerm.js").UplcErrorI} UplcErrorI
+ * @typedef {import("./UplcTerm.js").UplcError} UplcError
  */
 
 export const UPLC_ERROR_TAG = 6
 
 /**
- * Plutus-core error term
- * @implements {UplcErrorI}
+ * @param {{site?: Option<Site>}} props
+ * @returns {UplcError}
  */
-export class UplcError {
+export function makeUplcError(props = {}) {
+    return new UplcErrorImpl(props.site)
+}
+
+/**
+ * Plutus-core error term
+ * @implements {UplcError}
+ */
+class UplcErrorImpl {
     /**
      * Optional source-map site
      * Mutable so that SourceMap application is easier
@@ -63,7 +71,7 @@ export class UplcError {
     }
 
     /**
-     * @param {FlatWriterI} w
+     * @param {FlatWriter} w
      */
     toFlat(w) {
         w.writeTermTag(UPLC_ERROR_TAG)

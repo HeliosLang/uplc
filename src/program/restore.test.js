@@ -1,70 +1,70 @@
 import { describe, it } from "node:test"
-import { UplcConst } from "../terms/index.js"
-import { UplcInt } from "../values/index.js"
+import { makeUplcConst } from "../terms/index.js"
+import { makeUplcInt } from "../values/index.js"
 import { restoreUplcProgram } from "./restore.js"
-import { UplcProgramV1 } from "./UplcProgramV1.js"
-import { UplcProgramV3 } from "./UplcProgramV3.js"
+import { makeUplcProgramV1 } from "./UplcProgramV1.js"
+import { makeUplcProgramV3 } from "./UplcProgramV3.js"
 
 /**
  * @typedef {import("./UplcProgram.js").PlutusVersion} PlutusVersion
  * @typedef {import("./UplcProgram.js").UplcProgram} UplcProgram
- * @typedef {import("./UplcProgram.js").UplcProgramV1I} UplcProgramV1I
- * @typedef {import("./UplcProgram.js").UplcProgramV2I} UplcProgramV2I
- * @typedef {import("./UplcProgram.js").UplcProgramV3I} UplcProgramV3I
+ * @typedef {import("./UplcProgram.js").UplcProgramV1} UplcProgramV1
+ * @typedef {import("./UplcProgram.js").UplcProgramV2} UplcProgramV2
+ * @typedef {import("./UplcProgram.js").UplcProgramV3} UplcProgramV3
  */
 
 describe(restoreUplcProgram.name, () => {
-    const validCborV1V2 = new UplcProgramV1(
-        new UplcConst(new UplcInt(0))
-    ).toCbor()
-    const validCborV3 = new UplcProgramV3(
-        new UplcConst(new UplcInt(0))
-    ).toCbor()
+    const validCborV1V2 = makeUplcProgramV1({
+        root: makeUplcConst({ value: makeUplcInt(0) })
+    }).toCbor()
+    const validCborV3 = makeUplcProgramV3({
+        root: makeUplcConst({ value: makeUplcInt(0) })
+    }).toCbor()
 
     it('returns a UplcProgramV1 instance when restoring a "PlutusScriptV1" program', () => {
         /**
-         * @satisfies {UplcProgramV1I}
+         * @satisfies {UplcProgramV1}
          */
-        restoreUplcProgram("PlutusScriptV1", validCborV1V2)
+        const _program = restoreUplcProgram("PlutusScriptV1", validCborV1V2)
     })
 
     it('returns a UplcProgramV1 instance when restoring a "PlutusScriptV1" program with additional properties', () => {
         /**
-         * @satisfies {UplcProgramV1I}
+         * @satisfies {UplcProgramV1}
          */
-        restoreUplcProgram("PlutusScriptV1", validCborV1V2, {
+        const _program = restoreUplcProgram("PlutusScriptV1", validCborV1V2, {
             alt: restoreUplcProgram("PlutusScriptV1", validCborV1V2)
         })
     })
 
     it('returns a UplcProgramV2 instance when restoring a "PlutusScriptV2" program', () => {
         /**
-         * @satisfies {UplcProgramV2I}
+         * @satisfies {UplcProgramV2}
          */
-        restoreUplcProgram("PlutusScriptV2", validCborV1V2)
+        const _program = restoreUplcProgram("PlutusScriptV2", validCborV1V2)
     })
 
     it('returns a UplcProgramV2 instance when restoring a "PlutusScriptV2" program with additional properties', () => {
         /**
-         * @satisfies {UplcProgramV2I}
+         * @satisfies {UplcProgramV2}
          */
-        restoreUplcProgram("PlutusScriptV2", validCborV1V2, {
+        const _program = restoreUplcProgram("PlutusScriptV2", validCborV1V2, {
             alt: restoreUplcProgram("PlutusScriptV2", validCborV1V2)
         })
     })
 
     it('returns a UplcProgramV3 instance when restoring a "PlutusScriptV3" program', () => {
         /**
-         * @satisfies {UplcProgramV3I}
+         * @satisfies {UplcProgramV3}
          */
-        restoreUplcProgram("PlutusScriptV3", validCborV3)
+        const _program = restoreUplcProgram("PlutusScriptV3", validCborV3)
     })
 
     it('returns a UplcProgramV3 instance when restoring a "PlutusScriptV3" program with additional properties', () => {
         /**
-         * @satisfies {UplcProgramV3I}
+         * @satisfies {UplcProgramV3}
          */
-        restoreUplcProgram("PlutusScriptV3", validCborV3, {
+        const _program = restoreUplcProgram("PlutusScriptV3", validCborV3, {
             alt: restoreUplcProgram("PlutusScriptV3", validCborV3)
         })
     })
@@ -73,7 +73,7 @@ describe(restoreUplcProgram.name, () => {
         /**
          * @satisfies {UplcProgram}
          */
-        restoreUplcProgram(
+        const _program = restoreUplcProgram(
             /** @type {PlutusVersion} */ ("PlutusScriptV2"),
             validCborV1V2
         )
@@ -83,7 +83,7 @@ describe(restoreUplcProgram.name, () => {
         /**
          * @satisfies {UplcProgram}
          */
-        restoreUplcProgram(
+        const _program = restoreUplcProgram(
             /** @type {PlutusVersion} */ ("PlutusScriptV2"),
             validCborV1V2,
             {

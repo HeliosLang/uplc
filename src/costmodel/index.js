@@ -13,8 +13,8 @@ export { ArgSizesSecondCost } from "./ArgSizesSecondCost.js"
 export { ArgSizesSumCost } from "./ArgSizesSumCost.js"
 export { ArgSizesThirdCost } from "./ArgSizesThirdCost.js"
 export { decodeCost, encodeCost } from "./Cost.js"
-export { CostModel } from "./CostModel.js"
-export { CostModelParamsProxy } from "./CostModelParamsProxy.js"
+export { makeCostModel } from "./CostModel.js"
+export { makeCostModelParamsProxy } from "./CostModelParamsProxy.js"
 
 export {
     DEFAULT_COST_MODEL_PARAMS_V1,
@@ -27,13 +27,13 @@ export {
     CONWAY_COST_MODEL_PARAMS_V2
 } from "./CostModelParamsV2.js"
 export { DEFAULT_COST_MODEL_PARAMS_V3 } from "./CostModelParamsV3.js"
-export { CostTracker } from "./CostTracker.js"
+export { makeCostTracker } from "./CostTracker.js"
 
 /**
  * @typedef {import("./ArgSizesCost.js").ArgSizesCost} ArgSizesCost
  * @typedef {import("./ArgSizesCost.js").ArgSizesCostClass} ArgSizesCostClass
  * @typedef {import("./Cost.js").Cost} Cost
  * @typedef {import("./CostBreakdown.js").CostBreakdown} CostBreakdown
- * @typedef {import("./CostModel.js").CostModelI} CostModelI
- * @typedef {import("./CostTracker.js").CostTrackerI} CostTrackerI
+ * @typedef {import("./CostModel.js").CostModel} CostModel
+ * @typedef {import("./CostTracker.js").CostTracker} CostTracker
  */

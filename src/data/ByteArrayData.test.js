@@ -1,12 +1,12 @@
-import { describe, it } from "node:test"
-import { ByteArrayData } from "./ByteArrayData.js"
 import { strictEqual } from "node:assert"
+import { describe, it } from "node:test"
 import { toBytes } from "@helios-lang/codec-utils"
+import { compareByteArrayData } from "./ByteArrayData.js"
 
-describe(`${ByteArrayData.name}.compare`, () => {
+describe(`compareByteArrayData`, () => {
     it(`compare(#0101...0101, #0202...0202) == -1`, () => {
         strictEqual(
-            ByteArrayData.compare(
+            compareByteArrayData(
                 toBytes(
                     "0101010101010101010101010101010101010101010101010101010101010101"
                 ),

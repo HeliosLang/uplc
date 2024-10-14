@@ -1,6 +1,6 @@
 import { decodeUtf8 as decode } from "@helios-lang/codec-utils"
 import { ArgSizesFirstCost } from "../../costmodel/index.js"
-import { UplcString } from "../../values/index.js"
+import { makeUplcString } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -25,6 +25,6 @@ export const decodeUtf8 = {
             )
         }
 
-        return asCekValue(new UplcString(decode(a.bytes)))
+        return asCekValue(makeUplcString(decode(a.bytes)))
     }
 }

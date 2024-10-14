@@ -3,16 +3,60 @@ import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- * @typedef {import("@helios-lang/codec-utils").ByteStreamI} ByteStreamI
- * @typedef {import("./UplcData.js").ListDataI} ListDataI
+ * @typedef {import("@helios-lang/codec-utils").ByteStream} ByteStream
+ * @typedef {import("./UplcData.js").ListData} ListData
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
 
 /**
- * Represents a list of other `UplcData` instances.
- * @implements {ListDataI}
+ * @param {UplcData[]} args
+ * @returns {ListData}
  */
-export class ListData {
+export function makeListData(args) {
+    return new ListDataImpl(args)
+}
+
+/**
+ * @param {UplcData} data
+ * @returns {asserts data is ListData}
+ */
+export function assertListData(data) {
+    if (data.kind != "list") {
+        throw new Error(`expected ListData, got ${data.toString()}`)
+    }
+}
+
+/**
+ * @param {BytesLike} bytes
+ * @param {(bytes: ByteStream) => UplcData} itemDecoder
+ * @returns {ListData}
+ */
+export function decodeListData(bytes, itemDecoder) {
+    const items = decodeList(bytes, itemDecoder)
+    return new ListDataImpl(items)
+}
+
+/**
+ * @param {UplcData} data
+ * @param {string} msg
+ * @returns {ListData}
+ */
+export function expectListData(
+    data,
+    msg = `expected ListData, got ${data.toString()}`
+) {
+    if (data.kind == "list") {
+        return data
+    } else {
+        throw new Error(msg)
+    }
+}
+
+/**
+ * Represents a list of other `UplcData` instances.
+ * @implements {ListData}
+ */
+class ListDataImpl {
     /**
      * @readonly
      * @type {UplcData[]}
@@ -31,39 +75,6 @@ export class ListData {
      */
     get kind() {
         return "list"
-    }
-
-    /**
-     * @param {UplcData} data
-     * @returns {asserts data is ListDataI}
-     */
-    static assert(data) {
-        if (data.kind != "list") {
-            throw new Error(`expected ListData, got ${data.toString()}`)
-        }
-    }
-
-    /**
-     * @param {UplcData} data
-     * @param {string} msg
-     * @returns {ListDataI}
-     */
-    static expect(data, msg = `expected ListData, got ${data.toString()}`) {
-        if (data.kind == "list") {
-            return data
-        } else {
-            throw new Error(msg)
-        }
-    }
-
-    /**
-     * @param {BytesLike} bytes
-     * @param {(bytes: ByteStreamI) => UplcData} itemDecoder
-     * @returns {ListData}
-     */
-    static fromCbor(bytes, itemDecoder) {
-        const items = decodeList(bytes, itemDecoder)
-        return new ListData(items)
     }
 
     /**

@@ -1,26 +1,56 @@
 import { decodeUplcData } from "../data/index.js"
 import { bytesFlatSize } from "../flat/index.js"
-import { UplcType } from "./UplcType.js"
+import { DATA_TYPE } from "./UplcType.js"
 
 /**
  * @template TExpr
  * @template TValue
- * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
  */
 
 /**
  * @typedef {import("../data/index.js").UplcData} UplcData
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
- * @typedef {import("./UplcValue.js").UplcDataValueI} UplcDataValueI
- * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
+ * @typedef {import("./UplcValue.js").UplcDataValue} UplcDataValue
+ * @typedef {import("./UplcValue.js").UplcType} UplcType
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
- * `UplcValue` that wraps a `UplcData` instance.
- * @implements {UplcDataValueI}
+ * @param {UplcData} args
+ * @returns {UplcDataValue}
  */
-export class UplcDataValue {
+export function makeUplcDataValue(args) {
+    return new UplcDataValueImpl(args)
+}
+
+/**
+ * @param {FlatReader<any, UplcValue>} r
+ * @returns {UplcDataValue}
+ */
+export function decodeUplcDataValueFromFlat(r) {
+    const bytes = r.readBytes()
+    const data = decodeUplcData(bytes)
+    return new UplcDataValueImpl(data)
+}
+
+/**
+ * @param {UplcDataValue | UplcData} data
+ * @returns {UplcData}
+ */
+export function unwrapUplcDataValue(data) {
+    if (data.kind == "data") {
+        return data.value
+    } else {
+        return data
+    }
+}
+
+/**
+ * `UplcValue` that wraps a `UplcData` instance.
+ * @implements {UplcDataValue}
+ */
+class UplcDataValueImpl {
     /**
      * @readonly
      * @type {UplcData}
@@ -42,28 +72,6 @@ export class UplcDataValue {
     }
 
     /**
-     * @param {FlatReaderI<any, UplcValue>} r
-     * @returns {UplcDataValue}
-     */
-    static fromFlat(r) {
-        const bytes = r.readBytes()
-        const data = decodeUplcData(bytes)
-        return new UplcDataValue(data)
-    }
-
-    /**
-     * @param {UplcDataValueI | UplcData} data
-     * @returns {UplcData}
-     */
-    static unwrap(data) {
-        if (data.kind == "data") {
-            return data.value
-        } else {
-            return data
-        }
-    }
-
-    /**
      * @type {number}
      */
     get memSize() {
@@ -80,10 +88,10 @@ export class UplcDataValue {
     }
 
     /**
-     * @returns {UplcTypeI}
+     * @returns {UplcType}
      */
     get type() {
-        return UplcType.data()
+        return DATA_TYPE
     }
 
     /**
@@ -95,7 +103,7 @@ export class UplcDataValue {
     }
 
     /**
-     * @param {FlatWriterI} w
+     * @param {FlatWriter} w
      */
     toFlat(w) {
         w.writeBytes(this.value.toCbor())

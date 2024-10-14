@@ -1,5 +1,5 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcBool } from "../../values/index.js"
+import { makeUplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -24,6 +24,6 @@ export const nullList = {
             )
         }
 
-        return asCekValue(new UplcBool(list.length == 0))
+        return asCekValue(makeUplcBool(list.length == 0))
     }
 }

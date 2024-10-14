@@ -1,6 +1,6 @@
 import { encodeUtf8 as encode } from "@helios-lang/codec-utils"
 import { ArgSizesFirstCost } from "../../costmodel/index.js"
-import { UplcByteArray } from "../../values/index.js"
+import { makeUplcByteArray } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -25,6 +25,6 @@ export const encodeUtf8 = {
             )
         }
 
-        return asCekValue(new UplcByteArray(encode(a.value)))
+        return asCekValue(makeUplcByteArray(encode(a.value)))
     }
 }

@@ -1,16 +1,16 @@
-import { UPLC_BUILTIN_TAG, UplcBuiltin } from "./UplcBuiltin.js"
-import { UPLC_CALL_TAG, UplcCall } from "./UplcCall.js"
-import { UPLC_CONST_TAG, UplcConst } from "./UplcConst.js"
-import { UPLC_DELAY_TAG, UplcDelay } from "./UplcDelay.js"
-import { UplcError, UPLC_ERROR_TAG } from "./UplcError.js"
-import { UPLC_FORCE_TAG, UplcForce } from "./UplcForce.js"
-import { UPLC_LAMBDA_TAG, UplcLambda } from "./UplcLambda.js"
-import { UPLC_VAR_TAG, UplcVar } from "./UplcVar.js"
+import { UPLC_BUILTIN_TAG, decodeUplcBuiltinFromFlat } from "./UplcBuiltin.js"
+import { UPLC_CALL_TAG, decodeUplcCallFromFlat } from "./UplcCall.js"
+import { UPLC_CONST_TAG, decodeUplcConstFromFlat } from "./UplcConst.js"
+import { UPLC_DELAY_TAG, decodeUplcDelayFromFlat } from "./UplcDelay.js"
+import { UPLC_ERROR_TAG, makeUplcError } from "./UplcError.js"
+import { UPLC_FORCE_TAG, decodeUplcForceFromFlat } from "./UplcForce.js"
+import { UPLC_LAMBDA_TAG, decodeUplcLambdaFromFlat } from "./UplcLambda.js"
+import { UPLC_VAR_TAG, decodeUplcVarFromFlat } from "./UplcVar.js"
 
 /**
  * @template TExpr
  * @template TValue
- * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
  */
 
 /**
@@ -22,7 +22,7 @@ import { UPLC_VAR_TAG, UplcVar } from "./UplcVar.js"
 /**
  * Reads a single UplcTerm
  * @template {UplcTerm} TExpr
- * @param {FlatReaderI<TExpr, UplcValue>} r
+ * @param {FlatReader<TExpr, UplcValue>} r
  * @param {Builtin[]} builtins
  * @returns {UplcTerm}
  */
@@ -31,21 +31,21 @@ export function decodeTerm(r, builtins) {
 
     switch (tag) {
         case UPLC_VAR_TAG:
-            return UplcVar.fromFlat(r)
+            return decodeUplcVarFromFlat(r)
         case UPLC_DELAY_TAG:
-            return UplcDelay.fromFlat(r)
+            return decodeUplcDelayFromFlat(r)
         case UPLC_LAMBDA_TAG:
-            return UplcLambda.fromFlat(r)
+            return decodeUplcLambdaFromFlat(r)
         case UPLC_CALL_TAG:
-            return UplcCall.fromFlat(r) // aka function application
+            return decodeUplcCallFromFlat(r) // aka function application
         case UPLC_CONST_TAG:
-            return UplcConst.fromFlat(r)
+            return decodeUplcConstFromFlat(r)
         case UPLC_FORCE_TAG:
-            return UplcForce.fromFlat(r)
+            return decodeUplcForceFromFlat(r)
         case UPLC_ERROR_TAG:
-            return new UplcError()
+            return makeUplcError()
         case UPLC_BUILTIN_TAG:
-            return UplcBuiltin.fromFlat(r, builtins)
+            return decodeUplcBuiltinFromFlat(r, builtins)
         default:
             throw new Error("term tag " + tag.toString() + " unhandled")
     }

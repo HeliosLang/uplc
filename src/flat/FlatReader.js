@@ -1,9 +1,9 @@
-import { BitReader } from "@helios-lang/codec-utils"
+import { makeBitReader } from "@helios-lang/codec-utils"
 import { decodeFlatBytes } from "./bytes.js"
 import { decodeFlatInt } from "./int.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").BitReaderI} BitReaderI
+ * @typedef {import("@helios-lang/codec-utils").BitReader} BitReader
  */
 
 /**
@@ -23,15 +23,33 @@ import { decodeFlatInt } from "./int.js"
  *   readLinkedList(elemSize: number): number[]
  *   readValue(): TValue
  *   readExpr(): TExpr
- * }} FlatReaderI
+ * }} FlatReader
  */
 
 /**
  * @template TExpr
  * @template TValue
- * @implements {FlatReaderI<TExpr, TValue>}
+ * @param {{
+ *   bytes: number[] | Uint8Array
+ *   readExpr: (r: FlatReader<any, any>) => TExpr
+ *   dispatchValueReader: (r: FlatReader<any, any>, typeList: number[]) => ValueReader<TValue>
+ * }} args
+ * @returns {FlatReader<TExpr, TValue>}
  */
-export class FlatReader {
+export function makeFlatReader(args) {
+    return new FlatReaderImpl(
+        args.bytes,
+        args.readExpr,
+        args.dispatchValueReader
+    )
+}
+
+/**
+ * @template TExpr
+ * @template TValue
+ * @implements {FlatReader<TExpr, TValue>}
+ */
+class FlatReaderImpl {
     /**
      * @readonly
      * @type {() => TExpr}
@@ -41,25 +59,25 @@ export class FlatReader {
     /**
      * @private
      * @readonly
-     * @type {BitReaderI}
+     * @type {BitReader}
      */
     _bitReader
 
     /**
      * @private
      * @readonly
-     * @type {(r: FlatReaderI<any, any>, typeList: number[]) => ValueReader<TValue>}
+     * @type {(r: FlatReader<any, any>, typeList: number[]) => ValueReader<TValue>}
      */
     _dispatchValueReader
 
     /**
      * @param {number[] | Uint8Array} bytes
-     * @param {(r: FlatReaderI<any, any>) => TExpr} readExpr
-     * @param {(r: FlatReaderI<any, any>, typeList: number[]) => ValueReader<TValue>} dispatchValueReader
+     * @param {(r: FlatReader<any, any>) => TExpr} readExpr
+     * @param {(r: FlatReader<any, any>, typeList: number[]) => ValueReader<TValue>} dispatchValueReader
      */
     constructor(bytes, readExpr, dispatchValueReader) {
         this.readExpr = () => readExpr(this)
-        this._bitReader = new BitReader(bytes)
+        this._bitReader = makeBitReader({ bytes })
         this._dispatchValueReader = dispatchValueReader
     }
 

@@ -1,5 +1,5 @@
-export { BasicUplcLogger } from "./BasicUplcLogger.js"
+export { makeBasicUplcLogger } from "./BasicUplcLogger.js"
 
 /**
- * @typedef {import("./UplcLoggingI.js").UplcLoggingI} UplcLoggingI
+ * @typedef {import("./UplcLogger.js").UplcLogger} UplcLogger
  */

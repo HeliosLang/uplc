@@ -4,7 +4,7 @@ import { expectSome, None } from "@helios-lang/type-utils"
 /**
  * @template TExpr
  * @template TValue
- * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
  */
 
 /**
@@ -15,19 +15,38 @@ import { expectSome, None } from "@helios-lang/type-utils"
  * @typedef {import("../cek/index.js").CekStack} CekStack
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
  * @typedef {import("../cek/index.js").CekValue} CekValue
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
  * @typedef {import("../values/index.js").UplcValue} UplcValue
+ * @typedef {import("./UplcTerm.js").UplcBuiltin} UplcBuiltin
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- * @typedef {import("./UplcTerm.js").UplcBuiltinI} UplcBuiltinI
  */
 
 export const UPLC_BUILTIN_TAG = 7
 
 /**
- * Plutus-core builtin function ref term
- * @implements {UplcBuiltinI}
+ * @param {{id: number, name: string, site?: Option<Site>}} args
+ * @returns {UplcBuiltin}
  */
-export class UplcBuiltin {
+export function makeUplcBuiltin(args) {
+    return new UplcBuiltinImpl(args.id, args.name, args.site)
+}
+
+/**
+ * @param {FlatReader<UplcTerm, UplcValue>} reader
+ * @param {Builtin[]} builtins
+ * @returns {UplcBuiltin}
+ */
+export function decodeUplcBuiltinFromFlat(reader, builtins) {
+    let id = reader.readBuiltinId()
+
+    return makeUplcBuiltin({ id, name: expectSome(builtins[id]).name })
+}
+
+/**
+ * Plutus-core builtin function ref term
+ * @implements {UplcBuiltin}
+ */
+class UplcBuiltinImpl {
     /**
      * ID of the builtin
      * @readonly
@@ -62,17 +81,6 @@ export class UplcBuiltin {
     }
 
     /**
-     * @param {FlatReaderI<UplcTerm, UplcValue>} reader
-     * @param {Builtin[]} builtins
-     * @returns {UplcBuiltin}
-     */
-    static fromFlat(reader, builtins) {
-        let id = reader.readBuiltinId()
-
-        return new UplcBuiltin(id, expectSome(builtins[id]).name)
-    }
-
-    /**
      * @type {UplcTerm[]}
      */
     get children() {
@@ -94,7 +102,7 @@ export class UplcBuiltin {
     }
 
     /**
-     * @param {FlatWriterI} w
+     * @param {FlatWriter} w
      */
     toFlat(w) {
         w.writeTermTag(UPLC_BUILTIN_TAG)

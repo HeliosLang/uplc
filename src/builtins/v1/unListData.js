@@ -1,5 +1,9 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcDataValue, UplcList, UplcType } from "../../values/index.js"
+import {
+    DATA_TYPE,
+    makeUplcDataValue,
+    makeUplcList
+} from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -33,10 +37,10 @@ export const unListData = {
         }
 
         return asCekValue(
-            new UplcList(
-                UplcType.data(),
-                data.items.map((item) => new UplcDataValue(item))
-            )
+            makeUplcList({
+                itemType: DATA_TYPE,
+                items: data.items.map(makeUplcDataValue)
+            })
         )
     }
 }

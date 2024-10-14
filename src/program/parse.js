@@ -3,65 +3,74 @@
  */
 import { encodeIntBE } from "@helios-lang/codec-utils"
 import {
-    Source,
-    TokenReader,
-    Tokenizer,
     anyWord,
     byteslit,
     group,
     intlit,
+    makeSource,
+    makeTokenReader,
+    makeTokenizer,
     strlit,
     symbol,
     word
 } from "@helios-lang/compiler-utils"
 import { None, allOrNone, expectSome, isSome } from "@helios-lang/type-utils"
 import {
-    UplcBuiltin,
-    UplcCall,
-    UplcConst,
-    UplcDelay,
-    UplcError,
-    UplcForce,
-    UplcLambda,
-    UplcVar
+    makeByteArrayData,
+    makeConstrData,
+    makeIntData,
+    makeListData,
+    makeMapData
+} from "../data/index.js"
+import {
+    makeUplcBuiltin,
+    makeUplcCall,
+    makeUplcConst,
+    makeUplcDelay,
+    makeUplcError,
+    makeUplcForce,
+    makeUplcLambda,
+    makeUplcVar
 } from "../terms/index.js" // TODO: implement UplcCase and UplcConstr terms
 import {
-    Bls12_381_G1_element,
-    Bls12_381_G2_element,
-    UplcBool,
-    UplcByteArray,
-    UplcDataValue,
-    UplcInt,
-    UplcList,
-    UplcPair,
-    UplcString,
-    UplcType,
-    UplcUnit
+    BLS12_381_G1_ELEMENT_TYPE,
+    BLS12_381_G2_ELEMENT_TYPE,
+    BOOL_TYPE,
+    BYTE_ARRAY_TYPE,
+    DATA_TYPE,
+    INT_TYPE,
+    makeBls12_381_G1_element,
+    makeBls12_381_G2_element,
+    makeListType,
+    makePairType,
+    makeUplcBool,
+    makeUplcByteArray,
+    makeUplcDataValue,
+    makeUplcInt,
+    makeUplcList,
+    makeUplcPair,
+    makeUplcString,
+    STRING_TYPE,
+    UNIT_TYPE,
+    UNIT_VALUE
 } from "../values/index.js"
-import {
-    ByteArrayData,
-    ConstrData,
-    IntData,
-    ListData,
-    MapData
-} from "../index.js"
 
 /**
  * @typedef {import("@helios-lang/compiler-utils").Site} Site
- * @typedef {import("@helios-lang/compiler-utils").TokenReaderI} TokenReaderI
+ * @typedef {import("@helios-lang/compiler-utils").TokenReader} TokenReader
  * @typedef {import("../builtins/index.js").Builtin} Builtin
  * @typedef {import("../data/index.js").UplcData} UplcData
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
- * @typedef {import("../terms/index.js").UplcLambdaI} UplcLambdaI
- * @typedef {import("../values/index.js").Bls12_381_G1_elementI} Bls12_381_G1_elementI
- * @typedef {import("../values/index.js").Bls12_381_G2_elementI} Bls12_381_G2_elementI
- * @typedef {import("../values/index.js").UplcBoolI} UplcBoolI
- * @typedef {import("../values/index.js").UplcByteArrayI} UplcByteArrayI
- * @typedef {import("../values/index.js").UplcDataValueI} UplcDataValueI
- * @typedef {import("../values/index.js").UplcIntI} UplcIntI
- * @typedef {import("../values/index.js").UplcStringI} UplcStringI
- * @typedef {import("../values/index.js").UplcTypeI} UplcTypeI
- * @typedef {import("../values/index.js").UplcUnitI} UplcUnitI
+ * @typedef {import("../terms/index.js").UplcLambda} UplcLambda
+ * @typedef {import("../values/index.js").Bls12_381_G1_element} Bls12_381_G1_element
+ * @typedef {import("../values/index.js").Bls12_381_G2_element} Bls12_381_G2_element
+ * @typedef {import("../values/index.js").UplcBool} UplcBool
+ * @typedef {import("../values/index.js").UplcByteArray} UplcByteArray
+ * @typedef {import("../values/index.js").UplcDataValue} UplcDataValue
+ * @typedef {import("../values/index.js").UplcInt} UplcInt
+ * @typedef {import("../values/index.js").UplcString} UplcString
+ * @typedef {import("../values/index.js").UplcType} UplcType
+ * @typedef {import("../values/index.js").UplcUnit} UplcUnit
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcProgram.js").UplcVersion} UplcVersion
  */
@@ -111,9 +120,12 @@ function findVarName(ctx, name) {
 export function parseProgram(s, ctx) {
     const [major, minor, patch] = ctx.uplcVersion.split(".")
 
-    const tokenizer = new Tokenizer(new Source(s, { name: "<na>" }), {
-        tokenizeReal: false,
-        allowLeadingZeroes: true
+    const tokenizer = makeTokenizer({
+        source: makeSource({ content: s, options: { name: "<na>" } }),
+        options: {
+            tokenizeReal: false,
+            allowLeadingZeroes: true
+        }
     })
 
     const tokens = tokenizer.tokenize()
@@ -121,9 +133,9 @@ export function parseProgram(s, ctx) {
     tokenizer.errors.throw()
 
     /**
-     * @type {TokenReaderI}
+     * @type {TokenReader}
      */
-    let r = new TokenReader(tokens)
+    let r = makeTokenReader({ tokens })
     let m
 
     /**
@@ -155,7 +167,7 @@ export function parseProgram(s, ctx) {
 }
 
 /**
- * @param {TokenReaderI} r
+ * @param {TokenReader} r
  * @param {ParseContext} ctx
  * @returns {Option<UplcTerm>}
  */
@@ -165,7 +177,7 @@ function parseTerm(r, ctx) {
     if ((m = r.matches(anyWord))) {
         const i = findVarName(ctx, m.value)
         if (isSome(i)) {
-            return new UplcVar(i, m.value, m.site)
+            return makeUplcVar({ index: i, name: m.value, site: m.site })
         } else {
             r.errors.syntax(
                 m.site,
@@ -189,14 +201,14 @@ function parseTerm(r, ctx) {
         } else if ((m = r.matches(word("delay")))) {
             const term = parseTerm(r, ctx)
             r.end()
-            return term ? new UplcDelay(term, m.site) : None
+            return term ? makeUplcDelay({ arg: term, site: m.site }) : None
         } else if (r.matches(word("error"))) {
             r.end()
-            return new UplcError()
+            return makeUplcError()
         } else if ((m = r.matches(word("force")))) {
             const term = parseTerm(r, ctx)
             r.end()
-            return term ? new UplcForce(term, m.site) : None
+            return term ? makeUplcForce({ arg: term, site: m.site }) : None
         } else if ((m = r.matches(word("lam")))) {
             const term = parseLambda(r, m.site, ctx)
             r.end()
@@ -219,7 +231,8 @@ function parseTerm(r, ctx) {
 
         const b = allOrNone(args)
 
-        const term = a && b ? UplcCall.multi(a, b, m.site) : None
+        const term =
+            a && b ? makeUplcCall({ fn: a, args: b, site: m.site }) : None
 
         return term
     } else {
@@ -229,7 +242,7 @@ function parseTerm(r, ctx) {
 }
 
 /**
- * @param {TokenReaderI} r
+ * @param {TokenReader} r
  * @param {Site} site
  * @param {ParseContext} ctx
  * @returns {Option<UplcTerm>}
@@ -245,12 +258,12 @@ function parseBuiltin(r, site, ctx) {
             r.errors.syntax(site, `unrecognized builtin ${m.value}`)
             return None
         } else {
-            return new UplcBuiltin(i, name, site)
+            return makeUplcBuiltin({ id: i, name, site })
         }
     } else if ((m = r.matches(intlit()))) {
-        const i = m.value
-        const name = expectSome(ctx.builtins[Number(i)]).name
-        return new UplcBuiltin(m.value, name, site)
+        const i = Number(m.value)
+        const name = expectSome(ctx.builtins[i]).name
+        return makeUplcBuiltin({ id: i, name, site })
     } else {
         r.endMatch()
         return None
@@ -259,10 +272,10 @@ function parseBuiltin(r, site, ctx) {
 
 /**
  *
- * @param {TokenReaderI} r
+ * @param {TokenReader} r
  * @param {Site} site
  * @param {ParseContext} ctx
- * @returns {Option<UplcLambdaI>}
+ * @returns {Option<UplcLambda>}
  */
 function parseLambda(r, site, ctx) {
     let m
@@ -271,7 +284,7 @@ function parseLambda(r, site, ctx) {
 
         const body = parseTerm(r, pushVarName(ctx, varName))
 
-        return body ? new UplcLambda(body, varName, site) : None
+        return body ? makeUplcLambda({ body, argName: varName, site }) : None
     } else {
         r.endMatch()
         return None
@@ -279,7 +292,7 @@ function parseLambda(r, site, ctx) {
 }
 
 /**
- * @param {TokenReaderI} r
+ * @param {TokenReader} r
  * @param {Site} site
  * @returns {Option<UplcTerm>}
  */
@@ -292,43 +305,43 @@ function parseConst(r, site) {
         const v = valueParser(r)
         r.end()
 
-        return v ? new UplcConst(v, site) : None
+        return v ? makeUplcConst({ value: v, site }) : None
     } else {
         return None
     }
 }
 
 /**
- * @typedef {(r: TokenReaderI) => Option<UplcValue>} ValueParser
+ * @typedef {(r: TokenReader) => Option<UplcValue>} ValueParser
  */
 /**
- * @param {TokenReaderI} r
- * @returns {Option<[UplcTypeI, ValueParser]>}
+ * @param {TokenReader} r
+ * @returns {Option<[UplcType, ValueParser]>}
  */
 function parseTypedValue(r) {
     let m
 
     if (r.matches(word("bool"))) {
-        return [UplcType.bool(), parseBool]
+        return [BOOL_TYPE, parseBool]
     } else if (r.matches(word("bytestring"))) {
-        return [UplcType.byteArray(), parseByteArray]
+        return [BYTE_ARRAY_TYPE, parseByteArray]
     } else if (r.matches(word("data"))) {
-        return [UplcType.data(), parseDataValue]
+        return [DATA_TYPE, parseDataValue]
     } else if (r.matches(word("integer"))) {
-        return [UplcType.int(), parseInt]
+        return [INT_TYPE, parseInt]
     } else if (r.matches(word("string"))) {
-        return [UplcType.string(), parseString]
+        return [STRING_TYPE, parseString]
     } else if (r.matches(word("bls12_381_G1_element"))) {
-        return [UplcType.bls12_381_G1_element(), parseBls12_381_G1_element]
+        return [BLS12_381_G1_ELEMENT_TYPE, parseBls12_381_G1_element]
     } else if (r.matches(word("bls12_381_G2_element"))) {
-        return [UplcType.bls12_381_G2_element(), parseBls12_381_G2_element]
+        return [BLS12_381_G2_ELEMENT_TYPE, parseBls12_381_G2_element]
     } else if (r.matches(word("unit"))) {
-        return [UplcType.unit(), parseUnit]
+        return [UNIT_TYPE, parseUnit]
     } else if ((m = r.matches(group("(", { length: 1 })))) {
         r = m.fields[0]
 
         /**
-         * @type {Option<[UplcTypeI, ValueParser]>}
+         * @type {Option<[UplcType, ValueParser]>}
          */
         let result = parseContainer(r)
 
@@ -341,8 +354,8 @@ function parseTypedValue(r) {
 }
 
 /**
- * @param {TokenReaderI} r
- * @returns {Option<[UplcTypeI, ValueParser]>}
+ * @param {TokenReader} r
+ * @returns {Option<[UplcType, ValueParser]>}
  */
 function parseContainer(r) {
     if (r.matches(word("list"))) {
@@ -357,8 +370,8 @@ function parseContainer(r) {
 
 /**
  *
- * @param {TokenReaderI} r
- * @returns {Option<[UplcTypeI, ValueParser]>}
+ * @param {TokenReader} r
+ * @returns {Option<[UplcType, ValueParser]>}
  */
 function parseList(r) {
     const itemDetails = parseTypedValue(r)
@@ -369,10 +382,10 @@ function parseList(r) {
 
     const [itemType, itemParser] = itemDetails
 
-    const listType = UplcType.list(itemType)
+    const listType = makeListType({ item: itemType })
 
     /**
-     * @param {TokenReaderI} r
+     * @param {TokenReader} r
      * @returns {Option<UplcValue>}
      */
     const listParser = (r) => {
@@ -380,7 +393,7 @@ function parseList(r) {
         if ((m = r.matches(group("[")))) {
             const items = allOrNone(m.fields.map(itemParser))
 
-            return items ? new UplcList(itemType, items) : None
+            return items ? makeUplcList({ itemType, items }) : None
         } else {
             r.endMatch()
             return None
@@ -392,8 +405,8 @@ function parseList(r) {
 
 /**
  *
- * @param {TokenReaderI} r
- * @returns {Option<[UplcTypeI, ValueParser]>}
+ * @param {TokenReader} r
+ * @returns {Option<[UplcType, ValueParser]>}
  */
 function parsePair(r) {
     const firstDetails = parseTypedValue(r)
@@ -406,10 +419,10 @@ function parsePair(r) {
     const [firstType, firstParser] = firstDetails
     const [secondType, secondParser] = secondDetails
 
-    const pairType = UplcType.pair(firstType, secondType)
+    const pairType = makePairType({ first: firstType, second: secondType })
 
     /**
-     * @param {TokenReaderI} r
+     * @param {TokenReader} r
      * @returns {Option<UplcValue>}
      */
     const pairParser = (r) => {
@@ -423,7 +436,7 @@ function parsePair(r) {
             const second = secondParser(r2)
             r2.end()
 
-            return first && second ? new UplcPair(first, second) : None
+            return first && second ? makeUplcPair({ first, second }) : None
         } else {
             r.endMatch()
             return None
@@ -434,14 +447,14 @@ function parsePair(r) {
 }
 
 /**
- * @param {TokenReaderI} r
- * @returns {Option<UplcBoolI>}
+ * @param {TokenReader} r
+ * @returns {Option<UplcBool>}
  */
 function parseBool(r) {
     if (r.matches(word("false", { caseInsensitive: true }))) {
-        return new UplcBool(false)
+        return makeUplcBool(false)
     } else if (r.matches(word("true", { caseInsensitive: true }))) {
-        return new UplcBool(true)
+        return makeUplcBool(true)
     } else {
         r.endMatch()
         return None
@@ -449,13 +462,13 @@ function parseBool(r) {
 }
 
 /**
- * @param {TokenReaderI} r
- * @returns {Option<UplcByteArrayI>}
+ * @param {TokenReader} r
+ * @returns {Option<UplcByteArray>}
  */
 function parseByteArray(r) {
     let m
     if ((m = r.matches(byteslit()))) {
-        return new UplcByteArray(m.value)
+        return makeUplcByteArray(m.value)
     } else {
         r.endMatch()
         return None
@@ -463,8 +476,8 @@ function parseByteArray(r) {
 }
 
 /**
- * @param {TokenReaderI} r
- * @returns {Option<UplcDataValueI>}
+ * @param {TokenReader} r
+ * @returns {Option<UplcDataValue>}
  */
 function parseDataValue(r) {
     let m
@@ -484,29 +497,29 @@ function parseDataValue(r) {
         return None
     }
 
-    return d ? new UplcDataValue(d) : None
+    return d ? makeUplcDataValue(d) : None
 }
 
 /**
  *
- * @param {TokenReaderI} r
+ * @param {TokenReader} r
  * @returns {Option<UplcData>}
  */
 function parseData(r) {
     let m
 
     if ((m = r.matches(word("B"), byteslit()))) {
-        return new ByteArrayData(m[1].value)
+        return makeByteArrayData({ bytes: m[1].value })
     } else if ((m = r.matches(word("Constr"), intlit(), group("[")))) {
         const tag = m[1].value
         const fields = allOrNone(m[2].fields.map(parseData))
 
-        return fields ? new ConstrData(tag, fields) : None
+        return fields ? makeConstrData({ tag: Number(tag), fields }) : None
     } else if (r.matches(word("I"))) {
         if ((m = r.matches(intlit()))) {
-            return new IntData(m.value)
+            return makeIntData(m.value)
         } else if ((m = r.matches(symbol("-"), intlit()))) {
-            return new IntData(-m[1].value)
+            return makeIntData(-m[1].value)
         } else {
             r.endMatch()
             return None
@@ -514,11 +527,11 @@ function parseData(r) {
     } else if ((m = r.matches(word("List"), group("[")))) {
         const items = allOrNone(m[1].fields.map(parseData))
 
-        return items ? new ListData(items) : None
+        return items ? makeListData(items) : None
     } else if ((m = r.matches(word("Map"), group("[")))) {
         const pairs = allOrNone(m[1].fields.map(parseDataPair))
 
-        return pairs ? new MapData(pairs) : None
+        return pairs ? makeMapData(pairs) : None
     } else {
         r.endMatch()
         return None
@@ -527,7 +540,7 @@ function parseData(r) {
 
 /**
  *
- * @param {TokenReaderI} r
+ * @param {TokenReader} r
  * @returns {Option<[UplcData, UplcData]>}
  */
 function parseDataPair(r) {
@@ -545,8 +558,8 @@ function parseDataPair(r) {
 }
 
 /**
- * @param {TokenReaderI} r
- * @returns {Option<Bls12_381_G1_elementI>}
+ * @param {TokenReader} r
+ * @returns {Option<Bls12_381_G1_element>}
  */
 function parseBls12_381_G1_element(r) {
     let m
@@ -554,7 +567,7 @@ function parseBls12_381_G1_element(r) {
     if ((m = r.matches(intlit()))) {
         const bytes = encodeIntBE(m.value)
 
-        return Bls12_381_G1_element.uncompress(bytes)
+        return makeBls12_381_G1_element({ bytes })
     } else {
         r.endMatch()
         return None
@@ -562,8 +575,8 @@ function parseBls12_381_G1_element(r) {
 }
 
 /**
- * @param {TokenReaderI} r
- * @returns {Option<Bls12_381_G2_elementI>}
+ * @param {TokenReader} r
+ * @returns {Option<Bls12_381_G2_element>}
  */
 function parseBls12_381_G2_element(r) {
     let m
@@ -571,7 +584,7 @@ function parseBls12_381_G2_element(r) {
     if ((m = r.matches(intlit()))) {
         const bytes = encodeIntBE(m.value)
 
-        return Bls12_381_G2_element.uncompress(bytes)
+        return makeBls12_381_G2_element({ bytes })
     } else {
         r.endMatch()
         return None
@@ -580,16 +593,16 @@ function parseBls12_381_G2_element(r) {
 
 /**
  *
- * @param {TokenReaderI} r
- * @returns {Option<UplcIntI>}
+ * @param {TokenReader} r
+ * @returns {Option<UplcInt>}
  */
 function parseInt(r) {
     let m
 
     if ((m = r.matches(intlit()))) {
-        return new UplcInt(m.value)
+        return makeUplcInt(m.value)
     } else if ((m = r.matches(symbol("-"), intlit()))) {
-        return new UplcInt(-m[1].value)
+        return makeUplcInt(-m[1].value)
     } else {
         r.endMatch()
         return None
@@ -597,13 +610,13 @@ function parseInt(r) {
 }
 
 /**
- * @param {TokenReaderI} r
- * @returns {Option<UplcStringI>}
+ * @param {TokenReader} r
+ * @returns {Option<UplcString>}
  */
 function parseString(r) {
     let m
     if ((m = r.matches(strlit()))) {
-        return new UplcString(m.value)
+        return makeUplcString(m.value)
     } else {
         r.endMatch()
         return None
@@ -611,12 +624,12 @@ function parseString(r) {
 }
 
 /**
- * @param {TokenReaderI} r
- * @returns {Option<UplcUnitI>}
+ * @param {TokenReader} r
+ * @returns {Option<UplcUnit>}
  */
 function parseUnit(r) {
     if (r.matches(group("(", { length: 0 }))) {
-        return new UplcUnit()
+        return UNIT_VALUE
     } else {
         r.endMatch()
         return None

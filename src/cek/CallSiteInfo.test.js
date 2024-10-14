@@ -1,7 +1,7 @@
 import { strictEqual } from "node:assert"
 import { describe, it } from "node:test"
-import { TokenSite } from "@helios-lang/compiler-utils"
-import { UplcInt } from "../values/index.js"
+import { makeDummySite } from "@helios-lang/compiler-utils"
+import { makeUplcInt } from "../values/index.js"
 import { isEmptyCallSiteInfo, isNonEmptyCallSiteInfo } from "./CallSiteInfo.js"
 
 describe(isEmptyCallSiteInfo.name, () => {
@@ -31,13 +31,13 @@ describe(isEmptyCallSiteInfo.name, () => {
 
     it("returns false if arguments is a non-empty list", () => {
         strictEqual(
-            isEmptyCallSiteInfo({ arguments: [{ value: new UplcInt(0) }] }),
+            isEmptyCallSiteInfo({ arguments: [{ value: makeUplcInt(0) }] }),
             false
         )
     })
 
     it("returns false if site is defined", () => {
-        strictEqual(isEmptyCallSiteInfo({ site: TokenSite.dummy() }), false)
+        strictEqual(isEmptyCallSiteInfo({ site: makeDummySite() }), false)
     })
 })
 
@@ -64,7 +64,7 @@ describe(isNonEmptyCallSiteInfo.name, () => {
 
     it("returns true if arguments is a non-empty list", () => {
         strictEqual(
-            isNonEmptyCallSiteInfo({ arguments: [{ value: new UplcInt(0) }] }),
+            isNonEmptyCallSiteInfo({ arguments: [{ value: makeUplcInt(0) }] }),
             true
         )
     })
@@ -74,6 +74,6 @@ describe(isNonEmptyCallSiteInfo.name, () => {
     })
 
     it("returns true if site is defined", () => {
-        strictEqual(isNonEmptyCallSiteInfo({ site: TokenSite.dummy() }), true)
+        strictEqual(isNonEmptyCallSiteInfo({ site: makeDummySite() }), true)
     })
 })

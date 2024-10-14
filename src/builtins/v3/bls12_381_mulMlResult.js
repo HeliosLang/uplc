@@ -1,6 +1,6 @@
 import { F12 } from "@helios-lang/crypto"
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { Bls12_381_MlResult } from "../../values/index.js"
+import { makeBls12_381_MlResult } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -33,6 +33,6 @@ export const bls12_381_mulMlResult = {
 
         const res = F12.multiply(a.element, b.element)
 
-        return asCekValue(new Bls12_381_MlResult(res))
+        return asCekValue(makeBls12_381_MlResult(res))
     }
 }

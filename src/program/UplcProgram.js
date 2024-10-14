@@ -1,17 +1,22 @@
 import { decodeBytes, encodeBytes, isBytes } from "@helios-lang/cbor"
-import { ByteStream } from "@helios-lang/codec-utils"
+import { makeByteStream } from "@helios-lang/codec-utils"
 import { blake2b } from "@helios-lang/crypto"
 import { CekMachine } from "../cek/index.js"
-import { FlatWriter } from "../flat/index.js"
-import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
+import { makeFlatWriter } from "../flat/index.js"
+import {
+    makeUplcCall,
+    makeUplcConst,
+    makeUplcForce,
+    makeUplcReader
+} from "../terms/index.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
  * @typedef {import("../builtins/index.js").Builtin} Builtin
  * @typedef {import("../cek/index.js").CekResult} CekResult
  * @typedef {import("../cek/index.js").CekTerm} CekTerm
- * @typedef {import("../costmodel/index.js").CostModelI} CostModelI
- * @typedef {import("../logging/UplcLoggingI.js").UplcLoggingI} UplcLoggingI
+ * @typedef {import("../costmodel/index.js").CostModel} CostModel
+ * @typedef {import("../logging/UplcLogger.js").UplcLogger} UplcLogger
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  */
@@ -27,7 +32,7 @@ import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
  *   root: UplcTerm
  *   ir: Option<string>
  *   eval(args: Option<UplcValue[]>, options?: {
- *      logOptions?: UplcLoggingI,
+ *      logOptions?: UplcLogger,
  *      costModelParams?: number[],
  *   }): CekResult
  *   hash(): number[]
@@ -42,10 +47,10 @@ import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
  *   plutusVersion: "PlutusScriptV1"
  *   plutusVersionTag: 1
  *   uplcVersion: "1.0.0"
- *   alt: Option<UplcProgramV1I>
- *   apply: (args: UplcValue[]) => UplcProgramV1I
- *   withAlt: (alt: UplcProgramV1I) => UplcProgramV1I
- * }} UplcProgramV1I
+ *   alt: Option<UplcProgramV1>
+ *   apply: (args: UplcValue[]) => UplcProgramV1
+ *   withAlt: (alt: UplcProgramV1) => UplcProgramV1
+ * }} UplcProgramV1
  */
 
 /**
@@ -53,10 +58,10 @@ import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
  *   plutusVersion: "PlutusScriptV2"
  *   plutusVersionTag: 2
  *   uplcVersion: "1.0.0"
- *   alt: Option<UplcProgramV2I>
- *   apply: (args: UplcValue[]) => UplcProgramV2I
- *   withAlt: (alt: UplcProgramV2I) => UplcProgramV2I
- * }} UplcProgramV2I
+ *   alt: Option<UplcProgramV2>
+ *   apply: (args: UplcValue[]) => UplcProgramV2
+ *   withAlt: (alt: UplcProgramV2) => UplcProgramV2
+ * }} UplcProgramV2
  */
 
 /**
@@ -64,14 +69,14 @@ import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
  *   plutusVersion: "PlutusScriptV3"
  *   plutusVersionTag: 3
  *   uplcVersion: "1.1.0"
- *   alt: Option<UplcProgramV3I>
- *   apply: (args: UplcValue[]) => UplcProgramV3I
- *   withAlt: (alt: UplcProgramV3I) => UplcProgramV3I
- * }} UplcProgramV3I
+ *   alt: Option<UplcProgramV3>
+ *   apply: (args: UplcValue[]) => UplcProgramV3
+ *   withAlt: (alt: UplcProgramV3) => UplcProgramV3
+ * }} UplcProgramV3
  */
 
 /**
- * @typedef {UplcProgramV1I | UplcProgramV2I | UplcProgramV3I} UplcProgram
+ * @typedef {UplcProgramV1 | UplcProgramV2 | UplcProgramV3} UplcProgram
  */
 
 /**
@@ -81,7 +86,7 @@ import { UplcCall, UplcConst, UplcForce, UplcReader } from "../terms/index.js"
  * @returns {UplcTerm}
  */
 export function decodeCborProgram(bytes, expectedUplcVersion, builtins) {
-    const stream = ByteStream.from(bytes)
+    const stream = makeByteStream({ bytes })
 
     if (!isBytes(stream)) {
         throw new Error("unexpected")
@@ -112,7 +117,7 @@ export function encodeCborProgram(expr, uplcVersion) {
  * @returns {number[]}
  */
 export function encodeFlatProgram(expr, uplcVersion) {
-    const w = new FlatWriter()
+    const w = makeFlatWriter()
 
     uplcVersion.split(".").forEach((v) => w.writeInt(BigInt(v)))
 
@@ -128,7 +133,7 @@ export function encodeFlatProgram(expr, uplcVersion) {
  * @returns {UplcTerm}
  */
 export function decodeFlatProgram(bytes, expectedUplcVersion, builtins) {
-    const r = new UplcReader(bytes, builtins)
+    const r = makeUplcReader({ bytes, builtins })
 
     const version = `${r.readInt()}.${r.readInt()}.${r.readInt()}`
 
@@ -148,17 +153,20 @@ export function decodeFlatProgram(bytes, expectedUplcVersion, builtins) {
  * @param {UplcTerm} expr
  * @param {Option<UplcValue[]>} args
  * @param {object} options
- * @param {CostModelI} options.costModel
- * @param {UplcLoggingI} [options.logOptions]
+ * @param {CostModel} options.costModel
+ * @param {UplcLogger} [options.logOptions]
  * @returns {CekResult}
  */
 export function evalProgram(builtins, expr, args, { costModel, logOptions }) {
     if (args) {
         if (args.length == 0) {
-            expr = new UplcForce(expr)
+            expr = makeUplcForce({ arg: expr })
         } else {
             for (let arg of args) {
-                expr = new UplcCall(expr, new UplcConst(arg))
+                expr = makeUplcCall({
+                    fn: expr,
+                    arg: makeUplcConst({ value: arg })
+                })
             }
         }
     }

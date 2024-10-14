@@ -1,5 +1,5 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcPair } from "../../values/index.js"
+import { makeUplcPair } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -30,6 +30,6 @@ export const mkPairData = {
             )
         }
 
-        return asCekValue(new UplcPair(a, b))
+        return asCekValue(makeUplcPair({ first: a, second: b }))
     }
 }

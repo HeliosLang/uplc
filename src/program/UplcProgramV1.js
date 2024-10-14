@@ -1,8 +1,8 @@
 import { None } from "@helios-lang/type-utils"
 import { builtinsV1 } from "../builtins/index.js"
 import {
-    CostModel,
-    CostModelParamsProxy,
+    makeCostModel,
+    makeCostModelParamsProxy,
     DEFAULT_COST_MODEL_PARAMS_V1
 } from "../costmodel/index.js"
 import { apply } from "../terms/index.js"
@@ -15,25 +15,25 @@ import {
     evalProgram,
     hashProgram
 } from "./UplcProgram.js"
-import { UplcSourceMap } from "./UplcSourceMap.js"
+import { deserializeUplcSourceMap } from "./UplcSourceMap.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- * @typedef {import("../logging/UplcLoggingI.js").UplcLoggingI} UplcLoggingI
+ * @typedef {import("../logging/UplcLogger.js").UplcLogger} UplcLogger
  * @typedef {import("../cek/index.js").CekResult} CekResult
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
  * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./UplcProgram.js").UplcProgramV1I} UplcProgramV1I
+ * @typedef {import("./UplcProgram.js").UplcProgramV1} UplcProgramV1
  * @typedef {import("./UplcSourceMap.js").UplcSourceMapJsonSafe} UplcSourceMapJsonSafe
  */
 
 /**
  * The optional ir property can be lazy because it is only used for debugging and might require an expensive formatting operation
  * @typedef {{
- *   alt?: Option<UplcProgramV1I>
+ *   alt?: Option<UplcProgramV1>
  *   ir?: Option<(() => string) | string>
  *   sourceMap?: UplcSourceMapJsonSafe
- * }} UplcProgramV1Props
+ * }} UplcProgramV1Options
  */
 
 const PLUTUS_VERSION = "PlutusScriptV1"
@@ -45,9 +45,59 @@ const UPLC_VERSION = "1.0.0"
  */
 
 /**
- * @implements {UplcProgramV1I}
+ * @param {{
+ *   root: UplcTerm
+ *   options?: UplcProgramV1Options
+ * }} props
+ * @returns {UplcProgramV1}
  */
-export class UplcProgramV1 {
+export function makeUplcProgramV1(props) {
+    return new UplcProgramV1Impl(props.root, props.options ?? {})
+}
+
+/**
+ * @param {BytesLike} bytes
+ * @param {UplcProgramV1Options} options
+ * @returns {UplcProgramV1Impl}
+ */
+export function decodeUplcProgramV1FromCbor(bytes, options = {}) {
+    return new UplcProgramV1Impl(
+        decodeCborProgram(bytes, UPLC_VERSION, builtinsV1),
+        options
+    )
+}
+
+/**
+ * @param {number[]} bytes
+ * @param {UplcProgramV1Options} options
+ * @returns {UplcProgramV1Impl}
+ */
+export function decodeUplcProgramV1FromFlat(bytes, options = {}) {
+    return new UplcProgramV1Impl(
+        decodeFlatProgram(bytes, UPLC_VERSION, builtinsV1),
+        options
+    )
+}
+
+/**
+ * @param {string} src
+ * @param {UplcProgramV1Options} options
+ * @returns {UplcProgramV1Impl}
+ */
+export function parseUplcProgramV1(src, options = {}) {
+    return new UplcProgramV1Impl(
+        parseProgram(src, {
+            uplcVersion: UPLC_VERSION,
+            builtins: builtinsV1
+        }),
+        options
+    )
+}
+
+/**
+ * @implements {UplcProgramV1}
+ */
+class UplcProgramV1Impl {
     /**
      * @readonly
      * @type {UplcTerm}
@@ -56,7 +106,7 @@ export class UplcProgramV1 {
 
     /**
      * @readonly
-     * @type {Option<UplcProgramV1I>}
+     * @type {Option<UplcProgramV1>}
      */
     alt
 
@@ -76,56 +126,17 @@ export class UplcProgramV1 {
 
     /**
      * @param {UplcTerm} root
-     * @param {UplcProgramV1Props} props
+     * @param {UplcProgramV1Options} options
      */
-    constructor(root, props = {}) {
+    constructor(root, options = {}) {
         this.root = root
-        this.alt = props.alt
-        this._ir = props.ir
+        this.alt = options.alt
+        this._ir = options.ir
         this._hash = None
 
-        if (props.sourceMap) {
-            UplcSourceMap.fromJson(props.sourceMap).apply(this.root)
+        if (options.sourceMap) {
+            deserializeUplcSourceMap(options.sourceMap).apply(this.root)
         }
-    }
-
-    /**
-     * @param {number[]} bytes
-     * @param {UplcProgramV1Props} props
-     * @returns {UplcProgramV1}
-     */
-    static fromFlat(bytes, props = {}) {
-        return new UplcProgramV1(
-            decodeFlatProgram(bytes, UPLC_VERSION, builtinsV1),
-            props
-        )
-    }
-
-    /**
-     * @param {BytesLike} bytes
-     * @param {UplcProgramV1Props} props
-     * @returns {UplcProgramV1}
-     */
-    static fromCbor(bytes, props = {}) {
-        return new UplcProgramV1(
-            decodeCborProgram(bytes, UPLC_VERSION, builtinsV1),
-            props
-        )
-    }
-
-    /**
-     * @param {string} src
-     * @param {UplcProgramV1Props} props
-     * @returns {UplcProgramV1}
-     */
-    static fromString(src, props = {}) {
-        return new UplcProgramV1(
-            parseProgram(src, {
-                uplcVersion: UPLC_VERSION,
-                builtins: builtinsV1
-            }),
-            props
-        )
     }
 
     /**
@@ -177,25 +188,25 @@ export class UplcProgramV1 {
      *
      * Returns a new UplcProgramV1 instance, leaving the original untouched.
      * @param {UplcValue[]} args
-     * @returns {UplcProgramV1} - a new UplcProgram instance
+     * @returns {UplcProgramV1Impl} - a new UplcProgram instance
      */
     apply(args) {
         const alt = this.alt ? this.alt.apply(args) : None
-        return new UplcProgramV1(apply(this.root, args), { alt })
+        return new UplcProgramV1Impl(apply(this.root, args), { alt })
     }
 
     /**
      * @param {Option<UplcValue[]>} args - if None, eval the root term without any applications, if empy: apply a force to the root term
      * @param {object} [options]
-     * @param {UplcLoggingI} [options.logOptions]
+     * @param {UplcLogger} [options.logOptions]
      * @param {number[]} [options.costModelParams]
      * @returns {CekResult}
      */
     eval(args, options = {}) {
         const { logOptions, costModelParams = DEFAULT_COST_MODEL_PARAMS_V1() } =
             options
-        const costModel = new CostModel(
-            new CostModelParamsProxy(costModelParams),
+        const costModel = makeCostModel(
+            makeCostModelParamsProxy(costModelParams),
             builtinsV1
         )
         return evalProgram(builtinsV1, this.root, args, {
@@ -238,10 +249,10 @@ export class UplcProgramV1 {
     }
 
     /**
-     * @param {UplcProgramV1I} alt
-     * @returns {UplcProgramV1I}
+     * @param {UplcProgramV1} alt
+     * @returns {UplcProgramV1}
      */
     withAlt(alt) {
-        return new UplcProgramV1(this.root, { alt, ir: this._ir })
+        return new UplcProgramV1Impl(this.root, { alt, ir: this._ir })
     }
 }

@@ -7,13 +7,21 @@ import { None, isNone, isSome } from "@helios-lang/type-utils"
 /**
  * @typedef {{
  *   get: (key: number, def?: Option<bigint>) => bigint
- * }} CostModelParamsProxyI
+ * }} CostModelParamsProxy
  */
 
 /**
- * @implements {CostModelParamsProxyI}
+ * @param {number[]} params
+ * @returns {CostModelParamsProxy}
  */
-export class CostModelParamsProxy {
+export function makeCostModelParamsProxy(params) {
+    return new CostModelParamsProxyImpl(params)
+}
+
+/**
+ * @implements {CostModelParamsProxy}
+ */
+class CostModelParamsProxyImpl {
     /**
      * @private
      * @readonly

@@ -1,6 +1,6 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { IntData } from "../../data/index.js"
-import { UplcDataValue } from "../../values/index.js"
+import { makeIntData } from "../../data/index.js"
+import { makeUplcDataValue } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -25,6 +25,6 @@ export const iData = {
             )
         }
 
-        return asCekValue(new UplcDataValue(new IntData(a.value)))
+        return asCekValue(makeUplcDataValue(makeIntData(a.value)))
     }
 }

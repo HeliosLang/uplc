@@ -1,5 +1,5 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcInt } from "../../values/index.js"
+import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -24,6 +24,6 @@ export const lengthOfByteString = {
             )
         }
 
-        return asCekValue(new UplcInt(a.bytes.length))
+        return asCekValue(makeUplcInt(a.bytes.length))
     }
 }

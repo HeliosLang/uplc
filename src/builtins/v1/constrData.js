@@ -1,6 +1,6 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { ConstrData } from "../../data/index.js"
-import { UplcDataValue } from "../../values/index.js"
+import { makeConstrData } from "../../data/index.js"
+import { makeUplcDataValue } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -36,17 +36,17 @@ export const constrData = {
         }
 
         return asCekValue(
-            new UplcDataValue(
-                new ConstrData(
-                    Number(tag.value),
-                    fields.items.map((f) => {
+            makeUplcDataValue(
+                makeConstrData({
+                    tag: Number(tag.value),
+                    fields: fields.items.map((f) => {
                         if (f.kind == "data") {
                             return f.value
                         } else {
                             throw new Error("expected only data value fields")
                         }
                     })
-                )
+                })
             )
         )
     }

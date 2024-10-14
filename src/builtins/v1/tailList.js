@@ -1,5 +1,5 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcList } from "../../values/index.js"
+import { makeUplcList } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -28,6 +28,11 @@ export const tailList = {
             throw new Error("empty list in tailList")
         }
 
-        return asCekValue(new UplcList(list.itemType, list.items.slice(1)))
+        return asCekValue(
+            makeUplcList({
+                itemType: list.itemType,
+                items: list.items.slice(1)
+            })
+        )
     }
 }

@@ -1,8 +1,8 @@
 import { None } from "@helios-lang/type-utils"
 import { builtinsV3 } from "../builtins/index.js"
 import {
-    CostModel,
-    CostModelParamsProxy,
+    makeCostModel,
+    makeCostModelParamsProxy,
     DEFAULT_COST_MODEL_PARAMS_V3
 } from "../costmodel/index.js"
 import { apply } from "../terms/index.js"
@@ -15,25 +15,25 @@ import {
     evalProgram,
     hashProgram
 } from "./UplcProgram.js"
-import { UplcSourceMap } from "./UplcSourceMap.js"
+import { deserializeUplcSourceMap } from "./UplcSourceMap.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- * @typedef {import("../logging/UplcLoggingI.js").UplcLoggingI} UplcLoggingI
+ * @typedef {import("../logging/UplcLogger.js").UplcLogger} UplcLogger
  * @typedef {import("../cek/index.js").CekResult} CekResult
  * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
  * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./UplcProgram.js").UplcProgramV3I} UplcProgramV3I
+ * @typedef {import("./UplcProgram.js").UplcProgramV3} UplcProgramV3
  * @typedef {import("./UplcSourceMap.js").UplcSourceMapJsonSafe} UplcSourceMapJsonSafe
  */
 
 /**
  * The optional ir property can be lazy because it is only used for debugging and might require an expensive formatting operation
  * @typedef {{
- *   alt?: Option<UplcProgramV3I>
+ *   alt?: Option<UplcProgramV3>
  *   ir?: Option<(() => string) | string>
  *   sourceMap?: UplcSourceMapJsonSafe
- * }} UplcProgramV3Props
+ * }} UplcProgramV3Options
  */
 
 const PLUTUS_VERSION = "PlutusScriptV3"
@@ -45,9 +45,56 @@ const UPLC_VERSION = "1.1.0"
  */
 
 /**
- * @implements {UplcProgramV3I}
+ * @param {{root: UplcTerm, options?: UplcProgramV3Options}} props
+ * @returns {UplcProgramV3}
  */
-export class UplcProgramV3 {
+export function makeUplcProgramV3(props) {
+    return new UplcProgramV3Impl(props.root, props.options ?? {})
+}
+
+/**
+ * @param {BytesLike} bytes
+ * @param {UplcProgramV3Options} options
+ * @returns {UplcProgramV3}
+ */
+export function decodeUplcProgramV3FromCbor(bytes, options = {}) {
+    return new UplcProgramV3Impl(
+        decodeCborProgram(bytes, UPLC_VERSION, builtinsV3),
+        options
+    )
+}
+
+/**
+ * @param {number[]} bytes
+ * @param {UplcProgramV3Options} options
+ * @returns {UplcProgramV3}
+ */
+export function decodeUplcProgramV3FromFlat(bytes, options = {}) {
+    return new UplcProgramV3Impl(
+        decodeFlatProgram(bytes, UPLC_VERSION, builtinsV3),
+        options
+    )
+}
+
+/**
+ * @param {string} src
+ * @param {UplcProgramV3Options} options
+ * @returns {UplcProgramV3}
+ */
+export function parseUplcProgramV3(src, options = {}) {
+    return new UplcProgramV3Impl(
+        parseProgram(src, {
+            uplcVersion: UPLC_VERSION,
+            builtins: builtinsV3
+        }),
+        options
+    )
+}
+
+/**
+ * @implements {UplcProgramV3}
+ */
+class UplcProgramV3Impl {
     /**
      * @readonly
      * @type {UplcTerm}
@@ -56,7 +103,7 @@ export class UplcProgramV3 {
 
     /**
      * @readonly
-     * @type {Option<UplcProgramV3I>}
+     * @type {Option<UplcProgramV3>}
      */
     alt
 
@@ -76,7 +123,7 @@ export class UplcProgramV3 {
 
     /**
      * @param {UplcTerm} root
-     * @param {UplcProgramV3Props} props
+     * @param {UplcProgramV3Options} props
      */
     constructor(root, props = {}) {
         this.root = root
@@ -85,47 +132,8 @@ export class UplcProgramV3 {
         this._hash = None
 
         if (props.sourceMap) {
-            UplcSourceMap.fromJson(props.sourceMap).apply(this.root)
+            deserializeUplcSourceMap(props.sourceMap).apply(this.root)
         }
-    }
-
-    /**
-     * @param {number[]} bytes
-     * @param {UplcProgramV3Props} props
-     * @returns {UplcProgramV3}
-     */
-    static fromFlat(bytes, props = {}) {
-        return new UplcProgramV3(
-            decodeFlatProgram(bytes, UPLC_VERSION, builtinsV3),
-            props
-        )
-    }
-
-    /**
-     * @param {BytesLike} bytes
-     * @param {UplcProgramV3Props} props
-     * @returns {UplcProgramV3}
-     */
-    static fromCbor(bytes, props = {}) {
-        return new UplcProgramV3(
-            decodeCborProgram(bytes, UPLC_VERSION, builtinsV3),
-            props
-        )
-    }
-
-    /**
-     * @param {string} src
-     * @param {UplcProgramV3Props} props
-     * @returns {UplcProgramV3}
-     */
-    static fromString(src, props = {}) {
-        return new UplcProgramV3(
-            parseProgram(src, {
-                uplcVersion: UPLC_VERSION,
-                builtins: builtinsV3
-            }),
-            props
-        )
     }
 
     /**
@@ -173,21 +181,21 @@ export class UplcProgramV3 {
      */
     apply(args) {
         const alt = this.alt ? this.alt.apply(args) : None
-        return new UplcProgramV3(apply(this.root, args), { alt })
+        return new UplcProgramV3Impl(apply(this.root, args), { alt })
     }
 
     /**
      * @param {undefined | UplcValue[]} args - if undefined, eval the root term without any applications, if empty: apply a force to the root term
      * @param {object} [options]
-     * @param {UplcLoggingI} [options.logOptions]
+     * @param {UplcLogger} [options.logOptions]
      * @param {number[]} [options.costModelParams]
      * @returns {CekResult}
      */
     eval(args, options = {}) {
         const { logOptions, costModelParams = DEFAULT_COST_MODEL_PARAMS_V3() } =
             options
-        const costModel = new CostModel(
-            new CostModelParamsProxy(costModelParams),
+        const costModel = makeCostModel(
+            makeCostModelParamsProxy(costModelParams),
             builtinsV3
         )
         return evalProgram(builtinsV3, this.root, args, {
@@ -230,10 +238,10 @@ export class UplcProgramV3 {
     }
 
     /**
-     * @param {UplcProgramV3I} alt
-     * @returns {UplcProgramV3I}
+     * @param {UplcProgramV3} alt
+     * @returns {UplcProgramV3}
      */
     withAlt(alt) {
-        return new UplcProgramV3(this.root, { alt, ir: this._ir })
+        return new UplcProgramV3Impl(this.root, { alt, ir: this._ir })
     }
 }

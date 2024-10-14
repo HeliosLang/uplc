@@ -1,6 +1,6 @@
 /**
  * Interface for Plutus-core data classes (not the same as Plutus-core value classes!)
- * @typedef {ByteArrayDataI | ConstrDataI | IntDataI | ListDataI | MapDataI} UplcData
+ * @typedef {ByteArrayData | ConstrData | IntData | ListData | MapData} UplcData
  */
 
 /**
@@ -20,7 +20,7 @@
  *   kind: "bytes"
  *   bytes: number[]
  *   toHex: () => string
- * }} ByteArrayDataI
+ * }} ByteArrayData
  */
 
 /**
@@ -29,16 +29,16 @@
  *   tag: number
  *   fields: UplcData[]
  *   length: number
- *   expectFields: (n: number) => ConstrDataI
- *   expectTag: (tag: number, msg?: string) => ConstrDataI
- * }} ConstrDataI
+ *   expectFields: (n: number) => ConstrData
+ *   expectTag: (tag: number, msg?: string) => ConstrData
+ * }} ConstrData
  */
 
 /**
  * @typedef {CommonUplcDataProps & {
  *   kind: "int"
  *   value: bigint
- * }} IntDataI
+ * }} IntData
  */
 
 /**
@@ -47,7 +47,7 @@
  *   items: UplcData[]
  *   length: number
  *   list: UplcData[]
- * }} ListDataI
+ * }} ListData
  */
 
 /**
@@ -56,7 +56,7 @@
  *   items: [UplcData, UplcData][]
  *   length: number
  *   list: [UplcData, UplcData][]
- * }} MapDataI
+ * }} MapData
  */
 
 /**

@@ -5,17 +5,59 @@ import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- * @typedef {import("@helios-lang/codec-utils").ByteStreamI} ByteStreamI
+ * @typedef {import("@helios-lang/codec-utils").ByteStream} ByteStream
  * @typedef {import("@helios-lang/codec-utils").IntLike} IntLike
- * @typedef {import("./UplcData.js").ConstrDataI} ConstrDataI
+ * @typedef {import("./UplcData.js").ConstrData} ConstrData
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
 
 /**
- * Represents a tag index and a list of `UplcData` fields.
- * @implements {ConstrDataI}
+ * @param {{tag: number, fields: UplcData[]}} args
+ * @returns {ConstrData}
  */
-export class ConstrData {
+export function makeConstrData(args) {
+    return new ConstrDataImpl(args.tag, args.fields)
+}
+
+/**
+ * @param {UplcData} data
+ * @param {Option<number>} tag
+ * @param {Option<number>} nFields
+ * @returns {asserts data is ConstrData}
+ */
+export function assertConstrData(data, tag = None, nFields = None) {
+    if (data.kind == "constr") {
+        if (isSome(tag) && data.tag != tag) {
+            throw new Error(
+                `expected ConstrData with tag ${tag}, got tag ${data.tag}`
+            )
+        }
+
+        if (isSome(nFields) && data.length != nFields) {
+            throw new Error(
+                `expected ConstrData with ${nFields} fields, got ${data.length} fields`
+            )
+        }
+    } else {
+        throw new Error(`expected ConstrData, got ${data.toString()}`)
+    }
+}
+
+/**
+ * @param {BytesLike} bytes
+ * @param {(bytes: ByteStream) => UplcData} itemDecoder
+ * @returns {ConstrData}
+ */
+export function decodeConstrData(bytes, itemDecoder) {
+    const [tag, fields] = decodeConstr(bytes, itemDecoder)
+    return makeConstrData({ tag, fields })
+}
+
+/**
+ * Represents a tag index and a list of `UplcData` fields.
+ * @implements {ConstrData}
+ */
+class ConstrDataImpl {
     /**
      * @readonly
      * @type {number}
@@ -42,52 +84,6 @@ export class ConstrData {
      */
     get kind() {
         return "constr"
-    }
-
-    /**
-     * @param {UplcData} data
-     * @param {Option<number>} tag
-     * @param {Option<number>} nFields
-     * @returns {asserts data is ConstrDataI}
-     */
-    static assert(data, tag = None, nFields = None) {
-        if (data.kind == "constr") {
-            if (isSome(tag) && data.tag != tag) {
-                throw new Error(
-                    `expected ConstrData with tag ${tag}, got tag ${data.tag}`
-                )
-            }
-
-            if (isSome(nFields) && data.length != nFields) {
-                throw new Error(
-                    `expected ConstrData with ${nFields} fields, got ${data.length} fields`
-                )
-            }
-        } else {
-            throw new Error(`expected ConstrData, got ${data.toString()}`)
-        }
-    }
-
-    /**
-     * @param {UplcData} data
-     * @returns {ConstrDataI}
-     */
-    static expect(data, msg = `expected ConstrData, got ${data.toString()}`) {
-        if (data.kind == "constr") {
-            return data
-        } else {
-            throw new Error(msg)
-        }
-    }
-
-    /**
-     * @param {BytesLike} bytes
-     * @param {(bytes: ByteStreamI) => UplcData} itemDecoder
-     * @returns {ConstrData}
-     */
-    static fromCbor(bytes, itemDecoder) {
-        const [tag, fields] = decodeConstr(bytes, itemDecoder)
-        return new ConstrData(tag, fields)
     }
 
     /**
@@ -129,7 +125,7 @@ export class ConstrData {
 
     /**
      * @param {number} n
-     * @returns {ConstrDataI}
+     * @returns {ConstrData}
      */
     expectFields(
         n,
@@ -145,7 +141,7 @@ export class ConstrData {
     /**
      * @param {number} tag
      * @param {string} msg
-     * @returns {ConstrDataI}
+     * @returns {ConstrData}
      */
     expectTag(tag, msg = `expected ConstrData tag ${tag}, got ${this.tag}`) {
         if (this.tag != tag) {

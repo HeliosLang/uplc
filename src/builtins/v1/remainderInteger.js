@@ -1,5 +1,5 @@
 import { ArgSizesProdCost, ArgSizesDiffCost } from "../../costmodel/index.js"
-import { UplcInt } from "../../values/index.js"
+import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -47,7 +47,7 @@ export function evalRemainderInteger(args, _ctx) {
     }
 
     return asCekValue(
-        new UplcInt(
+        makeUplcInt(
             a.value % b.value
             //a.value -
             //  (a.value / b.value + (b.value < 0n ? 1n : 0n)) * b.value

@@ -1,17 +1,17 @@
-import { UplcType } from "./UplcType.js"
+import { UNIT_TYPE } from "./UplcType.js"
 
 /**
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
- * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
- * @typedef {import("./UplcValue.js").UplcUnitI} UplcUnitI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
+ * @typedef {import("./UplcValue.js").UplcType} UplcType
+ * @typedef {import("./UplcValue.js").UplcUnit} UplcUnit
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
  * Primitive unit value.
- * @implements {UplcUnitI}
+ * @implements {UplcUnit}
  */
-export class UplcUnit {
+class UplcUnitImpl {
     constructor() {}
 
     /**
@@ -36,10 +36,10 @@ export class UplcUnit {
     }
 
     /**
-     * @returns {UplcTypeI}
+     * @returns {UplcType}
      */
     get type() {
-        return UplcType.unit()
+        return UNIT_TYPE
     }
 
     /**
@@ -59,7 +59,12 @@ export class UplcUnit {
 
     /**
      * Doesn't add any bits (typeBits are written by the UplcConst term)
-     * @param {FlatWriterI} _writer
+     * @param {FlatWriter} _writer
      */
     toFlat(_writer) {}
 }
+
+/**
+ * @type {UplcUnit}
+ */
+export const UNIT_VALUE = new UplcUnitImpl()

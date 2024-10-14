@@ -1,6 +1,6 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { MapData } from "../../data/index.js"
-import { UplcDataValue } from "../../values/index.js"
+import { makeMapData } from "../../data/index.js"
+import { makeUplcDataValue } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -32,8 +32,8 @@ export const mapData = {
         }
 
         return asCekValue(
-            new UplcDataValue(
-                new MapData(
+            makeUplcDataValue(
+                makeMapData(
                     list.items.map((item) => {
                         if (item.kind == "pair") {
                             const a = item.first

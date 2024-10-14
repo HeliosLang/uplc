@@ -2,9 +2,9 @@ export {}
 
 /**
  * @typedef {import("@helios-lang/crypto").FieldElement12} FieldElement12
- * @typedef {import("../data/index.js").ConstrDataI} ConstrDataI
+ * @typedef {import("../data/index.js").ConstrData} ConstrData
  * @typedef {import("../data/index.js").UplcData} UplcData
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
  */
 
 /**
@@ -17,9 +17,9 @@ export {}
  *   typeBits: string
  *   isData(): boolean
  *   isDataPair(): boolean
- *   isEqual(other: UplcTypeI): boolean
+ *   isEqual(other: UplcType): boolean
  *   toString(): string
- * }} UplcTypeI
+ * }} UplcType
  */
 
 /**
@@ -32,26 +32,26 @@ export {}
  * @typedef {{
  *   memSize: number
  *   flatSize: number
- *   type: UplcTypeI
+ *   type: UplcType
  *   isEqual: (other: UplcValue) => boolean
- *   toFlat: (writer: FlatWriterI) => void
+ *   toFlat: (writer: FlatWriter) => void
  *   toString: () => string
  * }} CommonUplcValueProps
  */
 
 /**
  * @typedef {(
- *   UplcIntI
- *   | UplcByteArrayI
- *   | UplcStringI
- *   | UplcUnitI
- *   | UplcBoolI
- *   | UplcListI
- *   | UplcPairI
- *   | UplcDataValueI
- *   | Bls12_381_G1_elementI
- *   | Bls12_381_G2_elementI
- *   | Bls12_381_MlResultI
+ *   UplcInt
+ *   | UplcByteArray
+ *   | UplcString
+ *   | UplcUnit
+ *   | UplcBool
+ *   | UplcList
+ *   | UplcPair
+ *   | UplcDataValue
+ *   | Bls12_381_G1_element
+ *   | Bls12_381_G2_element
+ *   | Bls12_381_MlResult
  * )} UplcValue
  */
 
@@ -60,17 +60,17 @@ export {}
  *   kind: "int"
  *   value: bigint
  *   signed: boolean
- *   toFlatUnsigned: (w: FlatWriterI) => void
- *   toSigned: () => UplcIntI
- *   toUnsigned: () => UplcIntI
- * }} UplcIntI
+ *   toFlatUnsigned: (w: FlatWriter) => void
+ *   toSigned: () => UplcInt
+ *   toUnsigned: () => UplcInt
+ * }} UplcInt
  */
 
 /**
  * @typedef {CommonUplcValueProps & {
  *   kind: "bytes"
  *   bytes: number[]
- * }} UplcByteArrayI
+ * }} UplcByteArray
  */
 
 /**
@@ -78,13 +78,13 @@ export {}
  *   kind: "string"
  *   value: string
  *   string: string
- * }} UplcStringI
+ * }} UplcString
  */
 
 /**
  * @typedef {CommonUplcValueProps & {
  *   kind: "unit"
- * }} UplcUnitI
+ * }} UplcUnit
  */
 
 /**
@@ -92,19 +92,19 @@ export {}
  *   kind: "bool"
  *   value: boolean
  *   bool: boolean
- *   toUplcData: () => ConstrDataI
- * }} UplcBoolI
+ *   toUplcData: () => ConstrData
+ * }} UplcBool
  */
 
 /**
  * @typedef {CommonUplcValueProps & {
  *   kind: "list"
- *   itemType: UplcTypeI
+ *   itemType: UplcType
  *   items: UplcValue[]
  *   length: number
  *   isDataList: () => boolean
  *   isDataMap: () => boolean
- * }} UplcListI
+ * }} UplcList
  */
 
 /**
@@ -112,14 +112,14 @@ export {}
  *   kind: "pair"
  *   first: UplcValue
  *   second: UplcValue
- * }} UplcPairI
+ * }} UplcPair
  */
 
 /**
  * @typedef {CommonUplcValueProps & {
  *   kind: "data"
  *   value: UplcData
- * }} UplcDataValueI
+ * }} UplcDataValue
  */
 
 /**
@@ -127,7 +127,7 @@ export {}
  *   kind: "bls12_381_G1_element"
  *   point: Point3<bigint>
  *   compress: () => number[]
- * }} Bls12_381_G1_elementI
+ * }} Bls12_381_G1_element
  */
 
 /**
@@ -135,12 +135,12 @@ export {}
  *   kind: "bls12_381_G2_element"
  *   point: Point3<[bigint, bigint]>
  *   compress: () => number[]
- * }} Bls12_381_G2_elementI
+ * }} Bls12_381_G2_element
  */
 
 /**
  * @typedef {CommonUplcValueProps & {
  *   kind: "bls12_381_mlresult"
  *   element: FieldElement12
- * }} Bls12_381_MlResultI
+ * }} Bls12_381_MlResult
  */

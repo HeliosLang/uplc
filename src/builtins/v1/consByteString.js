@@ -1,5 +1,5 @@
 import { ArgSizesSecondCost, ArgSizesSumCost } from "../../costmodel/index.js"
-import { UplcByteArray } from "../../values/index.js"
+import { makeUplcByteArray } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -32,7 +32,7 @@ export const consByteString = {
         }
 
         return asCekValue(
-            new UplcByteArray([Number(a.value % 256n)].concat(b.bytes))
+            makeUplcByteArray([Number(a.value % 256n)].concat(b.bytes))
         )
     }
 }

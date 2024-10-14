@@ -5,12 +5,12 @@ import {
     isList,
     isMap
 } from "@helios-lang/cbor"
-import { ByteStream } from "@helios-lang/codec-utils"
-import { ByteArrayData } from "./ByteArrayData.js"
-import { ConstrData } from "./ConstrData.js"
-import { IntData } from "./IntData.js"
-import { MapData } from "./MapData.js"
-import { ListData } from "./ListData.js"
+import { makeByteStream } from "@helios-lang/codec-utils"
+import { decodeByteArrayData } from "./ByteArrayData.js"
+import { decodeConstrData } from "./ConstrData.js"
+import { decodeIntData } from "./IntData.js"
+import { decodeMapData } from "./MapData.js"
+import { decodeListData } from "./ListData.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
@@ -22,22 +22,22 @@ import { ListData } from "./ListData.js"
  * @returns {UplcData}
  */
 export function decodeUplcData(bytes) {
-    const stream = ByteStream.from(bytes)
+    const stream = makeByteStream({ bytes })
 
     if (isList(stream)) {
-        return ListData.fromCbor(stream, decodeUplcData)
+        return decodeListData(stream, decodeUplcData)
     } else if (isIndefBytes(stream)) {
-        return ByteArrayData.fromCbor(stream)
+        return decodeByteArrayData(stream)
     } else {
         if (isDefBytes(stream)) {
-            return ByteArrayData.fromCbor(stream)
+            return decodeByteArrayData(stream)
         } else if (isMap(stream)) {
-            return MapData.fromCbor(stream, decodeUplcData)
+            return decodeMapData(stream, decodeUplcData)
         } else if (isConstr(stream)) {
-            return ConstrData.fromCbor(stream, decodeUplcData)
+            return decodeConstrData(stream, decodeUplcData)
         } else {
             // int, must come last
-            return IntData.fromCbor(stream)
+            return decodeIntData(stream)
         }
     }
 }

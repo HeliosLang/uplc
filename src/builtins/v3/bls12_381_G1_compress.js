@@ -1,5 +1,5 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcByteArray } from "../../values/index.js"
+import { makeUplcByteArray } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -24,6 +24,6 @@ export const bls12_381_G1_compress = {
             )
         }
 
-        return asCekValue(new UplcByteArray(a.compress()))
+        return asCekValue(makeUplcByteArray(a.compress()))
     }
 }

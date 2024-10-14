@@ -1,7 +1,7 @@
 import { byteToBits } from "@helios-lang/codec-utils"
 
 /**
- * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
+ * @typedef {import("./UplcValue.js").UplcType} UplcType
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
@@ -20,10 +20,48 @@ const BLS12_381_G2_ELEMENT = "1010"
 const BLS12_381_ML_RESULT = "1011"
 
 /**
- * Represents the typeBits of a UPLC primitive.
- * @implements {UplcTypeI}
+ * @param {{typeBits: string} | {numbers: number[]}} args
+ * @returns {UplcType}
  */
-export class UplcType {
+export function makeUplcType(args) {
+    if ("typeBits" in args) {
+        return new UplcTypeImpl(args.typeBits)
+    } else {
+        return new UplcTypeImpl(
+            args.numbers.map((x) => byteToBits(x, 4, false)).join("1")
+        )
+    }
+}
+
+/**
+ * @param {{item: UplcType}} args
+ * @returns {UplcType}
+ */
+export function makeListType(args) {
+    return new UplcTypeImpl([CONTAINER, LIST, args.item.typeBits].join("1"))
+}
+
+/**
+ * @param {{first: UplcType, second: UplcType}} args
+ * @returns {UplcType}
+ */
+export function makePairType(args) {
+    return new UplcTypeImpl(
+        [
+            CONTAINER,
+            CONTAINER,
+            PAIR,
+            args.first.typeBits,
+            args.second.typeBits
+        ].join("1")
+    )
+}
+
+/**
+ * Represents the typeBits of a UPLC primitive.
+ * @implements {UplcType}
+ */
+class UplcTypeImpl {
     /**
      * @private
      * @readonly
@@ -39,109 +77,6 @@ export class UplcType {
     }
 
     /**
-     * @returns {UplcType}
-     */
-    static bls12_381_G1_element() {
-        return new UplcType(BLS12_381_G1_ELEMENT)
-    }
-
-    /**
-     * @returns {UplcType}
-     */
-    static bls12_381_G2_element() {
-        return new UplcType(BLS12_381_G2_ELEMENT)
-    }
-
-    /**
-     * @returns {UplcType}
-     */
-    static bls12_381_MlResult() {
-        return new UplcType(BLS12_381_ML_RESULT)
-    }
-
-    /**
-     * @returns {UplcType}
-     */
-    static bool() {
-        return new UplcType(BOOL)
-    }
-
-    /**
-     * @returns {UplcType}
-     */
-    static byteArray() {
-        return new UplcType(BYTE_ARRAY)
-    }
-
-    /**
-     * @returns {UplcType}
-     */
-    static data() {
-        return new UplcType(DATA)
-    }
-
-    /**
-     * @returns {UplcType}
-     */
-    static dataPair() {
-        return UplcType.pair(UplcType.data(), UplcType.data())
-    }
-
-    /**
-     * @returns {UplcType}
-     */
-    static int() {
-        return new UplcType(INT)
-    }
-
-    /**
-     * @param {UplcTypeI} itemType
-     * @returns {UplcType}
-     */
-    static list(itemType) {
-        return new UplcType([CONTAINER, LIST, itemType.typeBits].join("1"))
-    }
-
-    /**
-     * @param {UplcTypeI} firstType
-     * @param {UplcTypeI} secondType
-     * @returns {UplcType}
-     */
-    static pair(firstType, secondType) {
-        return new UplcType(
-            [
-                CONTAINER,
-                CONTAINER,
-                PAIR,
-                firstType.typeBits,
-                secondType.typeBits
-            ].join("1")
-        )
-    }
-
-    /**
-     * @returns {UplcType}
-     */
-    static string() {
-        return new UplcType(STRING)
-    }
-
-    /**
-     * @returns {UplcType}
-     */
-    static unit() {
-        return new UplcType(UNIT)
-    }
-
-    /**
-     * @param {number[]} lst
-     * @returns {UplcType}
-     */
-    static fromNumbers(lst) {
-        return new UplcType(lst.map((x) => byteToBits(x, 4, false)).join("1"))
-    }
-
-    /**
      * @type {string}
      */
     get typeBits() {
@@ -152,18 +87,18 @@ export class UplcType {
      * @returns {boolean}
      */
     isData() {
-        return this._typeBits == UplcType.data()._typeBits
+        return this._typeBits == DATA
     }
 
     /**
      * @returns {boolean}
      */
     isDataPair() {
-        return this._typeBits == UplcType.dataPair()._typeBits
+        return this._typeBits == DATA_PAIR_TYPE.typeBits
     }
 
     /**
-     * @param {UplcTypeI} value
+     * @param {UplcType} value
      * @returns {boolean}
      */
     isEqual(value) {
@@ -290,3 +225,23 @@ export class UplcType {
         return result
     }
 }
+
+export const INT_TYPE = makeUplcType({ typeBits: INT })
+export const BYTE_ARRAY_TYPE = makeUplcType({ typeBits: BYTE_ARRAY })
+export const STRING_TYPE = makeUplcType({ typeBits: STRING })
+export const UNIT_TYPE = makeUplcType({ typeBits: UNIT })
+export const BOOL_TYPE = makeUplcType({ typeBits: BOOL })
+export const DATA_TYPE = makeUplcType({ typeBits: DATA })
+export const DATA_PAIR_TYPE = makePairType({
+    first: DATA_TYPE,
+    second: DATA_TYPE
+})
+export const BLS12_381_G1_ELEMENT_TYPE = makeUplcType({
+    typeBits: BLS12_381_G1_ELEMENT
+})
+export const BLS12_381_G2_ELEMENT_TYPE = makeUplcType({
+    typeBits: BLS12_381_G2_ELEMENT
+})
+export const BLS12_381_ML_RESULT_TYPE = makeUplcType({
+    typeBits: BLS12_381_ML_RESULT
+})

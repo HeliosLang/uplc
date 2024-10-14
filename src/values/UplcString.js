@@ -1,25 +1,43 @@
 import { decodeUtf8, encodeUtf8 } from "@helios-lang/codec-utils"
 import { bytesFlatSize } from "../flat/index.js"
-import { UplcType } from "./UplcType.js"
+import { STRING_TYPE } from "./UplcType.js"
 
 /**
  * @template TExpr
  * @template TValue
- * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
  */
 
 /**
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
- * @typedef {import("./UplcValue.js").UplcStringI} UplcStringI
- * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
+ * @typedef {import("./UplcValue.js").UplcString} UplcString
+ * @typedef {import("./UplcValue.js").UplcType} UplcType
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
- * Primitive string value.
- * @implements {UplcStringI}
+ * @param {string} args
+ * @returns {UplcString}
  */
-export class UplcString {
+export function makeUplcString(args) {
+    return new UplcStringImpl(args)
+}
+
+/**
+ * @param {FlatReader<any, UplcValue>} r
+ * @returns {UplcString}
+ */
+export function decodeUplcStringFromFlat(r) {
+    const bytes = r.readBytes()
+    const s = decodeUtf8(bytes)
+    return new UplcStringImpl(s)
+}
+
+/**
+ * Primitive string value.
+ * @implements {UplcString}
+ */
+class UplcStringImpl {
     /**
      * @readonly
      * @type {string}
@@ -38,16 +56,6 @@ export class UplcString {
      */
     get kind() {
         return "string"
-    }
-
-    /**
-     * @param {FlatReaderI<any, UplcValue>} r
-     * @returns {UplcString}
-     */
-    static fromFlat(r) {
-        const bytes = r.readBytes()
-        const s = decodeUtf8(bytes)
-        return new UplcString(s)
     }
 
     /**
@@ -73,10 +81,10 @@ export class UplcString {
     }
 
     /**
-     * @returns {UplcTypeI}
+     * @returns {UplcType}
      */
     get type() {
-        return UplcType.string()
+        return STRING_TYPE
     }
 
     /**
@@ -88,7 +96,7 @@ export class UplcString {
     }
 
     /**
-     * @param {FlatWriterI} w
+     * @param {FlatWriter} w
      */
     toFlat(w) {
         const bytes = encodeUtf8(this.value)

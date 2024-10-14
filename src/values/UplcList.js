@@ -1,9 +1,9 @@
-import { UplcType } from "./UplcType.js"
+import { makeListType } from "./UplcType.js"
 
 /**
  * @template TExpr
  * @template TValue
- * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
  */
 
 /**
@@ -12,21 +12,48 @@ import { UplcType } from "./UplcType.js"
  */
 
 /**
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
- * @typedef {import("./UplcValue.js").UplcListI} UplcListI
- * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
+ * @typedef {import("./UplcValue.js").UplcList} UplcList
+ * @typedef {import("./UplcValue.js").UplcType} UplcType
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
+ * @param {{itemType: UplcType, items: UplcValue[]}} args
+ * @returns {UplcList}
+ */
+export function makeUplcList(args) {
+    return new UplcListImpl(args.itemType, args.items)
+}
+
+/**
+ * @param {FlatReader<any, UplcValue>} r
+ * @param {UplcType} itemType
+ * @param {ValueReader<UplcValue>} itemReader
+ * @returns {UplcList}
+ */
+export function decodeUplcListFromFlat(r, itemType, itemReader) {
+    /**
+     * @type {UplcValue[]}
+     */
+    const items = []
+
+    while (r.readBool()) {
+        items.push(itemReader())
+    }
+
+    return new UplcListImpl(itemType, items)
+}
+
+/**
  * Plutus-core list value class.
  * Only used during evaluation.
- * @implements {UplcListI}
+ * @implements {UplcList}
  */
-export class UplcList {
+class UplcListImpl {
     /**
      * @readonly
-     * @type {UplcTypeI}
+     * @type {UplcType}
      */
     itemType
 
@@ -37,7 +64,7 @@ export class UplcList {
     items
 
     /**
-     * @param {UplcTypeI} itemType
+     * @param {UplcType} itemType
      * @param {UplcValue[]} items
      */
     constructor(itemType, items) {
@@ -50,25 +77,6 @@ export class UplcList {
      */
     get kind() {
         return "list"
-    }
-
-    /**
-     * @param {FlatReaderI<any, UplcValue>} r
-     * @param {UplcTypeI} itemType
-     * @param {ValueReader<UplcValue>} itemReader
-     * @returns {UplcList}
-     */
-    static fromFlat(r, itemType, itemReader) {
-        /**
-         * @type {UplcValue[]}
-         */
-        const items = []
-
-        while (r.readBool()) {
-            items.push(itemReader())
-        }
-
-        return new UplcList(itemType, items)
     }
 
     /**
@@ -110,10 +118,10 @@ export class UplcList {
 
     /**
      * 7 (5) (type bits of content)
-     * @returns {UplcTypeI}
+     * @returns {UplcType}
      */
     get type() {
-        return UplcType.list(this.itemType)
+        return makeListType({ item: this.itemType })
     }
 
     /**
@@ -143,7 +151,7 @@ export class UplcList {
     }
 
     /**
-     * @param {FlatWriterI} w
+     * @param {FlatWriter} w
      */
     toFlat(w) {
         w.writeList(this.items)

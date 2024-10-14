@@ -1,5 +1,5 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcInt } from "../../values/index.js"
+import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -32,6 +32,6 @@ export const unIData = {
             )
         }
 
-        return asCekValue(new UplcInt(data.value))
+        return asCekValue(makeUplcInt(data.value))
     }
 }

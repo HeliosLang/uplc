@@ -1,17 +1,17 @@
 import { strictEqual, match, deepEqual } from "node:assert"
 import { describe, it } from "node:test"
-import { TokenSite } from "@helios-lang/compiler-utils"
+import { makeTokenSite } from "@helios-lang/compiler-utils"
 import { expectSome } from "@helios-lang/type-utils"
 import {
-    UplcBuiltin,
-    UplcCall,
-    UplcConst,
-    UplcDelay,
-    UplcError,
-    UplcForce,
-    UplcVar
+    makeUplcBuiltin,
+    makeUplcCall,
+    makeUplcConst,
+    makeUplcDelay,
+    makeUplcError,
+    makeUplcForce,
+    makeUplcVar
 } from "../terms/index.js"
-import { UplcString } from "../values/index.js"
+import { makeUplcString } from "../values/index.js"
 import { UplcRuntimeError } from "./UplcRuntimeError.js"
 
 /**
@@ -24,7 +24,7 @@ describe(UplcRuntimeError.name, () => {
      */
     const callSites = [
         {
-            site: new TokenSite({
+            site: makeTokenSite({
                 file: "unknown",
                 startLine: 1,
                 startColumn: 16,
@@ -36,15 +36,22 @@ describe(UplcRuntimeError.name, () => {
                 {
                     name: "fn3",
                     delay: {
-                        term: new UplcForce(
-                            new UplcCall(
-                                new UplcCall(
-                                    new UplcForce(new UplcBuiltin(28, "trace")),
-                                    new UplcConst(new UplcString("my error"))
-                                ),
-                                new UplcDelay(new UplcError())
-                            )
-                        ),
+                        term: makeUplcForce({
+                            arg: makeUplcCall({
+                                fn: makeUplcCall({
+                                    fn: makeUplcForce({
+                                        arg: makeUplcBuiltin({
+                                            id: 28,
+                                            name: "trace"
+                                        })
+                                    }),
+                                    arg: makeUplcConst({
+                                        value: makeUplcString("my error")
+                                    })
+                                }),
+                                arg: makeUplcDelay({ arg: makeUplcError() })
+                            })
+                        }),
                         stack: {
                             // not used by UplcRuntimeError
                             values: [],
@@ -55,7 +62,7 @@ describe(UplcRuntimeError.name, () => {
             ]
         },
         {
-            site: new TokenSite({
+            site: makeTokenSite({
                 file: "unknown",
                 startLine: 6,
                 startColumn: 16,
@@ -67,7 +74,9 @@ describe(UplcRuntimeError.name, () => {
                 {
                     name: "fn2",
                     delay: {
-                        term: new UplcForce(new UplcVar(1, "fn3")),
+                        term: makeUplcForce({
+                            arg: makeUplcVar({ index: 1, name: "fn3" })
+                        }),
                         stack: {
                             // not used by UplcRuntimeError
                             values: [],
@@ -78,7 +87,7 @@ describe(UplcRuntimeError.name, () => {
             ]
         },
         {
-            site: new TokenSite({
+            site: makeTokenSite({
                 file: "unknown",
                 startLine: 9,
                 startColumn: 16,
@@ -90,7 +99,9 @@ describe(UplcRuntimeError.name, () => {
                 {
                     name: "fn1",
                     delay: {
-                        term: new UplcForce(new UplcVar(1, "fn2")),
+                        term: makeUplcForce({
+                            arg: makeUplcVar({ index: 1, name: "fn2" })
+                        }),
                         stack: {
                             // not used by UplcRuntimeError
                             values: [],
@@ -101,7 +112,7 @@ describe(UplcRuntimeError.name, () => {
             ]
         },
         {
-            site: new TokenSite({
+            site: makeTokenSite({
                 file: "unknown",
                 startLine: 12,
                 startColumn: 15,
@@ -111,7 +122,7 @@ describe(UplcRuntimeError.name, () => {
             functionName: "fn1"
         },
         {
-            site: new TokenSite({
+            site: makeTokenSite({
                 file: "unknown",
                 startLine: 10,
                 startColumn: 19,
@@ -121,7 +132,7 @@ describe(UplcRuntimeError.name, () => {
             functionName: "fn2"
         },
         {
-            site: new TokenSite({
+            site: makeTokenSite({
                 file: "unknown",
                 startLine: 7,
                 startColumn: 19,
@@ -131,7 +142,7 @@ describe(UplcRuntimeError.name, () => {
             functionName: "fn3"
         },
         {
-            site: new TokenSite({
+            site: makeTokenSite({
                 file: "unknown",
                 startLine: 4,
                 startColumn: 18,

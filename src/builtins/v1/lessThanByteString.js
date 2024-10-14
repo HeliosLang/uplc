@@ -1,6 +1,6 @@
 import { ArgSizesConstCost, ArgSizesMinCost } from "../../costmodel/index.js"
-import { ByteArrayData } from "../../data/index.js"
-import { UplcBool } from "../../values/index.js"
+import { compareByteArrayData } from "../../data/index.js"
+import { makeUplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -32,7 +32,7 @@ export const lessThanByteString = {
         }
 
         return asCekValue(
-            new UplcBool(ByteArrayData.compare(a.bytes, b.bytes) == -1)
+            makeUplcBool(compareByteArrayData(a.bytes, b.bytes) == -1)
         )
     }
 }

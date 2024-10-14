@@ -1,22 +1,22 @@
 import { describe, it } from "node:test"
 import { None } from "@helios-lang/type-utils"
 import { builtinsV1, builtinsV2, builtinsV3 } from "../builtins/index.js"
-import { CostModel } from "./CostModel.js"
-import { CostModelParamsProxy } from "./CostModelParamsProxy.js"
+import { makeCostModel } from "./CostModel.js"
+import { makeCostModelParamsProxy } from "./CostModelParamsProxy.js"
 import { BABBAGE_COST_MODEL_PARAMS_V1 } from "./CostModelParamsV1.js"
 import { BABBAGE_COST_MODEL_PARAMS_V2 } from "./CostModelParamsV2.js"
 import { CONWAY_COST_MODEL_PARAMS_V3 } from "./CostModelParamsV3.js"
 
-describe(`${CostModel.name} for V1`, () => {
+describe(`CostModel for V1`, () => {
     it("all params used exactly once", () => {
-        const params = new CostModelParamsProxy(BABBAGE_COST_MODEL_PARAMS_V1)
+        const params = makeCostModelParamsProxy(BABBAGE_COST_MODEL_PARAMS_V1)
 
         /**
          * @type {Set<number>}
          */
         const used = new Set()
 
-        new CostModel(
+        makeCostModel(
             {
                 /**
                  * @param {number} key
@@ -44,16 +44,16 @@ describe(`${CostModel.name} for V1`, () => {
     })
 })
 
-describe(`${CostModel.name} for V2`, () => {
+describe(`CostModel for V2`, () => {
     it("all params used exactly once", () => {
-        const params = new CostModelParamsProxy(BABBAGE_COST_MODEL_PARAMS_V2)
+        const params = makeCostModelParamsProxy(BABBAGE_COST_MODEL_PARAMS_V2)
 
         /**
          * @type {Set<number>}
          */
         const used = new Set()
 
-        new CostModel(
+        makeCostModel(
             {
                 /**
                  * @param {number} key
@@ -81,16 +81,16 @@ describe(`${CostModel.name} for V2`, () => {
     })
 })
 
-describe(`${CostModel.name} for V3`, () => {
+describe(`CostModel for V3`, () => {
     it("all params used exactly once", () => {
-        const params = new CostModelParamsProxy(CONWAY_COST_MODEL_PARAMS_V3)
+        const params = makeCostModelParamsProxy(CONWAY_COST_MODEL_PARAMS_V3)
 
         /**
          * @type {Set<number>}
          */
         const used = new Set()
 
-        new CostModel(
+        makeCostModel(
             {
                 /**
                  * @param {number} key

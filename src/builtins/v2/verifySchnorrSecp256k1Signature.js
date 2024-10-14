@@ -1,6 +1,6 @@
 import { SchnorrSecp256k1 } from "@helios-lang/crypto"
 import { ArgSizesConstCost, ArgSizesThirdCost } from "../../costmodel/index.js"
-import { UplcBool } from "../../values/index.js"
+import { makeUplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -56,6 +56,6 @@ export const verifySchnorrSecp256k1Signature = {
             publicKey.bytes
         )
 
-        return asCekValue(new UplcBool(b))
+        return asCekValue(makeUplcBool(b))
     }
 }

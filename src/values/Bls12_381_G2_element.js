@@ -1,20 +1,33 @@
 import { prepadBytes } from "@helios-lang/codec-utils"
 import { G2, decodeG2Point, encodeG2Point } from "@helios-lang/crypto"
 import { bytesFlatSize } from "../flat/index.js"
-import { UplcType } from "./UplcType.js"
+import { BLS12_381_G2_ELEMENT_TYPE } from "./UplcType.js"
 
 /**
  * @typedef {import("@helios-lang/crypto").Point3<[bigint, bigint]>} Point3
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
- * @typedef {import("./UplcValue.js").Bls12_381_G2_elementI} Bls12_381_G2_elementI
- * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
+ * @typedef {import("./UplcValue.js").Bls12_381_G2_element} Bls12_381_G2_element
+ * @typedef {import("./UplcValue.js").UplcType} UplcType
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
- * @implements {Bls12_381_G2_elementI}
+ * @param {Point3 | {bytes: number[]}} args
+ * @returns {Bls12_381_G2_element}
  */
-export class Bls12_381_G2_element {
+export function makeBls12_381_G2_element(args) {
+    if ("z" in args) {
+        return new Bls12_381_G2_elementImpl(args)
+    } else {
+        const p = G2.fromAffine(decodeG2Point(prepadBytes(args.bytes, 96)))
+        return new Bls12_381_G2_elementImpl(p)
+    }
+}
+
+/**
+ * @implements {Bls12_381_G2_element}
+ */
+class Bls12_381_G2_elementImpl {
     /**
      * @readonly
      * @type {Point3}
@@ -36,15 +49,6 @@ export class Bls12_381_G2_element {
     }
 
     /**
-     * @param {number[]} bytes
-     * @returns {Bls12_381_G2_element}
-     */
-    static uncompress(bytes) {
-        const p = G2.fromAffine(decodeG2Point(prepadBytes(bytes, 96)))
-        return new Bls12_381_G2_element(p)
-    }
-
-    /**
      * Though a G2_element can't be serialized, but the parent Const term can be converted to an Apply[Builtin(G2_uncompress), ByteString(96-bytes)]
      * Note: the parent Const term already returns 4
      * @type {number}
@@ -62,10 +66,10 @@ export class Bls12_381_G2_element {
     }
 
     /**
-     * @type {UplcTypeI}
+     * @type {UplcType}
      */
     get type() {
-        return UplcType.bls12_381_G2_element()
+        return BLS12_381_G2_ELEMENT_TYPE
     }
 
     /**
@@ -88,7 +92,7 @@ export class Bls12_381_G2_element {
 
     /**
      * Throws an error, serialization can only be done using data and the uncompress function
-     * @param {FlatWriterI} _writer
+     * @param {FlatWriter} _writer
      */
     toFlat(_writer) {
         throw new Error("can't be serialized")

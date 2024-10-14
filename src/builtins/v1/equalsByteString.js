@@ -1,6 +1,6 @@
 import { ArgSizesConstCost, ArgSizesDiagCost } from "../../costmodel/index.js"
-import { ByteArrayData } from "../../data/index.js"
-import { UplcBool } from "../../values/index.js"
+import { compareByteArrayData } from "../../data/index.js"
+import { makeUplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -33,7 +33,7 @@ export const equalsByteString = {
         }
 
         return asCekValue(
-            new UplcBool(ByteArrayData.compare(a.bytes, b.bytes) == 0)
+            makeUplcBool(compareByteArrayData(a.bytes, b.bytes) == 0)
         )
     }
 }

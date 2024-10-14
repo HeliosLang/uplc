@@ -1,6 +1,6 @@
 import { sha3_256 as hash } from "@helios-lang/crypto"
 import { ArgSizesConstCost, ArgSizesFirstCost } from "../../costmodel/index.js"
-import { UplcByteArray } from "../../values/index.js"
+import { makeUplcByteArray } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -26,6 +26,6 @@ export const sha3_256 = {
             )
         }
 
-        return asCekValue(new UplcByteArray(hash(a.bytes)))
+        return asCekValue(makeUplcByteArray(hash(a.bytes)))
     }
 }

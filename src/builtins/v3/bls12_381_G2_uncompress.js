@@ -1,5 +1,5 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { Bls12_381_G2_element } from "../../values/index.js"
+import { makeBls12_381_G2_element } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -32,6 +32,6 @@ export const bls12_381_G2_uncompress = {
             )
         }
 
-        return asCekValue(Bls12_381_G2_element.uncompress(a.bytes))
+        return asCekValue(makeBls12_381_G2_element({ bytes: a.bytes }))
     }
 }

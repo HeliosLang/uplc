@@ -1,6 +1,6 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { ByteArrayData } from "../../data/index.js"
-import { UplcDataValue } from "../../values/index.js"
+import { makeByteArrayData } from "../../data/index.js"
+import { makeUplcDataValue } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -25,6 +25,8 @@ export const bData = {
             )
         }
 
-        return asCekValue(new UplcDataValue(new ByteArrayData(a.bytes)))
+        return asCekValue(
+            makeUplcDataValue(makeByteArrayData({ bytes: a.bytes }))
+        )
     }
 }

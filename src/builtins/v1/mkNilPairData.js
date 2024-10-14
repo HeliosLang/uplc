@@ -1,5 +1,5 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcList, UplcType } from "../../values/index.js"
+import { makeUplcList, DATA_PAIR_TYPE } from "../../values/index.js"
 import { asCekValue, asUplcValue } from "../cast.js"
 
 /**
@@ -24,6 +24,6 @@ export const mkNilPairData = {
             )
         }
 
-        return asCekValue(new UplcList(UplcType.dataPair(), []))
+        return asCekValue(makeUplcList({ itemType: DATA_PAIR_TYPE, items: [] }))
     }
 }

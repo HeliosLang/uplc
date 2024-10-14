@@ -3,7 +3,7 @@ import { None } from "@helios-lang/type-utils"
 /**
  * @template TExpr
  * @template TValue
- * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
  */
 
 /**
@@ -12,23 +12,39 @@ import { None } from "@helios-lang/type-utils"
  * @typedef {import("../cek/index.js").CekStack} CekStack
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
  * @typedef {import("../cek/index.js").CekValue} CekValue
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- * @typedef {import("./UplcTerm.js").UplcLambdaI} UplcLambdaI
+ * @typedef {import("./UplcTerm.js").UplcLambda} UplcLambda
  */
 
 export const UPLC_LAMBDA_TAG = 2
 
 /**
- * Plutus-core lambda term, a function that takes a signle argument
- * @template {UplcTerm} [TExpr=UplcTerm]
- * @implements {UplcLambdaI}
+ * @param {{body: UplcTerm, argName?: Option<string>, site?: Option<Site>}} props
+ * @returns {UplcLambda}
  */
-export class UplcLambda {
+export function makeUplcLambda(props) {
+    return new UplcLambdaImpl(props.body, props.argName, props.site)
+}
+
+/**
+ * @param {FlatReader<UplcTerm, any>} r
+ * @returns {UplcLambda}
+ */
+export function decodeUplcLambdaFromFlat(r) {
+    const expr = r.readExpr()
+    return makeUplcLambda({ body: expr })
+}
+
+/**
+ * Plutus-core lambda term, a function that takes a signle argument
+ * @implements {UplcLambda}
+ */
+class UplcLambdaImpl {
     /**
      * @readonly
-     * @type {TExpr}
+     * @type {UplcTerm}
      */
     expr
 
@@ -47,7 +63,7 @@ export class UplcLambda {
     site
 
     /**
-     * @param {TExpr} expr
+     * @param {UplcTerm} expr
      * @param {Option<string>} argName
      * @param {Option<Site>} site
      */
@@ -55,16 +71,6 @@ export class UplcLambda {
         this.expr = expr
         this.argName = argName
         this.site = site
-    }
-
-    /**
-     * @template {UplcTerm} TExpr
-     * @param {FlatReaderI<TExpr, UplcValue>} r
-     * @returns {UplcLambda<TExpr>}
-     */
-    static fromFlat(r) {
-        const expr = r.readExpr()
-        return new UplcLambda(expr)
     }
 
     /**
@@ -104,7 +110,7 @@ export class UplcLambda {
     }
 
     /**
-     * @param {FlatWriterI} w
+     * @param {FlatWriter} w
      */
     toFlat(w) {
         w.writeTermTag(UPLC_LAMBDA_TAG)

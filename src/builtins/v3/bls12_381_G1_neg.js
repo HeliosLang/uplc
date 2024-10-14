@@ -1,6 +1,6 @@
 import { G1 } from "@helios-lang/crypto"
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { Bls12_381_G1_element } from "../../values/index.js"
+import { makeBls12_381_G1_element } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -25,6 +25,6 @@ export const bls12_381_G1_neg = {
             )
         }
 
-        return asCekValue(new Bls12_381_G1_element(G1.negate(a.point)))
+        return asCekValue(makeBls12_381_G1_element(G1.negate(a.point)))
     }
 }

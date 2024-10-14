@@ -1,5 +1,5 @@
 import { ArgSizesProdCost, ArgSizesDiffCost } from "../../costmodel/index.js"
-import { UplcInt } from "../../values/index.js"
+import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -46,5 +46,5 @@ export function evalQuotientInteger(args, _ctx) {
         throw new Error(`division by 0 in quotientInteger`)
     }
 
-    return asCekValue(new UplcInt(a.value / b.value))
+    return asCekValue(makeUplcInt(a.value / b.value))
 }

@@ -1,6 +1,6 @@
 import { strictEqual, throws } from "node:assert"
 import { describe, it } from "node:test"
-import { UplcInt } from "../../values/index.js"
+import { makeUplcInt } from "../../values/index.js"
 import { asUplcValue } from "../cast.js"
 import { evalDivideInteger } from "./divideInteger.js"
 import { evalModInteger } from "./modInteger.js"
@@ -70,7 +70,7 @@ const testVector = [
 function modIntegerWithDivide(a, b) {
     const ab = asUplcValue(
         evalDivideInteger(
-            [{ value: new UplcInt(a) }, { value: new UplcInt(b) }],
+            [{ value: makeUplcInt(a) }, { value: makeUplcInt(b) }],
             ctx
         )
     )
@@ -86,7 +86,7 @@ describe("modInteger", () => {
     it("throws an error when second arg is 0", () => {
         throws(() => {
             evalModInteger(
-                [{ value: new UplcInt(1n) }, { value: new UplcInt(0n) }],
+                [{ value: makeUplcInt(1n) }, { value: makeUplcInt(0n) }],
                 ctx
             )
         })
@@ -97,7 +97,7 @@ describe("modInteger", () => {
         it(`${a} mod ${b} == ${expected}`, () => {
             const actual = asUplcValue(
                 evalModInteger(
-                    [{ value: new UplcInt(a) }, { value: new UplcInt(b) }],
+                    [{ value: makeUplcInt(a) }, { value: makeUplcInt(b) }],
                     ctx
                 )
             )

@@ -1,13 +1,13 @@
 import { None } from "@helios-lang/type-utils"
 import { builtinsV3 } from "../builtins/index.js"
-import { UplcByteArray } from "../values/index.js"
-import { UplcCall } from "./UplcCall.js"
-import { UplcBuiltin } from "./UplcBuiltin.js"
+import { makeUplcByteArray } from "../values/index.js"
+import { makeUplcBuiltin } from "./UplcBuiltin.js"
+import { makeUplcCall } from "./UplcCall.js"
 
 /**
  * @template TExpr
  * @template TValue
- * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
  */
 
 /**
@@ -16,19 +16,37 @@ import { UplcBuiltin } from "./UplcBuiltin.js"
  * @typedef {import("../cek/index.js").CekStack} CekStack
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
  * @typedef {import("../cek/index.js").CekValue} CekValue
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- * @typedef {import("./UplcTerm.js").UplcConstI} UplcConstI
+ * @typedef {import("./UplcTerm.js").UplcConst} UplcConst
  */
 
 export const UPLC_CONST_TAG = 4
 
 /**
- * Plutus-core const term (i.e. a literal in conventional sense)
- * @implements {UplcConstI}
+ *
+ * @param {{value: UplcValue, site?: Option<Site>}} props
+ * @returns {UplcConst}
  */
-export class UplcConst {
+export function makeUplcConst(props) {
+    return new UplcConstImpl(props.value, props.site)
+}
+
+/**
+ * @param {FlatReader<UplcTerm, UplcValue>} r
+ * @returns {UplcConst}
+ */
+export function decodeUplcConstFromFlat(r) {
+    const value = r.readValue()
+    return makeUplcConst({ value })
+}
+
+/**
+ * Plutus-core const term (i.e. a literal in conventional sense)
+ * @implements {UplcConst}
+ */
+class UplcConstImpl {
     /**
      * @readonly
      * @type {UplcValue}
@@ -53,15 +71,6 @@ export class UplcConst {
         if (value.kind == "int" && !value.signed) {
             throw new Error("UplcConst(UplcInt) must be signed")
         }
-    }
-
-    /**
-     * @param {FlatReaderI<UplcTerm, UplcValue>} r
-     * @returns {UplcConst}
-     */
-    static fromFlat(r) {
-        const value = r.readValue()
-        return new UplcConst(value)
     }
 
     /**
@@ -93,24 +102,24 @@ export class UplcConst {
 
         if (v.kind == "bls12_381_G1_element") {
             const builtinName = "bls12_381_G1_uncompress"
-            return new UplcCall(
-                new UplcBuiltin(
-                    builtinsV3.findIndex((bi) => bi.name == builtinName),
-                    builtinName
-                ),
-                new UplcConst(new UplcByteArray(v.compress())),
-                this.site
-            )
+            return makeUplcCall({
+                fn: makeUplcBuiltin({
+                    id: builtinsV3.findIndex((bi) => bi.name == builtinName),
+                    name: builtinName
+                }),
+                arg: new UplcConstImpl(makeUplcByteArray(v.compress())),
+                site: this.site
+            })
         } else if (v.kind == "bls12_381_G2_element") {
             const builtinName = "bls12_381_G2_uncompress"
-            return new UplcCall(
-                new UplcBuiltin(
-                    builtinsV3.findIndex((bi) => bi.name == builtinName),
-                    builtinName
-                ),
-                new UplcConst(new UplcByteArray(v.compress())),
-                this.site
-            )
+            return makeUplcCall({
+                fn: makeUplcBuiltin({
+                    id: builtinsV3.findIndex((bi) => bi.name == builtinName),
+                    name: builtinName
+                }),
+                arg: new UplcConstImpl(makeUplcByteArray(v.compress())),
+                site: this.site
+            })
         } else {
             return this
         }
@@ -135,7 +144,7 @@ export class UplcConst {
     }
 
     /**
-     * @param {FlatWriterI} w
+     * @param {FlatWriter} w
      */
     toFlat(w) {
         const v = this.value

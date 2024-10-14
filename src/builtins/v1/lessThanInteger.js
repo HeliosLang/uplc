@@ -1,5 +1,5 @@
 import { ArgSizesConstCost, ArgSizesMinCost } from "../../costmodel/index.js"
-import { UplcBool } from "../../values/index.js"
+import { makeUplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -30,6 +30,6 @@ export const lessThanInteger = {
             )
         }
 
-        return asCekValue(new UplcBool(a.value < b.value))
+        return asCekValue(makeUplcBool(a.value < b.value))
     }
 }

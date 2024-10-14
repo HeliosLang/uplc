@@ -2,27 +2,27 @@ export {}
 
 /**
  * @typedef {import("../cek/CekTerm.js").CekTerm} CekTerm
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  */
 
 /**
  * @typedef {CekTerm & {
- *   toFlat: (writer: FlatWriterI) => void
+ *   toFlat: (writer: FlatWriter) => void
  *   children: UplcTerm[]
  * }} CommonUplcTermProps
  */
 
 /**
  * @typedef {(
- *   UplcBuiltinI
- *   | UplcCallI
- *   | UplcConstI
- *   | UplcDelayI
- *   | UplcErrorI
- *   | UplcForceI
- *   | UplcLambdaI
- *   | UplcVarI
+ *   UplcBuiltin
+ *   | UplcCall
+ *   | UplcConst
+ *   | UplcDelay
+ *   | UplcError
+ *   | UplcForce
+ *   | UplcLambda
+ *   | UplcVar
  * )} UplcTerm
  */
 
@@ -30,7 +30,7 @@ export {}
  * @typedef {CommonUplcTermProps & {
  *   kind: "builtin"
  *   id: number
- * }} UplcBuiltinI
+ * }} UplcBuiltin
  */
 
 /**
@@ -38,7 +38,7 @@ export {}
  *   kind: "call"
  *   fn: UplcTerm
  *   arg: UplcTerm
- * }} UplcCallI
+ * }} UplcCall
  */
 
 /**
@@ -47,27 +47,27 @@ export {}
  *   flatSize: number
  *   serializableTerm: UplcTerm
  *   value: UplcValue
- * }} UplcConstI
+ * }} UplcConst
  */
 
 /**
  * @typedef {CommonUplcTermProps & {
  *   kind: "delay"
  *   arg: UplcTerm
- * }} UplcDelayI
+ * }} UplcDelay
  */
 
 /**
  * @typedef {CommonUplcTermProps & {
  *   kind: "error"
- * }} UplcErrorI
+ * }} UplcError
  */
 
 /**
  * @typedef {CommonUplcTermProps & {
  *   kind: "force"
  *   arg: UplcTerm
- * }} UplcForceI
+ * }} UplcForce
  */
 
 /**
@@ -75,7 +75,7 @@ export {}
  *   kind: "lambda"
  *   expr: UplcTerm
  *   argName: Option<string>
- * }} UplcLambdaI
+ * }} UplcLambda
  */
 
 /**
@@ -83,5 +83,5 @@ export {}
  *   kind: "var"
  *   index: number
  *   name: Option<string>
- * }} UplcVarI
+ * }} UplcVar
  */

@@ -1,5 +1,5 @@
 import { ArgSizesMaxCost } from "../../costmodel/index.js"
-import { UplcInt } from "../../values/index.js"
+import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -30,6 +30,6 @@ export const subtractInteger = {
             )
         }
 
-        return asCekValue(new UplcInt(a.value - b.value))
+        return asCekValue(makeUplcInt(a.value - b.value))
     }
 }

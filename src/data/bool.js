@@ -1,17 +1,25 @@
-import { ConstrData } from "./ConstrData.js"
+import { assertConstrData, makeConstrData } from "./ConstrData.js"
 
 /**
  * @typedef {import("./UplcData.js").UplcData} UplcData
- * @typedef {import("./UplcData.js").ConstrDataI} ConstrDataI
+ * @typedef {import("./UplcData.js").ConstrData} ConstrData
  */
+
+/**
+ * @param {boolean} b
+ * @returns {ConstrData}
+ */
+export function boolToUplcData(b) {
+    return makeConstrData({ tag: b ? 1 : 0, fields: [] })
+}
 
 /**
  * @param {UplcData} data
  * @param {boolean} strict - if `false` just check if ConstrData tag is 1 or not
  * @returns {boolean}
  */
-export function decodeBoolData(data, strict = false) {
-    ConstrData.assert(data)
+export function uplcDataToBool(data, strict = false) {
+    assertConstrData(data)
 
     if (strict) {
         if (data.fields.length != 0) {
@@ -33,13 +41,4 @@ export function decodeBoolData(data, strict = false) {
     } else {
         return data.tag == 1
     }
-}
-
-/**
- *
- * @param {boolean} b
- * @returns {ConstrDataI}
- */
-export function encodeBoolData(b) {
-    return new ConstrData(b ? 1 : 0, [])
 }

@@ -3,7 +3,7 @@ import { None } from "@helios-lang/type-utils"
 /**
  * @template TExpr
  * @template TValue
- * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
  */
 
 /**
@@ -12,22 +12,42 @@ import { None } from "@helios-lang/type-utils"
  * @typedef {import("../cek/index.js").CekStack} CekStack
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
  * @typedef {import("../cek/index.js").CekValue} CekValue
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- * @typedef {import("./UplcTerm.js").UplcDelayI} UplcDelayI
+ * @typedef {import("./UplcTerm.js").UplcDelay} UplcDelay
  */
 
 export const UPLC_DELAY_TAG = 1
 
 /**
- * @template {UplcTerm} [TArg=UplcTerm]
- * @implements {UplcDelayI}
+ *
+ * @param {{
+ *   arg: UplcTerm
+ *   site?: Option<Site>
+ * }} props
+ * @returns {UplcDelay}
  */
-export class UplcDelay {
+export function makeUplcDelay(props) {
+    return new UplcDelayImpl(props.arg, props.site)
+}
+
+/**
+ * @param {FlatReader<UplcTerm, any>} r
+ * @returns {UplcDelay}
+ */
+export function decodeUplcDelayFromFlat(r) {
+    const arg = r.readExpr()
+    return makeUplcDelay({ arg })
+}
+
+/**
+ * @implements {UplcDelay}
+ */
+class UplcDelayImpl {
     /**
      * @readonly
-     * @type {TArg}
+     * @type {UplcTerm}
      */
     arg
 
@@ -39,23 +59,12 @@ export class UplcDelay {
     site
 
     /**
-     * @param {TArg} arg
+     * @param {UplcTerm} arg
      * @param {Option<Site>} site
      */
     constructor(arg, site = None) {
         this.arg = arg
         this.site = site
-    }
-
-    /**
-     * @template {UplcTerm} TArg
-     * @template {UplcValue} TValue
-     * @param {FlatReaderI<TArg, TValue>} r
-     * @returns {UplcDelay<TArg>}
-     */
-    static fromFlat(r) {
-        const arg = r.readExpr()
-        return new UplcDelay(arg)
     }
 
     /**
@@ -94,7 +103,7 @@ export class UplcDelay {
     }
 
     /**
-     * @param {FlatWriterI} w
+     * @param {FlatWriter} w
      */
     toFlat(w) {
         w.writeTermTag(UPLC_DELAY_TAG)

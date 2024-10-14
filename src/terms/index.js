@@ -1,23 +1,24 @@
-export { UplcBuiltin } from "./UplcBuiltin.js"
-export { UplcCall } from "./UplcCall.js"
-export { UplcConst } from "./UplcConst.js"
-export { UplcDelay } from "./UplcDelay.js"
-export { UplcError } from "./UplcError.js"
-export { UplcForce } from "./UplcForce.js"
-export { UplcLambda } from "./UplcLambda.js"
-export { UplcVar } from "./UplcVar.js"
+export { makeUplcBuiltin } from "./UplcBuiltin.js"
+export { makeUplcCall } from "./UplcCall.js"
+export { makeUplcConst } from "./UplcConst.js"
+export { makeUplcDelay } from "./UplcDelay.js"
+export { makeUplcError } from "./UplcError.js"
+export { makeUplcForce } from "./UplcForce.js"
+export { makeUplcLambda } from "./UplcLambda.js"
+export { makeUplcVar } from "./UplcVar.js"
 
-export { UplcReader } from "./UplcReader.js"
+export { makeUplcReader } from "./UplcReader.js"
 export { apply, traverse } from "./ops.js"
 
 /**
+ * @typedef {import("./UplcReader.js").UplcReader} UplcReader
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- * @typedef {import("./UplcTerm.js").UplcBuiltinI} UplcBuiltinI
- * @typedef {import("./UplcTerm.js").UplcCallI} UplcCallI
- * @typedef {import("./UplcTerm.js").UplcConstI} UplcConstI
- * @typedef {import("./UplcTerm.js").UplcDelayI} UplcDelayI
- * @typedef {import("./UplcTerm.js").UplcErrorI} UplcErrorI
- * @typedef {import("./UplcTerm.js").UplcForceI} UplcForceI
- * @typedef {import("./UplcTerm.js").UplcLambdaI} UplcLambdaI
- * @typedef {import("./UplcTerm.js").UplcVarI} UplcVarI
+ * @typedef {import("./UplcTerm.js").UplcBuiltin} UplcBuiltin
+ * @typedef {import("./UplcTerm.js").UplcCall} UplcCall
+ * @typedef {import("./UplcTerm.js").UplcConst} UplcConst
+ * @typedef {import("./UplcTerm.js").UplcDelay} UplcDelay
+ * @typedef {import("./UplcTerm.js").UplcError} UplcError
+ * @typedef {import("./UplcTerm.js").UplcForce} UplcForce
+ * @typedef {import("./UplcTerm.js").UplcLambda} UplcLambda
+ * @typedef {import("./UplcTerm.js").UplcVar} UplcVar
  */

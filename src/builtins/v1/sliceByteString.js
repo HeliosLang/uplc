@@ -1,5 +1,5 @@
 import { ArgSizesThirdCost } from "../../costmodel/index.js"
-import { UplcByteArray } from "../../values/index.js"
+import { makeUplcByteArray } from "../../values/index.js"
 import { asCekValue } from "../cast.js"
 import { asUplcValues } from "../cast.js"
 
@@ -45,6 +45,6 @@ export const sliceByteString = {
 
         const res = end < start ? [] : bytes.slice(start, end + 1)
 
-        return asCekValue(new UplcByteArray(res))
+        return asCekValue(makeUplcByteArray(res))
     }
 }

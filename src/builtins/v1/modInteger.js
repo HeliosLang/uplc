@@ -1,5 +1,5 @@
 import { ArgSizesProdCost, ArgSizesDiffCost } from "../../costmodel/index.js"
-import { UplcInt } from "../../values/index.js"
+import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -55,5 +55,5 @@ export function evalModInteger(args, _ctx) {
         m += b.value
     }
 
-    return asCekValue(new UplcInt(m))
+    return asCekValue(makeUplcInt(m))
 }

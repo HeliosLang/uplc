@@ -1,6 +1,6 @@
 import { hashToG1 } from "@helios-lang/crypto"
 import { ArgSizesConstCost, ArgSizesFirstCost } from "../../costmodel/index.js"
-import { Bls12_381_G1_element } from "../../values/index.js"
+import { makeBls12_381_G1_element } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -34,6 +34,6 @@ export const bls12_381_G1_hashToGroup = {
 
         const point = hashToG1(a.bytes, b.bytes)
 
-        return asCekValue(new Bls12_381_G1_element(point))
+        return asCekValue(makeBls12_381_G1_element(point))
     }
 }

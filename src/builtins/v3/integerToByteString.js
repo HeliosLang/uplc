@@ -8,7 +8,7 @@ import {
     ArgSizesLiteralYOrLinearZCost,
     ArgSizesQuadZCost
 } from "../../costmodel/index.js"
-import { UplcByteArray } from "../../values/index.js"
+import { makeUplcByteArray } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -94,6 +94,6 @@ export const integerToByteString = {
             }
         }
 
-        return asCekValue(new UplcByteArray(bytes))
+        return asCekValue(makeUplcByteArray(bytes))
     }
 }

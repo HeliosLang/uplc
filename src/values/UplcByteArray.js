@@ -1,27 +1,42 @@
 import { bytesToHex, equalsBytes, toBytes } from "@helios-lang/codec-utils"
-import { ByteArrayData } from "../data/index.js"
+import { calcByteArrayMemSize } from "../data/index.js"
 import { bytesFlatSize } from "../flat/index.js"
-import { UplcType } from "./UplcType.js"
+import { BYTE_ARRAY_TYPE } from "./UplcType.js"
 
 /**
  * @template TExpr
  * @template TValue
- * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
  */
 
 /**
  * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
- * @typedef {import("./UplcValue.js").UplcByteArrayI} UplcByteArrayI
- * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
+ * @typedef {import("./UplcValue.js").UplcByteArray} UplcByteArray
+ * @typedef {import("./UplcValue.js").UplcType} UplcType
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
- * Primitive equivalent of `ByteArrayData`.
- * @implements {UplcByteArrayI}
+ * @param {BytesLike} args
+ * @returns {UplcByteArray}
  */
-export class UplcByteArray {
+export function makeUplcByteArray(args) {
+    return new UplcByteArrayImpl(args)
+}
+
+/**
+ * @param {FlatReader<any, UplcValue>} reader
+ * @returns {UplcByteArray}
+ */
+export function decodeUplcByteArrayFromFlat(reader) {
+    return new UplcByteArrayImpl(reader.readBytes())
+}
+
+/**
+ * Primitive equivalent of `ByteArrayData`.
+ * @implements {UplcByteArray}
+ */ class UplcByteArrayImpl {
     /**
      * @readonly
      * @type {number[]}
@@ -43,18 +58,10 @@ export class UplcByteArray {
     }
 
     /**
-     * @param {FlatReaderI<any, UplcValue>} reader
-     * @returns {UplcByteArray}
-     */
-    static fromFlat(reader) {
-        return new UplcByteArray(reader.readBytes())
-    }
-
-    /**
      * @type {number}
      */
     get memSize() {
-        return ByteArrayData.memSizeInternal(this.bytes)
+        return calcByteArrayMemSize(this.bytes)
     }
 
     /**
@@ -66,10 +73,10 @@ export class UplcByteArray {
     }
 
     /**
-     * @returns {UplcTypeI}
+     * @returns {UplcType}
      */
     get type() {
-        return UplcType.byteArray()
+        return BYTE_ARRAY_TYPE
     }
 
     /**
@@ -81,7 +88,7 @@ export class UplcByteArray {
     }
 
     /**
-     * @param {FlatWriterI} w
+     * @param {FlatWriter} w
      */
     toFlat(w) {
         w.writeBytes(this.bytes)

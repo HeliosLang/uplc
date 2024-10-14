@@ -1,25 +1,41 @@
-import { ConstrData } from "../data/index.js"
-import { UplcType } from "./UplcType.js"
+import { makeConstrData } from "../data/index.js"
+import { BOOL_TYPE } from "./UplcType.js"
 
 /**
  * @template TExpr
  * @template TValue
- * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
  */
 
 /**
- * @typedef {import("../data/index.js").ConstrDataI} ConstrDataI
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
- * @typedef {import("./UplcValue.js").UplcBoolI} UplcBoolI
- * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
+ * @typedef {import("../data/index.js").ConstrData} ConstrData
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
+ * @typedef {import("./UplcValue.js").UplcBool} UplcBool
+ * @typedef {import("./UplcValue.js").UplcType} UplcType
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
- * JS/TS equivalent of the Helios language `Bool` type.
- * @implements {UplcBoolI}
+ * @param {boolean} args
+ * @returns {UplcBool}
  */
-export class UplcBool {
+export function makeUplcBool(args) {
+    return new UplcBoolImpl(args)
+}
+
+/**
+ * @param {FlatReader<any, UplcValue>} r
+ * @returns {UplcBool}
+ */
+export function decodeUplcBoolFromFlat(r) {
+    return new UplcBoolImpl(r.readBool())
+}
+
+/**
+ * JS/TS equivalent of the Helios language `Bool` type.
+ * @implements {UplcBool}
+ */
+class UplcBoolImpl {
     /**
      * @readonly
      * @type {boolean}
@@ -41,14 +57,6 @@ export class UplcBool {
     }
 
     /**
-     * @param {FlatReaderI<any, UplcValue>} r
-     * @returns {UplcBool}
-     */
-    static fromFlat(r) {
-        return new UplcBool(r.readBool())
-    }
-
-    /**
      * @type {number}
      */
     get memSize() {
@@ -64,10 +72,10 @@ export class UplcBool {
     }
 
     /**
-     * @returns {UplcTypeI}
+     * @returns {UplcType}
      */
     get type() {
-        return UplcType.bool()
+        return BOOL_TYPE
     }
 
     /**
@@ -86,7 +94,7 @@ export class UplcBool {
     }
 
     /**
-     * @param {FlatWriterI} w
+     * @param {FlatWriter} w
      */
     toFlat(w) {
         w.writeBool(this.value)
@@ -100,9 +108,9 @@ export class UplcBool {
     }
 
     /**
-     * @returns {ConstrDataI}
+     * @returns {ConstrData}
      */
     toUplcData() {
-        return new ConstrData(this.value ? 1 : 0, [])
+        return makeConstrData({ tag: this.value ? 1 : 0, fields: [] })
     }
 }

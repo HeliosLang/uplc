@@ -1,6 +1,6 @@
 import { G1 } from "@helios-lang/crypto"
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcBool } from "../../values/index.js"
+import { makeUplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -33,6 +33,6 @@ export const bls12_381_G1_equal = {
 
         const res = G1.equals(a.point, b.point)
 
-        return asCekValue(new UplcBool(res))
+        return asCekValue(makeUplcBool(res))
     }
 }

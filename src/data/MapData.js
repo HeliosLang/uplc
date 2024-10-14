@@ -3,16 +3,60 @@ import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
  * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- * @typedef {import("@helios-lang/codec-utils").ByteStreamI} ByteStreamI
- * @typedef {import("./UplcData.js").MapDataI} MapDataI
+ * @typedef {import("@helios-lang/codec-utils").ByteStream} ByteStream
+ * @typedef {import("./UplcData.js").MapData} MapData
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */
 
 /**
- * Represents a list of pairs of other `UplcData` instances.
- * @implements {MapDataI}
+ * @param {[UplcData, UplcData][]} items
+ * @returns {MapData}
  */
-export class MapData {
+export function makeMapData(items) {
+    return new MapDataImpl(items)
+}
+
+/**
+ * @param {UplcData} data
+ * @returns {asserts data is MapData}
+ */
+export function assertMapData(data) {
+    if (data.kind != "map") {
+        throw new Error(`expected MapData, got ${data.toString()}`)
+    }
+}
+
+/**
+ * @param {BytesLike} bytes
+ * @param {(bytes: ByteStream) => UplcData} itemDecoder
+ * @returns {MapData}
+ */
+export function decodeMapData(bytes, itemDecoder) {
+    const items = decodeMap(bytes, itemDecoder, itemDecoder)
+    return new MapDataImpl(items)
+}
+
+/**
+ * @param {UplcData} data
+ * @param {string} msg
+ * @returns {MapData}
+ */
+export function expectMapData(
+    data,
+    msg = `expected MapData, got ${data.toString()}`
+) {
+    if (data.kind == "map") {
+        return data
+    } else {
+        throw new Error(msg)
+    }
+}
+
+/**
+ * Represents a list of pairs of other `UplcData` instances.
+ * @implements {MapData}
+ */
+class MapDataImpl {
     /**
      * @readonly
      * @type {[UplcData, UplcData][]}
@@ -31,39 +75,6 @@ export class MapData {
      */
     get kind() {
         return "map"
-    }
-
-    /**
-     * @param {UplcData} data
-     * @returns {asserts data is MapDataI}
-     */
-    static assert(data) {
-        if (data.kind != "map") {
-            throw new Error(`expected MapData, got ${data.toString()}`)
-        }
-    }
-
-    /**
-     * @param {UplcData} data
-     * @param {string} msg
-     * @returns {MapDataI}
-     */
-    static expect(data, msg = `expected MapData, got ${data.toString()}`) {
-        if (data.kind == "map") {
-            return data
-        } else {
-            throw new Error(msg)
-        }
-    }
-
-    /**
-     * @param {BytesLike} bytes
-     * @param {(bytes: ByteStreamI) => UplcData} itemDecoder
-     * @returns {MapData}
-     */
-    static fromCbor(bytes, itemDecoder) {
-        const items = decodeMap(bytes, itemDecoder, itemDecoder)
-        return new MapData(items)
     }
 
     /**

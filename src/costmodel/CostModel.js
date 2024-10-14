@@ -1,7 +1,7 @@
 /**
  * @typedef {import("./ArgSizesCost.js").ArgSizesCostClass} ArgSizesCostClass
  * @typedef {import("./Cost.js").Cost} Cost
- * @typedef {import("./CostModelParamsProxy.js").CostModelParamsProxyI} CostModelParamsProxyI
+ * @typedef {import("./CostModelParamsProxy.js").CostModelParamsProxy} CostModelParamsProxy
  */
 
 /**
@@ -31,13 +31,22 @@
  *   constrTerm: Cost
  *   caseTerm: Cost
  *   builtins: Record<string, (argSizes: bigint[]) => Cost>
- * }} CostModelI
+ * }} CostModel
  */
 
 /**
- * @implements {CostModelI}
+ * @param {CostModelParamsProxy} params
+ * @param {BuiltinCostModel[]} builtins
+ * @returns {CostModel}
  */
-export class CostModel {
+export function makeCostModel(params, builtins) {
+    return new CostModelImpl(params, builtins)
+}
+
+/**
+ * @implements {CostModel}
+ */
+class CostModelImpl {
     /**
      * @readonly
      * @type {Cost}
@@ -105,7 +114,7 @@ export class CostModel {
     builtins
 
     /**
-     * @param {CostModelParamsProxyI} params
+     * @param {CostModelParamsProxy} params
      * @param {BuiltinCostModel[]} builtins
      */
     constructor(params, builtins) {

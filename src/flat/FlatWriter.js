@@ -1,9 +1,9 @@
-import { BitWriter, padBits } from "@helios-lang/codec-utils"
+import { makeBitWriter, padBits } from "@helios-lang/codec-utils"
 import { encodeFlatBytes } from "./bytes.js"
 import { encodeFlatInt } from "./int.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").BitWriterI} BitWriterI
+ * @typedef {import("@helios-lang/codec-utils").BitWriter} BitWriter
  */
 
 /**
@@ -11,27 +11,35 @@ import { encodeFlatInt } from "./int.js"
  *   writeBool(b: boolean): void
  *   writeBytes(bytes: number[]): void
  *   writeInt(x: bigint): void
- *   writeList(items: {toFlat: (w: FlatWriterI) => void}[]): void
+ *   writeList(items: {toFlat: (w: FlatWriter) => void}[]): void
  *   writeTermTag(tag: number): void
  *   writeTypeBits(typeBits: string): void
  *   writeBuiltinId(id: number): void
  *   finalize(): number[]
- * }} FlatWriterI
+ * }} FlatWriter
  */
 
 /**
- * @implements {FlatWriterI}
+ * @param {{}} _args
+ * @returns {FlatWriter}
  */
-export class FlatWriter {
+export function makeFlatWriter(_args = {}) {
+    return new FlatWriterImpl()
+}
+
+/**
+ * @implements {FlatWriter}
+ */
+class FlatWriterImpl {
     /**
      * @private
      * @readonly
-     * @type {BitWriterI}
+     * @type {BitWriter}
      */
     _bitWriter
 
     constructor() {
-        this._bitWriter = new BitWriter()
+        this._bitWriter = makeBitWriter()
     }
 
     /**
@@ -60,7 +68,7 @@ export class FlatWriter {
     }
 
     /**
-     * @param {{toFlat: (w: FlatWriterI) => void}[]} items
+     * @param {{toFlat: (w: FlatWriter) => void}[]} items
      */
     writeList(items) {
         items.forEach((item) => {

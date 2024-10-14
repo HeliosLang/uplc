@@ -1,9 +1,9 @@
 import { None } from "@helios-lang/type-utils"
-import { ConstrData } from "./ConstrData.js"
+import { assertConstrData, makeConstrData } from "./ConstrData.js"
 
 /**
  * @typedef {import("./UplcData.js").UplcData} UplcData
- * @typedef {import("./UplcData.js").ConstrDataI} ConstrDataI
+ * @typedef {import("./UplcData.js").ConstrData} ConstrData
  */
 
 /**
@@ -11,8 +11,8 @@ import { ConstrData } from "./ConstrData.js"
  * @param {boolean} strict
  * @returns {Option<UplcData>}
  */
-export function decodeOptionData(data, strict = false) {
-    ConstrData.assert(data)
+export function unwrapUplcDataOption(data, strict = false) {
+    assertConstrData(data)
 
     switch (data.tag) {
         case 0:
@@ -47,12 +47,12 @@ export function decodeOptionData(data, strict = false) {
 
 /**
  * @param {Option<UplcData>} data
- * @returns {ConstrDataI}
+ * @returns {ConstrData}
  */
-export function encodeOptionData(data) {
+export function wrapUplcDataOption(data) {
     if (data) {
-        return new ConstrData(0, [data])
+        return makeConstrData({ tag: 0, fields: [data] })
     } else {
-        return new ConstrData(1, [])
+        return makeConstrData({ tag: 1, fields: [] })
     }
 }

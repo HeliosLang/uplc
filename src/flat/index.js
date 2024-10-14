@@ -1,7 +1,7 @@
 export { decodeFlatBytes, encodeFlatBytes, bytesFlatSize } from "./bytes.js"
 export { decodeFlatInt, encodeFlatInt } from "./int.js"
-export { FlatReader } from "./FlatReader.js"
-export { FlatWriter } from "./FlatWriter.js"
+export { makeFlatReader } from "./FlatReader.js"
+export { makeFlatWriter } from "./FlatWriter.js"
 
 /**
  * @template T
@@ -11,9 +11,9 @@ export { FlatWriter } from "./FlatWriter.js"
 /**
  * @template TExpr
  * @template TValue
- * @typedef {import("./FlatReader.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ * @typedef {import("./FlatReader.js").FlatReader<TExpr, TValue>} FlatReader
  */
 
 /**
- * @typedef {import("./FlatWriter.js").FlatWriterI} FlatWriterI
+ * @typedef {import("./FlatWriter.js").FlatWriter} FlatWriter
  */

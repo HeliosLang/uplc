@@ -1,18 +1,26 @@
 import { F12 } from "@helios-lang/crypto"
-import { UplcType } from "./UplcType.js"
+import { BLS12_381_ML_RESULT_TYPE } from "./UplcType.js"
 
 /**
  * @typedef {import("@helios-lang/crypto").FieldElement12} FieldElement12
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
- * @typedef {import("./UplcValue.js").Bls12_381_MlResultI} Bls12_381_MlResultI
- * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
+ * @typedef {import("./UplcValue.js").Bls12_381_MlResult} Bls12_381_MlResult
+ * @typedef {import("./UplcValue.js").UplcType} UplcType
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
- * @implements {Bls12_381_MlResultI}
+ * @param {FieldElement12} args
+ * @returns {Bls12_381_MlResult}
  */
-export class Bls12_381_MlResult {
+export function makeBls12_381_MlResult(args) {
+    return new Bls12_381_MlResultImpl(args)
+}
+
+/**
+ * @implements {Bls12_381_MlResult}
+ */
+class Bls12_381_MlResultImpl {
     /**
      * @readonly
      * @type {FieldElement12}
@@ -50,10 +58,10 @@ export class Bls12_381_MlResult {
     }
 
     /**
-     * @type {UplcTypeI}
+     * @type {UplcType}
      */
     get type() {
-        return UplcType.bls12_381_MlResult()
+        return BLS12_381_ML_RESULT_TYPE
     }
 
     /**
@@ -68,7 +76,7 @@ export class Bls12_381_MlResult {
     }
 
     /**
-     * @param {FlatWriterI} _writer
+     * @param {FlatWriter} _writer
      */
     toFlat(_writer) {
         throw new Error("Bls12_381_MlResult can't be serialized")

@@ -4,7 +4,7 @@ import { ForceFrame } from "../cek/index.js"
 /**
  * @template TExpr
  * @template TValue
- * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
  */
 
 /**
@@ -13,23 +13,40 @@ import { ForceFrame } from "../cek/index.js"
  * @typedef {import("../cek/index.js").CekStack} CekStack
  * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
  * @typedef {import("../cek/index.js").CekValue} CekValue
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- * @typedef {import("./UplcTerm.js").UplcForceI} UplcForceI
+ * @typedef {import("./UplcTerm.js").UplcForce} UplcForce
  */
 
 export const UPLC_FORCE_TAG = 5
 
 /**
- * Plutus-core force term
- * @template {UplcTerm} [TArg=UplcTerm]
- * @implements {UplcForceI}
+ * @param {{arg: UplcTerm, site?: Option<Site>}} props
+ * @returns {UplcForce}
  */
-export class UplcForce {
+export function makeUplcForce(props) {
+    return new UplcForceImpl(props.arg, props.site)
+}
+
+/**
+ * @template {UplcTerm} TArg
+ * @param {FlatReader<UplcTerm, UplcValue>} r
+ * @returns {UplcForce}
+ */
+export function decodeUplcForceFromFlat(r) {
+    const arg = r.readExpr()
+    return makeUplcForce({ arg })
+}
+
+/**
+ * Plutus-core force term
+ * @implements {UplcForce}
+ */
+class UplcForceImpl {
     /**
      * @readonly
-     * @type {TArg}
+     * @type {UplcTerm}
      */
     arg
 
@@ -41,22 +58,12 @@ export class UplcForce {
     site
 
     /**
-     * @param {TArg} arg
+     * @param {UplcTerm} arg
      * @param {Option<Site>} site
      */
     constructor(arg, site = None) {
         this.arg = arg
         this.site = site
-    }
-
-    /**
-     * @template {UplcTerm} TArg
-     * @param {FlatReaderI<TArg, UplcValue>} r
-     * @returns {UplcForce<TArg>}
-     */
-    static fromFlat(r) {
-        const arg = r.readExpr()
-        return new UplcForce(arg)
     }
 
     /**
@@ -94,7 +101,7 @@ export class UplcForce {
     }
 
     /**
-     * @param {FlatWriterI} w
+     * @param {FlatWriter} w
      */
     toFlat(w) {
         w.writeTermTag(UPLC_FORCE_TAG)

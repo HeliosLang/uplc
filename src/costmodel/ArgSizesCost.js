@@ -3,7 +3,7 @@ export {}
 /**
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./Cost.js").Cost} Cost
- * @typedef {import("./CostModelParamsProxy.js").CostModelParamsProxyI} CostModelParamsProxyI
+ * @typedef {import("./CostModelParamsProxy.js").CostModelParamsProxy} CostModelParamsProxy
  */
 
 /**
@@ -13,5 +13,5 @@ export {}
  */
 
 /**
- * @typedef {(params: CostModelParamsProxyI) => ArgSizesCost} ArgSizesCostClass
+ * @typedef {(params: CostModelParamsProxy) => ArgSizesCost} ArgSizesCostClass
  */

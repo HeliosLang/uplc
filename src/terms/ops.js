@@ -1,17 +1,17 @@
-import { UplcCall } from "./UplcCall.js"
-import { UplcConst } from "./UplcConst.js"
+import { makeUplcCall } from "./UplcCall.js"
+import { makeUplcConst } from "./UplcConst.js"
 
 /**
  * @typedef {import("../values/index.js").UplcValue} UplcValue
  * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- * @typedef {import("./UplcTerm.js").UplcBuiltinI} UplcBuiltinI
- * @typedef {import("./UplcTerm.js").UplcCallI} UplcCallI
- * @typedef {import("./UplcTerm.js").UplcConstI} UplcConstI
- * @typedef {import("./UplcTerm.js").UplcDelayI} UplcDelayI
- * @typedef {import("./UplcTerm.js").UplcErrorI} UplcErrorI
- * @typedef {import("./UplcTerm.js").UplcForceI} UplcForceI
- * @typedef {import("./UplcTerm.js").UplcLambdaI} UplcLambdaI
- * @typedef {import("./UplcTerm.js").UplcVarI} UplcVarI
+ * @typedef {import("./UplcTerm.js").UplcBuiltin} UplcBuiltin
+ * @typedef {import("./UplcTerm.js").UplcCall} UplcCall
+ * @typedef {import("./UplcTerm.js").UplcConst} UplcConst
+ * @typedef {import("./UplcTerm.js").UplcDelay} UplcDelay
+ * @typedef {import("./UplcTerm.js").UplcError} UplcError
+ * @typedef {import("./UplcTerm.js").UplcForce} UplcForce
+ * @typedef {import("./UplcTerm.js").UplcLambda} UplcLambda
+ * @typedef {import("./UplcTerm.js").UplcVar} UplcVar
  */
 
 /**
@@ -21,7 +21,7 @@ import { UplcConst } from "./UplcConst.js"
  */
 export function apply(expr, args) {
     for (let arg of args) {
-        expr = new UplcCall(expr, new UplcConst(arg))
+        expr = makeUplcCall({ fn: expr, arg: makeUplcConst({ value: arg }) })
     }
 
     return expr
@@ -31,14 +31,14 @@ export function apply(expr, args) {
  * @param {UplcTerm} root
  * @param {{
  *   anyTerm?: (term: UplcTerm, index: number) => void
- *   builtinTerm?: (term: UplcBuiltinI, index: number) => void
- *   callTerm?: (term: UplcCallI, index: number) => void
- *   constTerm?: (term: UplcConstI, index: number) => void
- *   delayTerm?: (term: UplcDelayI, index: number) => void
- *   errorTerm?: (term: UplcErrorI, index: number) => void
- *   forceTerm?: (term: UplcForceI, index: number) => void
- *   lambdaTerm?: (term: UplcLambdaI, index: number) => void
- *   varTerm?: (term: UplcVarI, index: number) => void
+ *   builtinTerm?: (term: UplcBuiltin, index: number) => void
+ *   callTerm?: (term: UplcCall, index: number) => void
+ *   constTerm?: (term: UplcConst, index: number) => void
+ *   delayTerm?: (term: UplcDelay, index: number) => void
+ *   errorTerm?: (term: UplcError, index: number) => void
+ *   forceTerm?: (term: UplcForce, index: number) => void
+ *   lambdaTerm?: (term: UplcLambda, index: number) => void
+ *   varTerm?: (term: UplcVar, index: number) => void
  * }} callbacks
  */
 export function traverse(root, callbacks) {

@@ -10,9 +10,9 @@ export {} // so node.js knows this is a module
  * @typedef {{
  *   logPrint: (message: string, site?: Option<Site>) => void
  *   logError?: (message: string, stack?: Option<Site>) => void
- *   lastMsg: string
+ *   lastMessage: string
  *   logTrace?: Option<(message: string, site?: Option<Site>) => void>
  *   flush?: Option<() => void>
  *   reset? : Option<(reason: "build" | "validate") => void>
- * }} UplcLoggingI
+ * }} UplcLogger
  */

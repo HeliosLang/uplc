@@ -1,5 +1,5 @@
 import { ArgSizesProdCost, ArgSizesDiffCost } from "../../costmodel/index.js"
-import { UplcInt } from "../../values/index.js"
+import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -51,6 +51,6 @@ export function evalDivideInteger(args, _ctx) {
     const y = b.value
 
     return asCekValue(
-        new UplcInt(x / y - (x % y != 0n && x < 0n != y < 0n ? 1n : 0n))
+        makeUplcInt(x / y - (x % y != 0n && x < 0n != y < 0n ? 1n : 0n))
     )
 }

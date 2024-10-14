@@ -1,19 +1,27 @@
-export { ByteArrayData } from "./ByteArrayData.js"
-export { ConstrData } from "./ConstrData.js"
-export { IntData } from "./IntData.js"
-export { ListData } from "./ListData.js"
-export { MapData } from "./MapData.js"
+export {
+    calcByteArrayMemSize,
+    compareByteArrayData,
+    makeByteArrayData
+} from "./ByteArrayData.js"
+export { makeConstrData } from "./ConstrData.js"
+export { calcIntMemSize, makeIntData } from "./IntData.js"
+export { makeListData } from "./ListData.js"
+export { makeMapData } from "./MapData.js"
 
-export { decodeBoolData, encodeBoolData } from "./bool.js"
+export { boolToUplcData, uplcDataToBool } from "./bool.js"
 export { decodeUplcData } from "./decode.js"
-export { decodeOptionData, encodeOptionData } from "./option.js"
-export { decodeRealData, encodeRealData } from "./real.js"
+export {
+    unwrapUplcDataOption as unwrapUplcDataOption,
+    wrapUplcDataOption
+} from "./option.js"
+export { realToUplcData, uplcDataToReal } from "./real.js"
+export { stringToUplcData, uplcDataToString } from "./string.js"
 
 /**
- * @typedef {import("./UplcData.js").ByteArrayDataI} ByteArrayDataI
- * @typedef {import("./UplcData.js").ConstrDataI} ConstrDataI
- * @typedef {import("./UplcData.js").IntDataI} IntDataI
- * @typedef {import("./UplcData.js").ListDataI} ListDataI
- * @typedef {import("./UplcData.js").MapDataI} MapDataI
+ * @typedef {import("./UplcData.js").ByteArrayData} ByteArrayData
+ * @typedef {import("./UplcData.js").ConstrData} ConstrData
+ * @typedef {import("./UplcData.js").IntData} IntData
+ * @typedef {import("./UplcData.js").ListData} ListData
+ * @typedef {import("./UplcData.js").MapData} MapData
  * @typedef {import("./UplcData.js").UplcData} UplcData
  */

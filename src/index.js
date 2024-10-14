@@ -15,57 +15,76 @@ export {
     DEFAULT_COST_MODEL_PARAMS_V3
 } from "./costmodel/index.js"
 export {
-    ByteArrayData,
-    ConstrData,
-    IntData,
-    ListData,
-    MapData,
-    decodeBoolData,
-    encodeBoolData,
-    decodeOptionData,
-    encodeOptionData,
-    decodeRealData,
-    encodeRealData,
+    makeByteArrayData,
+    makeConstrData,
+    makeIntData,
+    makeListData,
+    makeMapData,
+    uplcDataToBool,
+    boolToUplcData,
+    unwrapUplcDataOption,
+    wrapUplcDataOption,
+    uplcDataToReal,
+    realToUplcData,
     decodeUplcData
 } from "./data/index.js"
-export { FlatReader, FlatWriter } from "./flat/index.js"
-export { BasicUplcLogger } from "./logging/index.js"
+export { makeFlatReader, makeFlatWriter } from "./flat/index.js"
+export { makeBasicUplcLogger } from "./logging/index.js"
 export {
-    UplcProgramV1,
-    UplcProgramV2,
-    UplcProgramV3,
-    UplcSourceMap,
+    decodeUplcProgramV1FromCbor as decodeUplcProgramV1FromCbor,
+    decodeUplcProgramV1FromFlat as decodeUplcProgramV1FromFlat,
+    decodeUplcProgramV2FromCbor as decodeUplcProgramV2FromCbor,
+    decodeUplcProgramV2FromFlat as decodeUplcProgramV2FromFlat,
+    decodeUplcProgramV3FromCbor as decodeUplcProgramV3FromCbor,
+    decodeUplcProgramV3FromFlat as decodeUplcProgramV3FromFlat,
+    deserializeUplcSourceMap,
+    makeUplcProgramV1,
+    makeUplcProgramV2,
+    makeUplcProgramV3,
+    makeUplcSourceMap,
     restoreUplcProgram
 } from "./program/index.js"
 export {
-    UplcBuiltin,
-    UplcCall,
-    UplcConst,
-    UplcDelay,
-    UplcError,
-    UplcForce,
-    UplcLambda,
-    UplcVar
+    makeUplcBuiltin,
+    makeUplcCall,
+    makeUplcConst,
+    makeUplcDelay,
+    makeUplcError,
+    makeUplcForce,
+    makeUplcLambda,
+    makeUplcVar
 } from "./terms/index.js"
 export {
-    Bls12_381_G1_element,
-    Bls12_381_G2_element,
-    Bls12_381_MlResult,
-    UplcBool,
-    UplcByteArray,
-    UplcDataValue,
-    UplcInt,
-    UplcList,
-    UplcPair,
-    UplcString,
-    UplcType,
-    UplcUnit
+    makeBls12_381_G1_element,
+    makeBls12_381_G2_element,
+    makeBls12_381_MlResult,
+    makeUplcBool,
+    makeUplcByteArray,
+    makeUplcDataValue,
+    makeUplcInt,
+    makeUplcList,
+    makeUplcPair,
+    makeUplcString,
+    makeListType,
+    makePairType,
+    makeUplcType,
+    BLS12_381_G1_ELEMENT_TYPE,
+    BLS12_381_G2_ELEMENT_TYPE,
+    BLS12_381_ML_RESULT_TYPE,
+    BOOL_TYPE,
+    BYTE_ARRAY_TYPE,
+    DATA_PAIR_TYPE,
+    DATA_TYPE,
+    INT_TYPE,
+    STRING_TYPE,
+    UNIT_TYPE,
+    UNIT_VALUE
 } from "./values/index.js"
 
 /**
  * @template TExpr
  * @template TValue
- * @typedef {import("./flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ * @typedef {import("./flat/index.js").FlatReader<TExpr, TValue>} FlatReader
  */
 
 /**
@@ -75,39 +94,40 @@ export {
  * @typedef {import("./costmodel/index.js").Cost} Cost
  * @typedef {import("./costmodel/index.js").CostBreakdown} CostBreakdown
  * @typedef {import("./data/index.js").UplcData} UplcData
- * @typedef {import("./data/index.js").ByteArrayDataI} ByteArrayDataI
- * @typedef {import("./data/index.js").ConstrDataI} ConstrDataI
- * @typedef {import("./data/index.js").IntDataI} IntDataI
- * @typedef {import("./data/index.js").ListDataI} ListDataI
- * @typedef {import("./data/index.js").MapDataI} MapDataI
- * @typedef {import("./flat/index.js").FlatWriterI} FlatWriterI
- * @typedef {import("./logging/index.js").UplcLoggingI} UplcLoggingI
+ * @typedef {import("./data/index.js").ByteArrayData} ByteArrayData
+ * @typedef {import("./data/index.js").ConstrData} ConstrData
+ * @typedef {import("./data/index.js").IntData} IntData
+ * @typedef {import("./data/index.js").ListData} ListData
+ * @typedef {import("./data/index.js").MapData} MapData
+ * @typedef {import("./flat/index.js").FlatWriter} FlatWriter
+ * @typedef {import("./logging/index.js").UplcLogger} UplcLogger
  * @typedef {import("./program/index.js").PlutusVersion} PlutusVersion
  * @typedef {import("./program/index.js").UplcProgram} UplcProgram
- * @typedef {import("./program/index.js").UplcProgramV1I} UplcProgramV1I
- * @typedef {import("./program/index.js").UplcProgramV2I} UplcProgramV2I
- * @typedef {import("./program/index.js").UplcProgramV3I} UplcProgramV3I
+ * @typedef {import("./program/index.js").UplcProgramV1} UplcProgramV1
+ * @typedef {import("./program/index.js").UplcProgramV2} UplcProgramV2
+ * @typedef {import("./program/index.js").UplcProgramV3} UplcProgramV3
+ * @typedef {import("./program/index.js").UplcSourceMap} UplcSourceMap
  * @typedef {import("./program/index.js").UplcSourceMapJsonSafe} UplcSourceMapJsonSafe
  * @typedef {import("./terms/index.js").UplcTerm} UplcTerm
- * @typedef {import("./terms/index.js").UplcBuiltinI} UplcBuiltinI
- * @typedef {import("./terms/index.js").UplcCallI} UplcCallI
- * @typedef {import("./terms/index.js").UplcConstI} UplcConstI
- * @typedef {import("./terms/index.js").UplcDelayI} UplcDelayI
- * @typedef {import("./terms/index.js").UplcErrorI} UplcErrorI
- * @typedef {import("./terms/index.js").UplcForceI} UplcForceI
- * @typedef {import("./terms/index.js").UplcLambdaI} UplcLambdaI
- * @typedef {import("./terms/index.js").UplcVarI} UplcVarI
- * @typedef {import("./values/index.js").UplcTypeI} UplcTypeI
+ * @typedef {import("./terms/index.js").UplcBuiltin} UplcBuiltin
+ * @typedef {import("./terms/index.js").UplcCall} UplcCall
+ * @typedef {import("./terms/index.js").UplcConst} UplcConst
+ * @typedef {import("./terms/index.js").UplcDelay} UplcDelay
+ * @typedef {import("./terms/index.js").UplcError} UplcError
+ * @typedef {import("./terms/index.js").UplcForce} UplcForce
+ * @typedef {import("./terms/index.js").UplcLambda} UplcLambda
+ * @typedef {import("./terms/index.js").UplcVar} UplcVar
+ * @typedef {import("./values/index.js").UplcType} UplcType
  * @typedef {import("./values/index.js").UplcValue} UplcValue
- * @typedef {import("./values/index.js").Bls12_381_G1_elementI} Bls12_381_G1_elementI
- * @typedef {import("./values/index.js").Bls12_381_G2_elementI} Bls12_381_G2_elementI
- * @typedef {import("./values/index.js").Bls12_381_MlResultI} Bls12_381_MlResultI
- * @typedef {import("./values/index.js").UplcBoolI} UplcBoolI
- * @typedef {import("./values/index.js").UplcByteArrayI} UplcByteArrayI
- * @typedef {import("./values/index.js").UplcDataValueI} UplcDataValueI
- * @typedef {import("./values/index.js").UplcIntI} UplcIntI
- * @typedef {import("./values/index.js").UplcListI} UplcListI
- * @typedef {import("./values/index.js").UplcPairI} UplcPairI
- * @typedef {import("./values/index.js").UplcStringI} UplcStringI
- * @typedef {import("./values/index.js").UplcUnitI} UplcUnitI
+ * @typedef {import("./values/index.js").Bls12_381_G1_element} Bls12_381_G1_element
+ * @typedef {import("./values/index.js").Bls12_381_G2_element} Bls12_381_G2_element
+ * @typedef {import("./values/index.js").Bls12_381_MlResult} Bls12_381_MlResult
+ * @typedef {import("./values/index.js").UplcBool} UplcBool
+ * @typedef {import("./values/index.js").UplcByteArray} UplcByteArray
+ * @typedef {import("./values/index.js").UplcDataValue} UplcDataValue
+ * @typedef {import("./values/index.js").UplcInt} UplcInt
+ * @typedef {import("./values/index.js").UplcList} UplcList
+ * @typedef {import("./values/index.js").UplcPair} UplcPair
+ * @typedef {import("./values/index.js").UplcString} UplcString
+ * @typedef {import("./values/index.js").UplcUnit} UplcUnit
  */

@@ -1,17 +1,17 @@
-import { UplcBool } from "./UplcBool.js"
-import { UplcByteArray } from "./UplcByteArray.js"
-import { UplcDataValue } from "./UplcDataValue.js"
-import { UplcInt } from "./UplcInt.js"
-import { UplcList } from "./UplcList.js"
-import { UplcPair } from "./UplcPair.js"
-import { UplcString } from "./UplcString.js"
-import { UplcType } from "./UplcType.js"
-import { UplcUnit } from "./UplcUnit.js"
+import { decodeUplcBoolFromFlat } from "./UplcBool.js"
+import { decodeUplcByteArrayFromFlat } from "./UplcByteArray.js"
+import { decodeUplcDataValueFromFlat } from "./UplcDataValue.js"
+import { decodeUplcIntFromFlat } from "./UplcInt.js"
+import { decodeUplcListFromFlat } from "./UplcList.js"
+import { makeUplcPair } from "./UplcPair.js"
+import { decodeUplcStringFromFlat } from "./UplcString.js"
+import { makeUplcType } from "./UplcType.js"
+import { UNIT_VALUE } from "./UplcUnit.js"
 
 /**
  * @template TExpr
  * @template TValue
- * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
  */
 
 /**
@@ -24,7 +24,7 @@ import { UplcUnit } from "./UplcUnit.js"
  */
 
 /**
- * @param {FlatReaderI<any, UplcValue>} r
+ * @param {FlatReader<any, UplcValue>} r
  * @param {number[]} typeList
  * @returns {ValueReader<UplcValue>}
  */
@@ -37,15 +37,15 @@ export function dispatchValueReader(r, typeList) {
 
     switch (type) {
         case 0: // signed Integer
-            return () => UplcInt.fromFlat(r, true)
+            return () => decodeUplcIntFromFlat(r, true)
         case 1: // bytearray
-            return () => UplcByteArray.fromFlat(r)
+            return () => decodeUplcByteArrayFromFlat(r)
         case 2: // utf8-string
-            return () => UplcString.fromFlat(r)
+            return () => decodeUplcStringFromFlat(r)
         case 3:
-            return () => new UplcUnit() // no reading needed
+            return () => UNIT_VALUE // no reading needed
         case 4: // Bool
-            return () => UplcBool.fromFlat(r)
+            return () => decodeUplcBoolFromFlat(r)
         case 5:
         case 6:
             throw new Error("unexpected type tag without type application")
@@ -56,10 +56,10 @@ export function dispatchValueReader(r, typeList) {
                 throw new Error("expected nested type for container")
             } else if (containerType == 5) {
                 // typeList is consumed by the construct call, so make sure to read it before!
-                const itemType = UplcType.fromNumbers(typeList)
+                const itemType = makeUplcType({ numbers: typeList })
                 const itemReader = dispatchValueReader(r, typeList)
 
-                return () => UplcList.fromFlat(r, itemType, itemReader)
+                return () => decodeUplcListFromFlat(r, itemType, itemReader)
             } else if (containerType == 7) {
                 const nestedContainerType = typeList.shift()
                 if (nestedContainerType == undefined) {
@@ -68,7 +68,11 @@ export function dispatchValueReader(r, typeList) {
                     // typeList is consumed by the construct call, so make sure to read it in correct order!
                     const leftReader = dispatchValueReader(r, typeList)
                     const rightReader = dispatchValueReader(r, typeList)
-                    return () => new UplcPair(leftReader(), rightReader())
+                    return () =>
+                        makeUplcPair({
+                            first: leftReader(),
+                            second: rightReader()
+                        })
                 } else {
                     throw new Error("unexpected nested container type tag")
                 }
@@ -76,7 +80,7 @@ export function dispatchValueReader(r, typeList) {
                 throw new Error("unexpected container type tag")
             }
         case 8:
-            return () => UplcDataValue.fromFlat(r)
+            return () => decodeUplcDataValueFromFlat(r)
         case 9:
             throw new Error(`Bls12_381_G1_element can't be deserialized`)
         case 10:

@@ -1,26 +1,53 @@
 import { encodeZigZag, decodeZigZag } from "@helios-lang/codec-utils"
-import { IntData } from "../data/index.js"
-import { UplcType } from "./UplcType.js"
+import { calcIntMemSize } from "../data/index.js"
+import { INT_TYPE } from "./UplcType.js"
 
 /**
  * @template TExpr
  * @template TValue
- * @typedef {import("../flat/index.js").FlatReaderI<TExpr, TValue>} FlatReaderI
+ * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
  */
 
 /**
  * @typedef {import("@helios-lang/codec-utils").IntLike} IntLike
- * @typedef {import("../flat/index.js").FlatWriterI} FlatWriterI
- * @typedef {import("./UplcValue.js").UplcIntI} UplcIntI
- * @typedef {import("./UplcValue.js").UplcTypeI} UplcTypeI
+ * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
+ * @typedef {import("./UplcValue.js").UplcInt} UplcInt
+ * @typedef {import("./UplcValue.js").UplcType} UplcType
  * @typedef {import("./UplcValue.js").UplcValue} UplcValue
  */
 
 /**
- * Primitive integer UplcValue
- * @implements {UplcIntI}
+ * @param {IntLike | {value: IntLike, signed?: boolean}} args
+ * @returns {UplcInt}
  */
-export class UplcInt {
+export function makeUplcInt(args) {
+    if (typeof args == "number" || typeof args == "bigint") {
+        return new UplcIntImpl(args)
+    } else {
+        return new UplcIntImpl(args.value, args.signed ?? true)
+    }
+}
+
+/**
+ * @param {FlatReader<any, UplcValue>} r
+ * @param {boolean} signed
+ * @returns {UplcInt}
+ */
+export function decodeUplcIntFromFlat(r, signed = false) {
+    const i = r.readInt()
+
+    if (signed) {
+        return new UplcIntImpl(decodeZigZag(i), true)
+    } else {
+        return new UplcIntImpl(i, false)
+    }
+}
+
+/**
+ * Primitive integer UplcValue
+ * @implements {UplcInt}
+ */
+class UplcIntImpl {
     /**
      * Arbitrary precision integer
      * @readonly
@@ -62,25 +89,10 @@ export class UplcInt {
     }
 
     /**
-     * @param {FlatReaderI<any, UplcValue>} r
-     * @param {boolean} signed
-     * @returns {UplcInt}
-     */
-    static fromFlat(r, signed = false) {
-        const i = r.readInt()
-
-        if (signed) {
-            return new UplcInt(decodeZigZag(i), true)
-        } else {
-            return new UplcInt(i, false)
-        }
-    }
-
-    /**
      * @type {number}
      */
     get memSize() {
-        return IntData.memSizeInternal(this.value)
+        return calcIntMemSize(this.value)
     }
 
     /**
@@ -93,10 +105,10 @@ export class UplcInt {
     }
 
     /**
-     * @returns {UplcTypeI}
+     * @returns {UplcType}
      */
     get type() {
-        return UplcType.int()
+        return INT_TYPE
     }
 
     /**
@@ -108,7 +120,7 @@ export class UplcInt {
     }
 
     /**
-     * @param {FlatWriterI} w
+     * @param {FlatWriter} w
      */
     toFlat(w) {
         if (!this.signed) {
@@ -122,7 +134,7 @@ export class UplcInt {
      * Encodes unsigned integer with plutus flat encoding.
      * Throws error if signed.
      * Used by encoding plutus core program version and debruijn indices.
-     * @param {FlatWriterI} w
+     * @param {FlatWriter} w
      */
     toFlatUnsigned(w) {
         if (this.signed) {
@@ -141,23 +153,23 @@ export class UplcInt {
 
     /**
      * Unapplies zigzag encoding
-     * @returns {UplcIntI}
+     * @returns {UplcInt}
      */
     toSigned() {
         if (this.signed) {
             return this
         } else {
-            return new UplcInt(decodeZigZag(this.value), true)
+            return new UplcIntImpl(decodeZigZag(this.value), true)
         }
     }
 
     /**
      * Applies zigzag encoding
-     * @returns {UplcIntI}
+     * @returns {UplcInt}
      */
     toUnsigned() {
         if (this.signed) {
-            return new UplcInt(encodeZigZag(this.value), false)
+            return new UplcIntImpl(encodeZigZag(this.value), false)
         } else {
             return this
         }

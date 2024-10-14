@@ -1,6 +1,6 @@
 import { decodeIntBE, decodeIntLE } from "@helios-lang/codec-utils"
 import { ArgSizesQuadYCost, ArgSizesSecondCost } from "../../costmodel/index.js"
-import { UplcInt } from "../../values/index.js"
+import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -39,6 +39,6 @@ export const byteStringToInteger = {
 
         const res = a.value ? decodeIntBE(b.bytes) : decodeIntLE(b.bytes)
 
-        return asCekValue(new UplcInt(res))
+        return asCekValue(makeUplcInt(res))
     }
 }

@@ -1,6 +1,6 @@
 import { blake2b as hash } from "@helios-lang/crypto"
 import { ArgSizesConstCost, ArgSizesFirstCost } from "../../costmodel/index.js"
-import { UplcByteArray } from "../../values/index.js"
+import { makeUplcByteArray } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -26,6 +26,6 @@ export const blake2b_224 = {
             )
         }
 
-        return asCekValue(new UplcByteArray(hash(a.bytes, 28)))
+        return asCekValue(makeUplcByteArray(hash(a.bytes, 28)))
     }
 }

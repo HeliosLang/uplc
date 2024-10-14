@@ -1,18 +1,32 @@
 /**
- * @typedef {import("./UplcLoggingI.js").UplcLoggingI} UplcLoggingI
+ * @typedef {import("./UplcLogger.js").UplcLogger} UplcLogger
  */
 
 /**
- * @implements {UplcLoggingI}
+ * @typedef {UplcLogger & {
+ *   lastMessage: string
+ * }} BasicUplcLogger
  */
-export class BasicUplcLogger {
+
+/**
+ * @param {{}} _args
+ * @returns {BasicUplcLogger}
+ */
+export function makeBasicUplcLogger(_args = {}) {
+    return new BasicUplcLoggerImpl()
+}
+
+/**
+ * @implements {BasicUplcLogger}
+ */
+class BasicUplcLoggerImpl {
     /**
      * @type {string}
      */
-    lastMsg
+    lastMessage
 
     constructor() {
-        this.lastMsg = ""
+        this.lastMessage = ""
     }
 
     /**
@@ -21,7 +35,7 @@ export class BasicUplcLogger {
      * @returns {void}
      */
     logPrint(msg) {
-        this.lastMsg = msg
+        this.lastMessage = msg
         console.log(msg)
     }
 

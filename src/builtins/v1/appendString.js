@@ -1,5 +1,5 @@
 import { ArgSizesSumCost } from "../../costmodel/index.js"
-import { UplcString } from "../../values/index.js"
+import { makeUplcString } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -30,6 +30,6 @@ export const appendStringV1 = {
             )
         }
 
-        return asCekValue(new UplcString(a.value + b.value))
+        return asCekValue(makeUplcString(a.value + b.value))
     }
 }

@@ -1,5 +1,5 @@
 import { ArgSizesConstCost } from "../../costmodel/index.js"
-import { UplcInt } from "../../values/index.js"
+import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
@@ -37,6 +37,6 @@ export const indexByteString = {
             throw new Error("index out of range")
         }
 
-        return asCekValue(new UplcInt(BigInt(bytes[i])))
+        return asCekValue(makeUplcInt(BigInt(bytes[i])))
     }
 }
