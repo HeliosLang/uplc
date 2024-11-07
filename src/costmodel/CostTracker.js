@@ -1,23 +1,5 @@
 /**
- * @typedef {import("./Cost.js").Cost} Cost
- * @typedef {import("./CostModel.js").CostModel} CostModel
- * @typedef {import("./CostBreakdown.js").CostBreakdown} CostBreakdown
- */
-
-/**
- * @typedef {Cost & {
- *   costModel: CostModel
- *   breakdown: CostBreakdown
- *   incrBuiltinCost(): void
- *   incrCallCost(): void
- *   incrConstCost(): void
- *   incrDelayCost(): void
- *   incrForceCost(): void
- *   incrLambdaCost(): void
- *   incrStartupCost(): void
- *   incrVarCost(): void
- *   incrArgSizesCost(name: string, argSizes: bigint[]): void
- * }} CostTracker
+ * @import { Cost, CostBreakdown, CostModel, CostTracker } from "src/index.js"
  */
 
 /**

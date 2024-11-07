@@ -1,21 +1,12 @@
-import { None } from "@helios-lang/type-utils"
 import { isNonEmptyCallSiteInfo } from "./CallSiteInfo.js"
 
 /**
- * @typedef {import("./CallSiteInfo.js").CallSiteInfo} CallSiteInfo
- * @typedef {import("./CekValue.js").CekValue} CekValue - circular import, but is allowed in JSDocs
- */
-
-/**
- * @typedef {{
- *   values: CekValue[]
- *   callSites: CallSiteInfo[]
- * }} CekStack
+ * @import { CallSiteInfo, CekStack, CekValue } from "src/index.js"
  */
 
 /**
  * @param {CekStack} stack
- * @param {Option<CallSiteInfo>} callSite
+ * @param {CallSiteInfo | undefined} callSite
  * @returns {CekStack}
  */
 export function pushStackCallSite(stack, callSite) {
@@ -58,7 +49,7 @@ export function pushStackValue(stack, value) {
 /**
  * @param {CekStack} stack
  * @param {CekValue} value
- * @param {Option<CallSiteInfo>} callSite
+ * @param {CallSiteInfo | undefined} callSite
  * @returns {CekStack}
  */
 export function pushStackValueAndCallSite(stack, value, callSite) {
@@ -100,7 +91,7 @@ export function mixStacks(stackWithValues, stackWithCallSites) {
  * Needed to add stack trace frames for variables like `self`
  * TODO: might introduce unnecessary overhead and thus require a flag to switch off
  * @param {CekStack} stack
- * @returns {Option<CekValue>}
+ * @returns {CekValue | undefined}
  */
 export function getLastSelfValue(stack) {
     const last = stack.values[stack.values.length - 1]
@@ -108,6 +99,6 @@ export function getLastSelfValue(stack) {
     if (last?.name == "self") {
         return last
     } else {
-        None
+        return undefined
     }
 }

@@ -1,9 +1,9 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { makeUplcByteArray } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -13,8 +13,8 @@ export const unBData = {
     name: "unBData",
     forceCount: 0,
     nArgs: 1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(153)),
-    memModel: (params) => new ArgSizesConstCost(params.get(154)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(153)),
+    memModel: (params) => makeArgSizesConstCost(params.get(154)),
     call: (args, _ctx) => {
         const [dataValue] = asUplcValues(args)
 

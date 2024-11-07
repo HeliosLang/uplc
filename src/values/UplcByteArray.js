@@ -4,17 +4,8 @@ import { bytesFlatSize } from "../flat/index.js"
 import { BYTE_ARRAY_TYPE } from "./UplcType.js"
 
 /**
- * @template TExpr
- * @template TValue
- * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
- */
-
-/**
- * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
- * @typedef {import("./UplcValue.js").UplcByteArray} UplcByteArray
- * @typedef {import("./UplcValue.js").UplcType} UplcType
- * @typedef {import("./UplcValue.js").UplcValue} UplcValue
+ * @import { BytesLike } from "@helios-lang/codec-utils"
+ * @import { FlatReader, FlatWriter, UplcByteArray, UplcType, UplcValue } from "src/index.js"
  */
 
 /**
@@ -26,7 +17,7 @@ export function makeUplcByteArray(args) {
 }
 
 /**
- * @param {FlatReader<any, UplcValue>} reader
+ * @param {FlatReader} reader
  * @returns {UplcByteArray}
  */
 export function decodeUplcByteArrayFromFlat(reader) {

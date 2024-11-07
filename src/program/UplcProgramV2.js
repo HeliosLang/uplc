@@ -1,4 +1,3 @@
-import { None } from "@helios-lang/type-utils"
 import { builtinsV2 } from "../builtins/index.js"
 import {
     DEFAULT_COST_MODEL_PARAMS_V2,
@@ -18,20 +17,15 @@ import {
 import { deserializeUplcSourceMap } from "./UplcSourceMap.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- * @typedef {import("../logging/UplcLogger.js").UplcLogger} UplcLogger
- * @typedef {import("../cek/index.js").CekResult} CekResult
- * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
- * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./UplcProgram.js").UplcProgramV2} UplcProgramV2
- * @typedef {import("./UplcSourceMap.js").UplcSourceMapJsonSafe} UplcSourceMapJsonSafe
+ * @import { BytesLike } from "@helios-lang/codec-utils"
+ * @import { CekResult, UplcLogger, UplcProgramV2, UplcSourceMapJsonSafe, UplcTerm, UplcValue } from "src/index.js"
  */
 
 /**
  * The optional ir property can be lazy because it is only used for debugging and might require an expensive formatting operation
  * @typedef {{
- *   alt?: Option<UplcProgramV2>
- *   ir?: Option<(() => string) | string>
+ *   alt?: UplcProgramV2
+ *   ir?: (() => string) | string
  *   sourceMap?: UplcSourceMapJsonSafe
  * }} UplcProgramV2Options
  */
@@ -103,21 +97,21 @@ class UplcProgramV2Impl {
 
     /**
      * @readonly
-     * @type {Option<UplcProgramV2>}
+     * @type {UplcProgramV2 | undefined}
      */
     alt
 
     /**
      * @private
      * @readonly
-     * @type {Option<(() => string) | string>}
+     * @type {((() => string) | string) | undefined}
      */
     _ir
 
     /**
      * Cached hash
      * @private
-     * @type {Option<number[]>}
+     * @type {number[] | undefined}
      */
     _hash
 
@@ -129,7 +123,7 @@ class UplcProgramV2Impl {
         this.root = root
         this.alt = options.alt
         this._ir = options.ir
-        this._hash = None
+        this._hash = undefined
 
         if (options.sourceMap) {
             deserializeUplcSourceMap(options.sourceMap).apply(this.root)
@@ -137,7 +131,7 @@ class UplcProgramV2Impl {
     }
 
     /**
-     * @type {Option<string>}
+     * @type {string | undefined}
      */
     get ir() {
         if (this._ir) {
@@ -147,7 +141,7 @@ class UplcProgramV2Impl {
                 return this._ir()
             }
         } else {
-            return None
+            return undefined
         }
     }
 
@@ -180,12 +174,12 @@ class UplcProgramV2Impl {
      * @returns {UplcProgramV2} - a new UplcProgram instance
      */
     apply(args) {
-        const alt = this.alt ? this.alt.apply(args) : None
+        const alt = this.alt ? this.alt.apply(args) : undefined
         return new UplcProgramV2Impl(apply(this.root, args), { alt })
     }
 
     /**
-     * @param {Option<UplcValue[]>} args - if None, eval the root term without any applications, if empy: apply a force to the root term
+     * @param {UplcValue[] | undefined} args - if None, eval the root term without any applications, if empy: apply a force to the root term
      * @param {object} [options]
      * @param {UplcLogger} [options.logOptions]
      * @param {number[]} [options.costModelParams]

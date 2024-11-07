@@ -1,8 +1,7 @@
 import { assertConstrData, makeConstrData } from "./ConstrData.js"
 
 /**
- * @typedef {import("./UplcData.js").UplcData} UplcData
- * @typedef {import("./UplcData.js").ConstrData} ConstrData
+ * @import { ConstrData, UplcData } from "src/index.js"
  */
 
 /**

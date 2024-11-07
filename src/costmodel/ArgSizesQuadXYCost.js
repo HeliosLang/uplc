@@ -1,5 +1,5 @@
 /**
- * @typedef {import("./ArgSizesCost.js").ArgSizesCost} ArgSizesCost
+ * @import { ArgSizesCost } from "src/index.js"
  */
 
 /**
@@ -14,6 +14,16 @@
  */
 
 /**
+ * @param {bigint} constant
+ * @param {bigint} minimum
+ * @param {QuadCoeffs} coeffs
+ * @returns {ArgSizesCost}
+ */
+export function makeArgSizesQuadXYCost(constant, minimum, coeffs) {
+    return new ArgSizesQuadXYCost(constant, minimum, coeffs)
+}
+
+/**
  * Let `x` denote the size of the first arg, and `y` the size of the second arg:
  *
  * if below diagonal:
@@ -22,7 +32,7 @@
  *
  * @implements {ArgSizesCost}
  */
-export class ArgSizesQuadXYCost {
+class ArgSizesQuadXYCost {
     /**
      * @readonly
      * @type {bigint}

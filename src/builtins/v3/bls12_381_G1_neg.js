@@ -1,10 +1,10 @@
 import { G1 } from "@helios-lang/crypto"
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { makeBls12_381_G1_element } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -14,8 +14,8 @@ export const bls12_381_G1_neg = {
     name: "bls12_381_G1_neg",
     forceCount: 0,
     nArgs: 1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(206)),
-    memModel: (params) => new ArgSizesConstCost(params.get(207)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(206)),
+    memModel: (params) => makeArgSizesConstCost(params.get(207)),
     call: (args, _ctx) => {
         const [a] = asUplcValues(args)
 

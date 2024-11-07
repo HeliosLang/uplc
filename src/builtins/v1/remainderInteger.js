@@ -1,11 +1,12 @@
-import { ArgSizesProdCost, ArgSizesDiffCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesProdCost,
+    makeArgSizesDiffCost
+} from "../../costmodel/index.js"
 import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../../cek/CekValue.js").CekValue} CekValue
- * @typedef {import("../Builtin.js").Builtin} Builtin
- * @typedef {import("../BuiltinContext.js").BuiltinContext} BuiltinContext
+ * @import { Builtin, BuiltinContext, CekValue } from "src/index.js"
  */
 
 /**
@@ -16,9 +17,9 @@ export const remainderInteger = {
     forceCount: 0,
     nArgs: 2,
     cpuModel: (params) =>
-        new ArgSizesProdCost(params.get(129), params.get(128), params.get(127)),
+        makeArgSizesProdCost(params.get(129), params.get(128), params.get(127)),
     memModel: (params) =>
-        new ArgSizesDiffCost(params.get(132), params.get(130), params.get(131)),
+        makeArgSizesDiffCost(params.get(132), params.get(130), params.get(131)),
     call: evalRemainderInteger
 }
 

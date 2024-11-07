@@ -1,9 +1,7 @@
-import { None } from "@helios-lang/type-utils"
 import { stringifyCekValue } from "./CekValue.js"
 
 /**
- * @typedef {import("./CallSiteInfo.js").CallSiteInfo} CallSiteInfo
- * @typedef {import("./CekValue.js").CekValue} CekValue
+ * @import { CallSiteInfo, CekValue } from "src/index.js"
  */
 
 export class UplcRuntimeError extends Error {
@@ -61,9 +59,9 @@ function prepareHeliosStackTrace(err, callSites) {
     let unhandledArgs = []
 
     /**
-     * @type {Option<string>}
+     * @type {string | undefined}
      */
-    let parentFunctionName = None
+    let parentFunctionName = undefined
 
     for (let cs of callSites) {
         if (cs.site) {

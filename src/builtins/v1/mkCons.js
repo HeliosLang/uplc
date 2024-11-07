@@ -1,9 +1,9 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { makeUplcList } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -14,8 +14,8 @@ export const mkCons = {
     name: "mkCons",
     forceCount: 1,
     nArgs: 2,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(101)),
-    memModel: (params) => new ArgSizesConstCost(params.get(102)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(101)),
+    memModel: (params) => makeArgSizesConstCost(params.get(102)),
     call: (args, _ctx) => {
         const [item, list] = asUplcValues(args)
 

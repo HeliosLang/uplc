@@ -1,8 +1,8 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { mkCons as mkConsV1 } from "../v1/mkCons.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -11,6 +11,6 @@ import { mkCons as mkConsV1 } from "../v1/mkCons.js"
  */
 export const mkCons = {
     ...mkConsV1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(106)),
-    memModel: (params) => new ArgSizesConstCost(params.get(107))
+    cpuModel: (params) => makeArgSizesConstCost(params.get(106)),
+    memModel: (params) => makeArgSizesConstCost(params.get(107))
 }

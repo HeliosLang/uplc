@@ -8,21 +8,13 @@ import { UPLC_LAMBDA_TAG, decodeUplcLambdaFromFlat } from "./UplcLambda.js"
 import { UPLC_VAR_TAG, decodeUplcVarFromFlat } from "./UplcVar.js"
 
 /**
- * @template TExpr
- * @template TValue
- * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
- */
-
-/**
- * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- * @typedef {import("../builtins/index.js").Builtin} Builtin
- * @typedef {import("../values/index.js").UplcValue} UplcValue
+ * @import { Builtin, FlatReader, UplcTerm, UplcValue } from "src/index.js"
  */
 
 /**
  * Reads a single UplcTerm
  * @template {UplcTerm} TExpr
- * @param {FlatReader<TExpr, UplcValue>} r
+ * @param {FlatReader} r
  * @param {Builtin[]} builtins
  * @returns {UplcTerm}
  */

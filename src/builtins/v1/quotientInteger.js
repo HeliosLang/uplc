@@ -1,11 +1,12 @@
-import { ArgSizesProdCost, ArgSizesDiffCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesProdCost,
+    makeArgSizesDiffCost
+} from "../../costmodel/index.js"
 import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../../cek/CekValue.js").CekValue} CekValue
- * @typedef {import("../Builtin.js").Builtin} Builtin
- * @typedef {import("../BuiltinContext.js").BuiltinContext} BuiltinContext
+ * @import { Builtin, BuiltinContext, CekValue } from "src/index.js"
  */
 
 /**
@@ -16,9 +17,9 @@ export const quotientInteger = {
     forceCount: 0,
     nArgs: 2,
     cpuModel: (params) =>
-        new ArgSizesProdCost(params.get(123), params.get(122), params.get(121)),
+        makeArgSizesProdCost(params.get(123), params.get(122), params.get(121)),
     memModel: (params) =>
-        new ArgSizesDiffCost(params.get(126), params.get(124), params.get(125)),
+        makeArgSizesDiffCost(params.get(126), params.get(124), params.get(125)),
     call: evalQuotientInteger
 }
 

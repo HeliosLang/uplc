@@ -1,8 +1,11 @@
-import { ArgSizesConstCost, ArgSizesMinCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesConstCost,
+    makeArgSizesMinCost
+} from "../../costmodel/index.js"
 import { lessThanEqualsByteString as lessThanEqualsByteStringV1 } from "../v1/lessThanEqualsByteString.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -10,6 +13,6 @@ import { lessThanEqualsByteString as lessThanEqualsByteStringV1 } from "../v1/le
  */
 export const lessThanEqualsByteString = {
     ...lessThanEqualsByteStringV1,
-    cpuModel: (params) => new ArgSizesMinCost(params.get(94), params.get(93)),
-    memModel: (params) => new ArgSizesConstCost(params.get(95))
+    cpuModel: (params) => makeArgSizesMinCost(params.get(94), params.get(93)),
+    memModel: (params) => makeArgSizesConstCost(params.get(95))
 }

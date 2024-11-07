@@ -6,11 +6,7 @@ import { makeUplcProgramV1 } from "./UplcProgramV1.js"
 import { makeUplcProgramV3 } from "./UplcProgramV3.js"
 
 /**
- * @typedef {import("./UplcProgram.js").PlutusVersion} PlutusVersion
- * @typedef {import("./UplcProgram.js").UplcProgram} UplcProgram
- * @typedef {import("./UplcProgram.js").UplcProgramV1} UplcProgramV1
- * @typedef {import("./UplcProgram.js").UplcProgramV2} UplcProgramV2
- * @typedef {import("./UplcProgram.js").UplcProgramV3} UplcProgramV3
+ * @import { PlutusVersion, UplcProgram, UplcProgramV1, UplcProgramV2, UplcProgramV3 } from "src/index.js"
  */
 
 describe(restoreUplcProgram.name, () => {

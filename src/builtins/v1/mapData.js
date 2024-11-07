@@ -1,12 +1,11 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { makeMapData } from "../../data/index.js"
 import { makeUplcDataValue } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
-
 /**
  * @type {Builtin}
  */
@@ -14,8 +13,8 @@ export const mapData = {
     name: "mapData",
     forceCount: 0,
     nArgs: 1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(99)),
-    memModel: (params) => new ArgSizesConstCost(params.get(100)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(99)),
+    memModel: (params) => makeArgSizesConstCost(params.get(100)),
     call: (args, _ctx) => {
         const [list] = asUplcValues(args)
 

@@ -54,7 +54,7 @@ import { verifyEd25519Signature } from "./verifyEd25519Signature.js"
 import { verifySchnorrSecp256k1Signature } from "./verifySchnorrSecp256k1Signature.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**

@@ -1,8 +1,8 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { asUplcValue } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -12,8 +12,8 @@ export const chooseList = {
     name: "chooseList",
     forceCount: 2,
     nArgs: 3,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(35)),
-    memModel: (params) => new ArgSizesConstCost(params.get(36)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(35)),
+    memModel: (params) => makeArgSizesConstCost(params.get(36)),
     call: (args, _ctx) => {
         const list = asUplcValue(args[0])
 

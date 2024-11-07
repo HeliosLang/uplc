@@ -1,5 +1,4 @@
 import { describe, it } from "node:test"
-import { None } from "@helios-lang/type-utils"
 import { builtinsV1, builtinsV2, builtinsV3 } from "../builtins/index.js"
 import { makeCostModel } from "./CostModel.js"
 import { makeCostModelParamsProxy } from "./CostModelParamsProxy.js"
@@ -20,10 +19,10 @@ describe(`CostModel for V1`, () => {
             {
                 /**
                  * @param {number} key
-                 * @param {Option<bigint>} def
+                 * @param {bigint | undefined} def
                  * @returns {bigint}
                  */
-                get: (key, def = None) => {
+                get: (key, def = undefined) => {
                     if (used.has(key)) {
                         throw new Error(`CostModelParams[${key}] already used`)
                     }
@@ -57,10 +56,10 @@ describe(`CostModel for V2`, () => {
             {
                 /**
                  * @param {number} key
-                 * @param {Option<bigint>} def
+                 * @param {bigint | undefined} def
                  * @returns {bigint}
                  */
-                get: (key, def = None) => {
+                get: (key, def = undefined) => {
                     if (used.has(key)) {
                         throw new Error(`CostModelParams[${key}] already used`)
                     }
@@ -94,10 +93,10 @@ describe(`CostModel for V3`, () => {
             {
                 /**
                  * @param {number} key
-                 * @param {Option<bigint>} def
+                 * @param {bigint | undefined} def
                  * @returns {bigint}
                  */
-                get: (key, def = None) => {
+                get: (key, def = undefined) => {
                     if (used.has(key)) {
                         throw new Error(`CostModelParams[${key}] already used`)
                     }

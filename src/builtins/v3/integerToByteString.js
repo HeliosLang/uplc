@@ -5,14 +5,14 @@ import {
     prepadBytes
 } from "@helios-lang/codec-utils"
 import {
-    ArgSizesLiteralYOrLinearZCost,
-    ArgSizesQuadZCost
+    makeArgSizesLiteralYOrLinearZCost,
+    makeArgSizesQuadZCost
 } from "../../costmodel/index.js"
 import { makeUplcByteArray } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -23,13 +23,13 @@ export const integerToByteString = {
     forceCount: 0,
     nArgs: 3,
     cpuModel: (params) =>
-        new ArgSizesQuadZCost({
+        makeArgSizesQuadZCost({
             c0: params.get(241),
             c1: params.get(242),
             c2: params.get(243)
         }),
     memModel: (params) =>
-        new ArgSizesLiteralYOrLinearZCost(params.get(245), params.get(244)),
+        makeArgSizesLiteralYOrLinearZCost(params.get(245), params.get(244)),
     call: (args, _ctx) => {
         const [a, b, c] = asUplcValues(args)
 

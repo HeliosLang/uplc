@@ -1,18 +1,34 @@
 import { getLastSelfValue, mixStacks, pushStackCallSite } from "./CekStack.js"
 
 /**
- * @typedef {import("@helios-lang/compiler-utils").Site} Site
- * @typedef {import("./CekContext.js").CekContext} CekContext
- * @typedef {import("./CekFrame.js").CekFrame} CekFrame
- * @typedef {import("./CekStack.js").CekStack} CekStack
- * @typedef {import("./CekValue.js").CekValue} CekValue
- * @typedef {import("./CekState.js").CekStateChange} CekStateChange
+ * @import { Site } from "@helios-lang/compiler-utils"
+ * @import { AssertExtends } from "@helios-lang/type-utils"
+ * @import { CekContext, CekFrame, CekStack, CekStateChange, CekValue } from "src/index.js"
  */
+
+/**
+ * @typedef {object} ForceFrame
+ * @prop {CekStack} stack
+ * @prop {(value: CekValue, ctx: CekContext) => CekStateChange} reduce
+ */
+
+/**
+ * @typedef {AssertExtends<CekFrame, ForceFrame>} _ForceFrameExtendsCekFrame
+ */
+
+/**
+ * @param {CekStack} stack
+ * @param {Site | undefined} callSite
+ * @returns {ForceFrame}
+ */
+export function makeForceFrame(stack, callSite) {
+    return new ForceFrameImpl(stack, callSite)
+}
 
 /**
  * @implements {CekFrame}
  */
-export class ForceFrame {
+class ForceFrameImpl {
     /**
      * Used for the parent callsites
      * @readonly
@@ -23,13 +39,13 @@ export class ForceFrame {
     /**
      * @private
      * @readonly
-     * @type {Option<Site>}
+     * @type {Site | undefined}
      */
     _callSite
 
     /**
      * @param {CekStack} stack
-     * @param {Option<Site>} callSite
+     * @param {Site | undefined} callSite
      */
     constructor(stack, callSite) {
         this.stack = stack
@@ -47,7 +63,7 @@ export class ForceFrame {
 
             /**
              * TODO: cleaner way of getting `self` and other variables that are in the stacks of callbacks
-             * @type {Option<CekValue>}
+             * @type {CekValue | undefined}
              */
             const lastSelfValue = getLastSelfValue(delay.stack)
 

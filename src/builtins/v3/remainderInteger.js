@@ -1,11 +1,11 @@
 import {
-    ArgSizesQuadXYCost,
-    ArgSizesSecondCost
+    makeArgSizesQuadXYCost,
+    makeArgSizesSecondCost
 } from "../../costmodel/index.js"
 import { remainderInteger as remainderIntegerV1 } from "../v1/remainderInteger.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -14,7 +14,7 @@ import { remainderInteger as remainderIntegerV1 } from "../v1/remainderInteger.j
 export const remainderInteger = {
     ...remainderIntegerV1,
     cpuModel: (params) =>
-        new ArgSizesQuadXYCost(params.get(141), params.get(148), {
+        makeArgSizesQuadXYCost(params.get(141), params.get(148), {
             c00: params.get(142),
             c01: params.get(143),
             c02: params.get(144),
@@ -23,5 +23,5 @@ export const remainderInteger = {
             c20: params.get(147)
         }),
     memModel: (params) =>
-        new ArgSizesSecondCost(params.get(150), params.get(149))
+        makeArgSizesSecondCost(params.get(150), params.get(149))
 }

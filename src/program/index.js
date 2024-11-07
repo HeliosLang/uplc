@@ -15,13 +15,3 @@ export {
 } from "./UplcProgramV3.js"
 export { deserializeUplcSourceMap, makeUplcSourceMap } from "./UplcSourceMap.js"
 export { restoreUplcProgram } from "./restore.js"
-
-/**
- * @typedef {import("./UplcProgram.js").PlutusVersion} PlutusVersion
- * @typedef {import("./UplcProgram.js").UplcProgram} UplcProgram
- * @typedef {import("./UplcProgram.js").UplcProgramV1} UplcProgramV1
- * @typedef {import("./UplcProgram.js").UplcProgramV2} UplcProgramV2
- * @typedef {import("./UplcProgram.js").UplcProgramV3} UplcProgramV3
- * @typedef {import("./UplcSourceMap.js").UplcSourceMap} UplcSourceMap
- * @typedef {import("./UplcSourceMap.js").UplcSourceMapJsonSafe} UplcSourceMapJsonSafe
- */

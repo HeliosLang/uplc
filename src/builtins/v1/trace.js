@@ -1,8 +1,8 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { asUplcValue } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -12,8 +12,8 @@ export const trace = {
     name: "trace",
     forceCount: 1,
     nArgs: 2,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(151)),
-    memModel: (params) => new ArgSizesConstCost(params.get(152)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(151)),
+    memModel: (params) => makeArgSizesConstCost(params.get(152)),
     call: (args, ctx) => {
         const message = asUplcValue(args[0])
 

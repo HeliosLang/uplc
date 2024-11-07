@@ -1,8 +1,8 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -12,8 +12,8 @@ export const fstPair = {
     name: "fstPair",
     forceCount: 2,
     nArgs: 1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(73)),
-    memModel: (params) => new ArgSizesConstCost(params.get(74)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(73)),
+    memModel: (params) => makeArgSizesConstCost(params.get(74)),
     call: (args, _ctx) => {
         const [a] = asUplcValues(args)
 

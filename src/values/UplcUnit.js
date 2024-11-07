@@ -1,10 +1,7 @@
 import { UNIT_TYPE } from "./UplcType.js"
 
 /**
- * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
- * @typedef {import("./UplcValue.js").UplcType} UplcType
- * @typedef {import("./UplcValue.js").UplcUnit} UplcUnit
- * @typedef {import("./UplcValue.js").UplcValue} UplcValue
+ * @import { FlatWriter, UplcType, UplcUnit, UplcValue } from "src/index.js"
  */
 
 /**

@@ -1,9 +1,9 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -13,8 +13,8 @@ export const indexByteString = {
     name: "indexByteString",
     forceCount: 0,
     nArgs: 2,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(81)),
-    memModel: (params) => new ArgSizesConstCost(params.get(82)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(81)),
+    memModel: (params) => makeArgSizesConstCost(params.get(82)),
     call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 

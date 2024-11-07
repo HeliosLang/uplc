@@ -14,7 +14,7 @@ import {
     symbol,
     word
 } from "@helios-lang/compiler-utils"
-import { None, allOrNone, expectSome, isSome } from "@helios-lang/type-utils"
+import { allOrUndefined, expectDefined } from "@helios-lang/type-utils"
 import {
     makeByteArrayData,
     makeConstrData,
@@ -56,23 +56,8 @@ import {
 } from "../values/index.js"
 
 /**
- * @typedef {import("@helios-lang/compiler-utils").Site} Site
- * @typedef {import("@helios-lang/compiler-utils").TokenReader} TokenReader
- * @typedef {import("../builtins/index.js").Builtin} Builtin
- * @typedef {import("../data/index.js").UplcData} UplcData
- * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
- * @typedef {import("../terms/index.js").UplcLambda} UplcLambda
- * @typedef {import("../values/index.js").Bls12_381_G1_element} Bls12_381_G1_element
- * @typedef {import("../values/index.js").Bls12_381_G2_element} Bls12_381_G2_element
- * @typedef {import("../values/index.js").UplcBool} UplcBool
- * @typedef {import("../values/index.js").UplcByteArray} UplcByteArray
- * @typedef {import("../values/index.js").UplcDataValue} UplcDataValue
- * @typedef {import("../values/index.js").UplcInt} UplcInt
- * @typedef {import("../values/index.js").UplcString} UplcString
- * @typedef {import("../values/index.js").UplcType} UplcType
- * @typedef {import("../values/index.js").UplcUnit} UplcUnit
- * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./UplcProgram.js").UplcVersion} UplcVersion
+ * @import { Site, TokenReader } from "@helios-lang/compiler-utils"
+ * @import { Bls12_381_G1_element, Bls12_381_G2_element, Builtin, UplcBool, UplcByteArray, UplcData, UplcDataValue, UplcInt, UplcLambda, UplcString, UplcTerm, UplcType, UplcUnit, UplcValue, UplcVersion } from "src/index.js"
  */
 
 /**
@@ -99,7 +84,7 @@ function pushVarName(ctx, name) {
  *
  * @param {ParseContext} ctx
  * @param {string} name
- * @returns {Option<number>} - DeBruijn index
+ * @returns {number | undefined} - DeBruijn index
  */
 function findVarName(ctx, name) {
     const varNames = ctx?.varNames ?? []
@@ -109,7 +94,7 @@ function findVarName(ctx, name) {
         }
     }
 
-    return None
+    return undefined
 }
 
 /**
@@ -139,9 +124,9 @@ export function parseProgram(s, ctx) {
     let m
 
     /**
-     * @type {Option<UplcTerm>}
+     * @type {UplcTerm | undefined}
      */
-    let term = None
+    let term = undefined
 
     if ((m = r.matches(group("(", { length: 1 })))) {
         r.end()
@@ -163,20 +148,20 @@ export function parseProgram(s, ctx) {
 
     r.errors.throw()
 
-    return expectSome(term)
+    return expectDefined(term)
 }
 
 /**
  * @param {TokenReader} r
  * @param {ParseContext} ctx
- * @returns {Option<UplcTerm>}
+ * @returns {UplcTerm | undefined}
  */
 function parseTerm(r, ctx) {
     let m
 
     if ((m = r.matches(anyWord))) {
         const i = findVarName(ctx, m.value)
-        if (isSome(i)) {
+        if (i !== undefined) {
             return makeUplcVar({ index: i, name: m.value, site: m.site })
         } else {
             r.errors.syntax(
@@ -185,7 +170,7 @@ function parseTerm(r, ctx) {
                     m.value
                 } (hint: available var names are: ${ctx.varNames ?? []})`
             )
-            return None
+            return undefined
         }
     } else if ((m = r.matches(group("(", { length: 1 })))) {
         r = m.fields[0]
@@ -201,21 +186,21 @@ function parseTerm(r, ctx) {
         } else if ((m = r.matches(word("delay")))) {
             const term = parseTerm(r, ctx)
             r.end()
-            return term ? makeUplcDelay({ arg: term, site: m.site }) : None
+            return term ? makeUplcDelay({ arg: term, site: m.site }) : undefined
         } else if (r.matches(word("error"))) {
             r.end()
             return makeUplcError()
         } else if ((m = r.matches(word("force")))) {
             const term = parseTerm(r, ctx)
             r.end()
-            return term ? makeUplcForce({ arg: term, site: m.site }) : None
+            return term ? makeUplcForce({ arg: term, site: m.site }) : undefined
         } else if ((m = r.matches(word("lam")))) {
             const term = parseLambda(r, m.site, ctx)
             r.end()
             return term
         } else {
             r.endMatch()
-            return None
+            return undefined
         }
     } else if ((m = r.matches(group("[", { length: 1 })))) {
         r = m.fields[0]
@@ -229,15 +214,15 @@ function parseTerm(r, ctx) {
         // apparently there can be more terms
         r.end()
 
-        const b = allOrNone(args)
+        const b = allOrUndefined(args)
 
         const term =
-            a && b ? makeUplcCall({ fn: a, args: b, site: m.site }) : None
+            a && b ? makeUplcCall({ fn: a, args: b, site: m.site }) : undefined
 
         return term
     } else {
         r.endMatch()
-        return None
+        return undefined
     }
 }
 
@@ -245,7 +230,7 @@ function parseTerm(r, ctx) {
  * @param {TokenReader} r
  * @param {Site} site
  * @param {ParseContext} ctx
- * @returns {Option<UplcTerm>}
+ * @returns {UplcTerm | undefined}
  */
 function parseBuiltin(r, site, ctx) {
     let m
@@ -256,17 +241,17 @@ function parseBuiltin(r, site, ctx) {
 
         if (i == -1) {
             r.errors.syntax(site, `unrecognized builtin ${m.value}`)
-            return None
+            return undefined
         } else {
             return makeUplcBuiltin({ id: i, name, site })
         }
     } else if ((m = r.matches(intlit()))) {
         const i = Number(m.value)
-        const name = expectSome(ctx.builtins[i]).name
+        const name = expectDefined(ctx.builtins[i]).name
         return makeUplcBuiltin({ id: i, name, site })
     } else {
         r.endMatch()
-        return None
+        return undefined
     }
 }
 
@@ -275,7 +260,7 @@ function parseBuiltin(r, site, ctx) {
  * @param {TokenReader} r
  * @param {Site} site
  * @param {ParseContext} ctx
- * @returns {Option<UplcLambda>}
+ * @returns {UplcLambda | undefined}
  */
 function parseLambda(r, site, ctx) {
     let m
@@ -284,17 +269,19 @@ function parseLambda(r, site, ctx) {
 
         const body = parseTerm(r, pushVarName(ctx, varName))
 
-        return body ? makeUplcLambda({ body, argName: varName, site }) : None
+        return body
+            ? makeUplcLambda({ body, argName: varName, site })
+            : undefined
     } else {
         r.endMatch()
-        return None
+        return undefined
     }
 }
 
 /**
  * @param {TokenReader} r
  * @param {Site} site
- * @returns {Option<UplcTerm>}
+ * @returns {UplcTerm | undefined}
  */
 function parseConst(r, site) {
     let t = parseTypedValue(r)
@@ -305,18 +292,18 @@ function parseConst(r, site) {
         const v = valueParser(r)
         r.end()
 
-        return v ? makeUplcConst({ value: v, site }) : None
+        return v ? makeUplcConst({ value: v, site }) : undefined
     } else {
-        return None
+        return undefined
     }
 }
 
 /**
- * @typedef {(r: TokenReader) => Option<UplcValue>} ValueParser
+ * @typedef {(r: TokenReader) => (UplcValue | undefined)} ValueParser
  */
 /**
  * @param {TokenReader} r
- * @returns {Option<[UplcType, ValueParser]>}
+ * @returns {[UplcType, ValueParser] | undefined}
  */
 function parseTypedValue(r) {
     let m
@@ -341,7 +328,7 @@ function parseTypedValue(r) {
         r = m.fields[0]
 
         /**
-         * @type {Option<[UplcType, ValueParser]>}
+         * @type {[UplcType, ValueParser] | undefined}
          */
         let result = parseContainer(r)
 
@@ -349,13 +336,13 @@ function parseTypedValue(r) {
         return result
     } else {
         r.endMatch()
-        return None
+        return undefined
     }
 }
 
 /**
  * @param {TokenReader} r
- * @returns {Option<[UplcType, ValueParser]>}
+ * @returns {[UplcType, ValueParser] | undefined}
  */
 function parseContainer(r) {
     if (r.matches(word("list"))) {
@@ -364,20 +351,20 @@ function parseContainer(r) {
         return parsePair(r)
     } else {
         r.endMatch()
-        return None
+        return undefined
     }
 }
 
 /**
  *
  * @param {TokenReader} r
- * @returns {Option<[UplcType, ValueParser]>}
+ * @returns {[UplcType, ValueParser] | undefined}
  */
 function parseList(r) {
     const itemDetails = parseTypedValue(r)
 
     if (!itemDetails) {
-        return None
+        return undefined
     }
 
     const [itemType, itemParser] = itemDetails
@@ -386,17 +373,17 @@ function parseList(r) {
 
     /**
      * @param {TokenReader} r
-     * @returns {Option<UplcValue>}
+     * @returns {UplcValue | undefined}
      */
     const listParser = (r) => {
         let m
         if ((m = r.matches(group("[")))) {
-            const items = allOrNone(m.fields.map(itemParser))
+            const items = allOrUndefined(m.fields.map(itemParser))
 
-            return items ? makeUplcList({ itemType, items }) : None
+            return items ? makeUplcList({ itemType, items }) : undefined
         } else {
             r.endMatch()
-            return None
+            return undefined
         }
     }
 
@@ -406,14 +393,14 @@ function parseList(r) {
 /**
  *
  * @param {TokenReader} r
- * @returns {Option<[UplcType, ValueParser]>}
+ * @returns {[UplcType, ValueParser] | undefined}
  */
 function parsePair(r) {
     const firstDetails = parseTypedValue(r)
     const secondDetails = parseTypedValue(r)
 
     if (!firstDetails || !secondDetails) {
-        return None
+        return undefined
     }
 
     const [firstType, firstParser] = firstDetails
@@ -423,7 +410,7 @@ function parsePair(r) {
 
     /**
      * @param {TokenReader} r
-     * @returns {Option<UplcValue>}
+     * @returns {UplcValue | undefined}
      */
     const pairParser = (r) => {
         let m
@@ -436,10 +423,10 @@ function parsePair(r) {
             const second = secondParser(r2)
             r2.end()
 
-            return first && second ? makeUplcPair({ first, second }) : None
+            return first && second ? makeUplcPair({ first, second }) : undefined
         } else {
             r.endMatch()
-            return None
+            return undefined
         }
     }
 
@@ -448,7 +435,7 @@ function parsePair(r) {
 
 /**
  * @param {TokenReader} r
- * @returns {Option<UplcBool>}
+ * @returns {UplcBool | undefined}
  */
 function parseBool(r) {
     if (r.matches(word("false", { caseInsensitive: true }))) {
@@ -457,13 +444,13 @@ function parseBool(r) {
         return makeUplcBool(true)
     } else {
         r.endMatch()
-        return None
+        return undefined
     }
 }
 
 /**
  * @param {TokenReader} r
- * @returns {Option<UplcByteArray>}
+ * @returns {UplcByteArray | undefined}
  */
 function parseByteArray(r) {
     let m
@@ -471,19 +458,19 @@ function parseByteArray(r) {
         return makeUplcByteArray(m.value)
     } else {
         r.endMatch()
-        return None
+        return undefined
     }
 }
 
 /**
  * @param {TokenReader} r
- * @returns {Option<UplcDataValue>}
+ * @returns {UplcDataValue | undefined}
  */
 function parseDataValue(r) {
     let m
 
     /**
-     * @type {Option<UplcData>}
+     * @type {UplcData | undefined}
      */
     let d
 
@@ -494,16 +481,16 @@ function parseDataValue(r) {
         d = parseData(r)
     } else {
         r.endMatch()
-        return None
+        return undefined
     }
 
-    return d ? makeUplcDataValue(d) : None
+    return d ? makeUplcDataValue(d) : undefined
 }
 
 /**
  *
  * @param {TokenReader} r
- * @returns {Option<UplcData>}
+ * @returns {UplcData | undefined}
  */
 function parseData(r) {
     let m
@@ -512,9 +499,9 @@ function parseData(r) {
         return makeByteArrayData({ bytes: m[1].value })
     } else if ((m = r.matches(word("Constr"), intlit(), group("[")))) {
         const tag = m[1].value
-        const fields = allOrNone(m[2].fields.map(parseData))
+        const fields = allOrUndefined(m[2].fields.map(parseData))
 
-        return fields ? makeConstrData({ tag: Number(tag), fields }) : None
+        return fields ? makeConstrData({ tag: Number(tag), fields }) : undefined
     } else if (r.matches(word("I"))) {
         if ((m = r.matches(intlit()))) {
             return makeIntData(m.value)
@@ -522,26 +509,26 @@ function parseData(r) {
             return makeIntData(-m[1].value)
         } else {
             r.endMatch()
-            return None
+            return undefined
         }
     } else if ((m = r.matches(word("List"), group("[")))) {
-        const items = allOrNone(m[1].fields.map(parseData))
+        const items = allOrUndefined(m[1].fields.map(parseData))
 
-        return items ? makeListData(items) : None
+        return items ? makeListData(items) : undefined
     } else if ((m = r.matches(word("Map"), group("[")))) {
-        const pairs = allOrNone(m[1].fields.map(parseDataPair))
+        const pairs = allOrUndefined(m[1].fields.map(parseDataPair))
 
-        return pairs ? makeMapData(pairs) : None
+        return pairs ? makeMapData(pairs) : undefined
     } else {
         r.endMatch()
-        return None
+        return undefined
     }
 }
 
 /**
  *
  * @param {TokenReader} r
- * @returns {Option<[UplcData, UplcData]>}
+ * @returns {[UplcData, UplcData] | undefined}
  */
 function parseDataPair(r) {
     let m
@@ -550,16 +537,16 @@ function parseDataPair(r) {
         const first = parseData(m.fields[0])
         const second = parseData(m.fields[1])
 
-        return first && second ? [first, second] : None
+        return first && second ? [first, second] : undefined
     } else {
         r.endMatch()
-        return None
+        return undefined
     }
 }
 
 /**
  * @param {TokenReader} r
- * @returns {Option<Bls12_381_G1_element>}
+ * @returns {Bls12_381_G1_element | undefined}
  */
 function parseBls12_381_G1_element(r) {
     let m
@@ -570,13 +557,13 @@ function parseBls12_381_G1_element(r) {
         return makeBls12_381_G1_element({ bytes })
     } else {
         r.endMatch()
-        return None
+        return undefined
     }
 }
 
 /**
  * @param {TokenReader} r
- * @returns {Option<Bls12_381_G2_element>}
+ * @returns {Bls12_381_G2_element | undefined}
  */
 function parseBls12_381_G2_element(r) {
     let m
@@ -587,14 +574,14 @@ function parseBls12_381_G2_element(r) {
         return makeBls12_381_G2_element({ bytes })
     } else {
         r.endMatch()
-        return None
+        return undefined
     }
 }
 
 /**
  *
  * @param {TokenReader} r
- * @returns {Option<UplcInt>}
+ * @returns {UplcInt | undefined}
  */
 function parseInt(r) {
     let m
@@ -605,13 +592,13 @@ function parseInt(r) {
         return makeUplcInt(-m[1].value)
     } else {
         r.endMatch()
-        return None
+        return undefined
     }
 }
 
 /**
  * @param {TokenReader} r
- * @returns {Option<UplcString>}
+ * @returns {UplcString | undefined}
  */
 function parseString(r) {
     let m
@@ -619,19 +606,19 @@ function parseString(r) {
         return makeUplcString(m.value)
     } else {
         r.endMatch()
-        return None
+        return undefined
     }
 }
 
 /**
  * @param {TokenReader} r
- * @returns {Option<UplcUnit>}
+ * @returns {UplcUnit | undefined}
  */
 function parseUnit(r) {
     if (r.matches(group("(", { length: 0 }))) {
         return UNIT_VALUE
     } else {
         r.endMatch()
-        return None
+        return undefined
     }
 }

@@ -1,4 +1,3 @@
-import { None } from "@helios-lang/type-utils"
 import { builtinsV3 } from "../builtins/index.js"
 import {
     makeCostModel,
@@ -18,20 +17,15 @@ import {
 import { deserializeUplcSourceMap } from "./UplcSourceMap.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- * @typedef {import("../logging/UplcLogger.js").UplcLogger} UplcLogger
- * @typedef {import("../cek/index.js").CekResult} CekResult
- * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
- * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./UplcProgram.js").UplcProgramV3} UplcProgramV3
- * @typedef {import("./UplcSourceMap.js").UplcSourceMapJsonSafe} UplcSourceMapJsonSafe
+ * @import { BytesLike } from "@helios-lang/codec-utils"
+ * @import { CekResult, UplcLogger, UplcProgramV3, UplcSourceMapJsonSafe, UplcTerm, UplcValue } from "src/index.js"
  */
 
 /**
  * The optional ir property can be lazy because it is only used for debugging and might require an expensive formatting operation
  * @typedef {{
- *   alt?: Option<UplcProgramV3>
- *   ir?: Option<(() => string) | string>
+ *   alt?: UplcProgramV3
+ *   ir?: (() => string) | string
  *   sourceMap?: UplcSourceMapJsonSafe
  * }} UplcProgramV3Options
  */
@@ -103,21 +97,21 @@ class UplcProgramV3Impl {
 
     /**
      * @readonly
-     * @type {Option<UplcProgramV3>}
+     * @type {UplcProgramV3 | undefined}
      */
     alt
 
     /**
      * @private
      * @readonly
-     * @type {Option<(() => string) | string>}
+     * @type {((() => string) | string) | undefined}
      */
     _ir
 
     /**
      * Cached hash
      * @private
-     * @type {Option<number[]>}
+     * @type {number[] | undefined}
      */
     _hash
 
@@ -129,7 +123,7 @@ class UplcProgramV3Impl {
         this.root = root
         this.alt = props.alt
         this._ir = props.ir
-        this._hash = None
+        this._hash = undefined
 
         if (props.sourceMap) {
             deserializeUplcSourceMap(props.sourceMap).apply(this.root)
@@ -137,7 +131,7 @@ class UplcProgramV3Impl {
     }
 
     /**
-     * @type {Option<string>}
+     * @type {string | undefined}
      */
     get ir() {
         if (this._ir) {
@@ -147,7 +141,7 @@ class UplcProgramV3Impl {
                 return this._ir()
             }
         } else {
-            return None
+            return undefined
         }
     }
 
@@ -180,7 +174,7 @@ class UplcProgramV3Impl {
      * @returns {UplcProgramV3} - a new UplcProgram instance
      */
     apply(args) {
-        const alt = this.alt ? this.alt.apply(args) : None
+        const alt = this.alt ? this.alt.apply(args) : undefined
         return new UplcProgramV3Impl(apply(this.root, args), { alt })
     }
 

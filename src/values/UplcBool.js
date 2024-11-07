@@ -2,17 +2,7 @@ import { makeConstrData } from "../data/index.js"
 import { BOOL_TYPE } from "./UplcType.js"
 
 /**
- * @template TExpr
- * @template TValue
- * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
- */
-
-/**
- * @typedef {import("../data/index.js").ConstrData} ConstrData
- * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
- * @typedef {import("./UplcValue.js").UplcBool} UplcBool
- * @typedef {import("./UplcValue.js").UplcType} UplcType
- * @typedef {import("./UplcValue.js").UplcValue} UplcValue
+ * @import { ConstrData, FlatReader, FlatWriter, UplcBool, UplcType, UplcValue } from "src/index.js"
  */
 
 /**
@@ -24,7 +14,7 @@ export function makeUplcBool(args) {
 }
 
 /**
- * @param {FlatReader<any, UplcValue>} r
+ * @param {FlatReader} r
  * @returns {UplcBool}
  */
 export function decodeUplcBoolFromFlat(r) {

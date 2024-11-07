@@ -1,19 +1,10 @@
 /**
- * @typedef {import("@helios-lang/compiler-utils").Site} Site
- * @typedef {import("./CekValue.js").CekValue} CekValue
+ * @import { Site } from "@helios-lang/compiler-utils"
+ * @import { CallSiteInfo } from "src/index.js"
  */
 
 /**
- * So we can later add things like env function name, function values
- * @typedef {{
- *   site?: Option<Site>
- *   functionName?: string
- *   arguments?: CekValue[]
- * }} CallSiteInfo
- */
-
-/**
- * @param {Option<CallSiteInfo>} info
+ * @param {CallSiteInfo | undefined} info
  * @returns {boolean}
  */
 export function isEmptyCallSiteInfo(info) {
@@ -21,7 +12,7 @@ export function isEmptyCallSiteInfo(info) {
 }
 
 /**
- * @param {Option<CallSiteInfo>} info
+ * @param {CallSiteInfo | undefined} info
  * @returns {info is CallSiteInfo}
  */
 export function isNonEmptyCallSiteInfo(info) {

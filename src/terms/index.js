@@ -12,13 +12,4 @@ export { apply, traverse } from "./ops.js"
 
 /**
  * @typedef {import("./UplcReader.js").UplcReader} UplcReader
- * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- * @typedef {import("./UplcTerm.js").UplcBuiltin} UplcBuiltin
- * @typedef {import("./UplcTerm.js").UplcCall} UplcCall
- * @typedef {import("./UplcTerm.js").UplcConst} UplcConst
- * @typedef {import("./UplcTerm.js").UplcDelay} UplcDelay
- * @typedef {import("./UplcTerm.js").UplcError} UplcError
- * @typedef {import("./UplcTerm.js").UplcForce} UplcForce
- * @typedef {import("./UplcTerm.js").UplcLambda} UplcLambda
- * @typedef {import("./UplcTerm.js").UplcVar} UplcVar
  */

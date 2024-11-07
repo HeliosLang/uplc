@@ -1,9 +1,9 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { makeUplcList, DATA_PAIR_TYPE } from "../../values/index.js"
 import { asCekValue, asUplcValue } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -13,8 +13,8 @@ export const mkNilPairData = {
     name: "mkNilPairData",
     forceCount: 0,
     nArgs: 1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(105)),
-    memModel: (params) => new ArgSizesConstCost(params.get(106)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(105)),
+    memModel: (params) => makeArgSizesConstCost(params.get(106)),
     call: (args, _ctx) => {
         const a = asUplcValue(args[0])
 

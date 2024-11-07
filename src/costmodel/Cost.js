@@ -6,14 +6,8 @@ import {
 } from "@helios-lang/cbor"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- */
-
-/**
- * @typedef {{
- *   cpu: bigint
- *   mem: bigint
- * }} Cost
+ * @import { BytesLike } from "@helios-lang/codec-utils"
+ * @import { Cost } from "src/index.js"
  */
 
 /**

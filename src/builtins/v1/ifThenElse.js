@@ -1,8 +1,8 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { asUplcValue } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -12,8 +12,8 @@ export const ifThenElse = {
     name: "ifThenElse",
     forceCount: 1,
     nArgs: 3,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(79)),
-    memModel: (params) => new ArgSizesConstCost(params.get(80)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(79)),
+    memModel: (params) => makeArgSizesConstCost(params.get(80)),
     call: (args, _ctx) => {
         const cond = asUplcValue(args[0])
 

@@ -1,10 +1,10 @@
 import { decodeUtf8 as decode } from "@helios-lang/codec-utils"
-import { ArgSizesFirstCost } from "../../costmodel/index.js"
+import { makeArgSizesFirstCost } from "../../costmodel/index.js"
 import { makeUplcString } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -14,8 +14,8 @@ export const decodeUtf8 = {
     name: "decodeUtf8",
     forceCount: 0,
     nArgs: 1,
-    cpuModel: (params) => new ArgSizesFirstCost(params.get(46), params.get(45)),
-    memModel: (params) => new ArgSizesFirstCost(params.get(48), params.get(47)),
+    cpuModel: (params) => makeArgSizesFirstCost(params.get(46), params.get(45)),
+    memModel: (params) => makeArgSizesFirstCost(params.get(48), params.get(47)),
     call: (args, _ctx) => {
         const [a] = asUplcValues(args)
 

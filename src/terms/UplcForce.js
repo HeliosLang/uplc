@@ -1,28 +1,22 @@
-import { None } from "@helios-lang/type-utils"
-import { ForceFrame } from "../cek/index.js"
+import { makeForceFrame } from "../cek/index.js"
 
 /**
- * @template TExpr
- * @template TValue
- * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
- */
-
-/**
- * @typedef {import("@helios-lang/compiler-utils").Site} Site
- * @typedef {import("../cek/index.js").CekContext} CekContext
- * @typedef {import("../cek/index.js").CekStack} CekStack
- * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
- * @typedef {import("../cek/index.js").CekValue} CekValue
- * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
- * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- * @typedef {import("./UplcTerm.js").UplcForce} UplcForce
+ * @import { Site } from "@helios-lang/compiler-utils"
+ * @import {
+ *   CekContext,
+ *   CekStack,
+ *   CekStateChange,
+ *   FlatReader,
+ *   FlatWriter,
+ *   UplcForce,
+ *   UplcTerm
+ * } from "src/index.js"
  */
 
 export const UPLC_FORCE_TAG = 5
 
 /**
- * @param {{arg: UplcTerm, site?: Option<Site>}} props
+ * @param {{arg: UplcTerm, site?: Site}} props
  * @returns {UplcForce}
  */
 export function makeUplcForce(props) {
@@ -30,8 +24,7 @@ export function makeUplcForce(props) {
 }
 
 /**
- * @template {UplcTerm} TArg
- * @param {FlatReader<UplcTerm, UplcValue>} r
+ * @param {FlatReader} r
  * @returns {UplcForce}
  */
 export function decodeUplcForceFromFlat(r) {
@@ -53,15 +46,15 @@ class UplcForceImpl {
     /**
      * Optional source-map site
      * Mutable so that SourceMap application is easier
-     * @type {Option<Site>}
+     * @type {Site | undefined}
      */
     site
 
     /**
      * @param {UplcTerm} arg
-     * @param {Option<Site>} site
+     * @param {Site | undefined} site
      */
-    constructor(arg, site = None) {
+    constructor(arg, site = undefined) {
         this.arg = arg
         this.site = site
     }
@@ -96,7 +89,7 @@ class UplcForceImpl {
                     stack: stack
                 }
             },
-            frame: new ForceFrame(stack, this.site)
+            frame: makeForceFrame(stack, this.site)
         }
     }
 

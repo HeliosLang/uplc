@@ -1,8 +1,7 @@
 import { padBits } from "@helios-lang/codec-utils"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").BitReader} BitReader
- * @typedef {import("@helios-lang/codec-utils").BitWriter} BitWriter
+ * @import { BitReader, BitWriter } from "@helios-lang/codec-utils"
  */
 
 /**

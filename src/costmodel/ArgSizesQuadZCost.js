@@ -1,7 +1,6 @@
 /**
- * @typedef {import("./ArgSizesCost.js").ArgSizesCost} ArgSizesCost
+ * @import { ArgSizesCost } from "src/index.js"
  */
-
 /**
  * @typedef {{
  *   c0: bigint
@@ -11,13 +10,21 @@
  */
 
 /**
+ * @param {QuadCoeffs} coeffs
+ * @returns {ArgSizesCost}
+ */
+export function makeArgSizesQuadZCost(coeffs) {
+    return new ArgSizesQuadZCost(coeffs)
+}
+
+/**
  * Let `z` denote the size of the third arg:
  *
  *   cost = c0 + c1*z + c2*z*z
  *
  * @implements {ArgSizesCost}
  */
-export class ArgSizesQuadZCost {
+class ArgSizesQuadZCost {
     /**
      * @readonly
      * @type {QuadCoeffs}

@@ -11,72 +11,8 @@ import {
 } from "../terms/index.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- * @typedef {import("../builtins/index.js").Builtin} Builtin
- * @typedef {import("../cek/index.js").CekResult} CekResult
- * @typedef {import("../cek/index.js").CekTerm} CekTerm
- * @typedef {import("../costmodel/index.js").CostModel} CostModel
- * @typedef {import("../logging/UplcLogger.js").UplcLogger} UplcLogger
- * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
- * @typedef {import("../values/index.js").UplcValue} UplcValue
- */
-
-/**
- * @typedef {"1.0.0" | "1.1.0"} UplcVersion
- * @typedef {"PlutusScriptV1" | "PlutusScriptV2" | "PlutusScriptV3"} PlutusVersion
- * @typedef {1 | 2 | 3} PlutusVersionTag
- */
-
-/**
- * @typedef {{
- *   root: UplcTerm
- *   ir: Option<string>
- *   eval(args: Option<UplcValue[]>, options?: {
- *      logOptions?: UplcLogger,
- *      costModelParams?: number[],
- *   }): CekResult
- *   hash(): number[]
- *   toCbor(): number[]
- *   toFlat(): number[]
- *   toString(): string
- * }} CommonUplcProgramProps
- */
-
-/**
- * @typedef {CommonUplcProgramProps & {
- *   plutusVersion: "PlutusScriptV1"
- *   plutusVersionTag: 1
- *   uplcVersion: "1.0.0"
- *   alt: Option<UplcProgramV1>
- *   apply: (args: UplcValue[]) => UplcProgramV1
- *   withAlt: (alt: UplcProgramV1) => UplcProgramV1
- * }} UplcProgramV1
- */
-
-/**
- * @typedef {CommonUplcProgramProps & {
- *   plutusVersion: "PlutusScriptV2"
- *   plutusVersionTag: 2
- *   uplcVersion: "1.0.0"
- *   alt: Option<UplcProgramV2>
- *   apply: (args: UplcValue[]) => UplcProgramV2
- *   withAlt: (alt: UplcProgramV2) => UplcProgramV2
- * }} UplcProgramV2
- */
-
-/**
- * @typedef {CommonUplcProgramProps & {
- *   plutusVersion: "PlutusScriptV3"
- *   plutusVersionTag: 3
- *   uplcVersion: "1.1.0"
- *   alt: Option<UplcProgramV3>
- *   apply: (args: UplcValue[]) => UplcProgramV3
- *   withAlt: (alt: UplcProgramV3) => UplcProgramV3
- * }} UplcProgramV3
- */
-
-/**
- * @typedef {UplcProgramV1 | UplcProgramV2 | UplcProgramV3} UplcProgram
+ * @import { BytesLike } from "@helios-lang/codec-utils"
+ * @import { Builtin, CekResult, CostModel, UplcLogger, UplcProgram, UplcTerm, UplcValue, UplcVersion } from "src/index.js"
  */
 
 /**
@@ -151,7 +87,7 @@ export function decodeFlatProgram(bytes, expectedUplcVersion, builtins) {
 /**
  * @param {Builtin[]} builtins
  * @param {UplcTerm} expr
- * @param {Option<UplcValue[]>} args
+ * @param {UplcValue[] | undefined} args
  * @param {object} options
  * @param {CostModel} options.costModel
  * @param {UplcLogger} [options.logOptions]

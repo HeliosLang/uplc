@@ -1,11 +1,5 @@
 /**
- * @typedef {import("./UplcLogger.js").UplcLogger} UplcLogger
- */
-
-/**
- * @typedef {UplcLogger & {
- *   lastMessage: string
- * }} BasicUplcLogger
+ * @import { BasicUplcLogger } from "src/index.js"
  */
 
 /**

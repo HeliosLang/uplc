@@ -9,24 +9,13 @@ import { makeUplcType } from "./UplcType.js"
 import { UNIT_VALUE } from "./UplcUnit.js"
 
 /**
- * @template TExpr
- * @template TValue
- * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
+ * @import { FlatReader, UplcValue } from "src/index.js"
  */
 
 /**
- * @template T
- * @typedef {import("../flat/index.js").ValueReader<T>} ValueReader
- */
-
-/**
- * @typedef {import("./UplcValue.js").UplcValue} UplcValue
- */
-
-/**
- * @param {FlatReader<any, UplcValue>} r
+ * @param {FlatReader} r
  * @param {number[]} typeList
- * @returns {ValueReader<UplcValue>}
+ * @returns {() => UplcValue}
  */
 export function dispatchValueReader(r, typeList) {
     const type = typeList.shift()

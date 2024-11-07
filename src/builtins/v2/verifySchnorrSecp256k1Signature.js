@@ -1,10 +1,13 @@
 import { SchnorrSecp256k1 } from "@helios-lang/crypto"
-import { ArgSizesConstCost, ArgSizesThirdCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesConstCost,
+    makeArgSizesThirdCost
+} from "../../costmodel/index.js"
 import { makeUplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -15,8 +18,8 @@ export const verifySchnorrSecp256k1Signature = {
     forceCount: 0,
     nArgs: 3,
     cpuModel: (params) =>
-        new ArgSizesThirdCost(params.get(173), params.get(172)),
-    memModel: (params) => new ArgSizesConstCost(params.get(174)),
+        makeArgSizesThirdCost(params.get(173), params.get(172)),
+    memModel: (params) => makeArgSizesConstCost(params.get(174)),
     call: (args, _ctx) => {
         const [publicKey, message, signature] = asUplcValues(args)
 

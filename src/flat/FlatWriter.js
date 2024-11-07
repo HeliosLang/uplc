@@ -3,20 +3,8 @@ import { encodeFlatBytes } from "./bytes.js"
 import { encodeFlatInt } from "./int.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").BitWriter} BitWriter
- */
-
-/**
- * @typedef {{
- *   writeBool(b: boolean): void
- *   writeBytes(bytes: number[]): void
- *   writeInt(x: bigint): void
- *   writeList(items: {toFlat: (w: FlatWriter) => void}[]): void
- *   writeTermTag(tag: number): void
- *   writeTypeBits(typeBits: string): void
- *   writeBuiltinId(id: number): void
- *   finalize(): number[]
- * }} FlatWriter
+ * @import { BitWriter } from "@helios-lang/codec-utils"
+ * @import { FlatWriter } from "src/index.js"
  */
 
 /**

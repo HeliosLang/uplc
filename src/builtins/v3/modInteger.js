@@ -1,11 +1,11 @@
 import {
-    ArgSizesSecondCost,
-    ArgSizesQuadXYCost
+    makeArgSizesSecondCost,
+    makeArgSizesQuadXYCost
 } from "../../costmodel/index.js"
 import { modInteger as modIntegerV1 } from "../v1/modInteger.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -14,7 +14,7 @@ import { modInteger as modIntegerV1 } from "../v1/modInteger.js"
 export const modInteger = {
     ...modIntegerV1,
     cpuModel: (params) =>
-        new ArgSizesQuadXYCost(params.get(114), params.get(121), {
+        makeArgSizesQuadXYCost(params.get(114), params.get(121), {
             c00: params.get(115),
             c01: params.get(116),
             c02: params.get(117),
@@ -23,5 +23,5 @@ export const modInteger = {
             c20: params.get(120)
         }),
     memModel: (params) =>
-        new ArgSizesSecondCost(params.get(123), params.get(122))
+        makeArgSizesSecondCost(params.get(123), params.get(122))
 }

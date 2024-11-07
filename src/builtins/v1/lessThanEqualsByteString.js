@@ -1,10 +1,13 @@
-import { ArgSizesConstCost, ArgSizesMinCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesConstCost,
+    makeArgSizesMinCost
+} from "../../costmodel/index.js"
 import { compareByteArrayData } from "../../data/index.js"
 import { makeUplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -14,8 +17,8 @@ export const lessThanEqualsByteString = {
     name: "lessThanEqualsByteString",
     forceCount: 0,
     nArgs: 2,
-    cpuModel: (params) => new ArgSizesMinCost(params.get(89), params.get(88)),
-    memModel: (params) => new ArgSizesConstCost(params.get(90)),
+    cpuModel: (params) => makeArgSizesMinCost(params.get(89), params.get(88)),
+    memModel: (params) => makeArgSizesConstCost(params.get(90)),
     call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 

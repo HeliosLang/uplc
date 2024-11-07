@@ -1,21 +1,22 @@
-import { None } from "@helios-lang/type-utils"
 import { makeCostTracker } from "../costmodel/index.js"
 import { stringifyNonUplcValue } from "./CekValue.js"
 
 /**
- * @typedef {import("@helios-lang/compiler-utils").Site} Site
- * @typedef {import("../builtins/index.js").Builtin} Builtin
- * @typedef {import("../costmodel/index.js").Cost} Cost
- * @typedef {import("../costmodel/index.js").CostModel} CostModel
- * @typedef {import("../costmodel/index.js").CostTracker} CostTracker
- * @typedef {import("../logging/index.js").UplcLogger} UplcLogger
- * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./CekContext.js").CekContext} CekContext
- * @typedef {import("./CekFrame.js").CekFrame} CekFrame
- * @typedef {import("./CekResult.js").CekResult} CekResult
- * @typedef {import("./CekStack.js").CekStack} CekStack
- * @typedef {import("./CekState.js").CekState} CekState
- * @typedef {import("./CekTerm.js").CekTerm} CekTerm
+ * @import { Site } from "@helios-lang/compiler-utils"
+ * @import {
+ *   Builtin,
+ *   CekContext,
+ *   CekFrame,
+ *   CekResult,
+ *   CekStack,
+ *   CekState,
+ *   CekTerm,
+ *   Cost,
+ *   CostModel,
+ *   CostTracker,
+ *   UplcLogger,
+ *   UplcValue
+ * } from "src/index.js"
  */
 
 /**
@@ -54,7 +55,7 @@ export class CekMachine {
     _logs
 
     /**
-     * @type {Option<UplcLogger>}
+     * @type {UplcLogger | undefined}
      */
     diagnostics
 
@@ -187,9 +188,9 @@ export class CekMachine {
 
     /**
      * @param {string} message
-     * @param {Option<Site>} site
+     * @param {Site | undefined} site
      */
-    print(message, site = None) {
+    print(message, site = undefined) {
         this._logs.push({ message, site: site ?? undefined })
         this.diagnostics?.logPrint(message, site)
     }

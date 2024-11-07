@@ -1,15 +1,13 @@
-import { None } from "@helios-lang/type-utils"
 import { assertConstrData, makeConstrData } from "./ConstrData.js"
 
 /**
- * @typedef {import("./UplcData.js").UplcData} UplcData
- * @typedef {import("./UplcData.js").ConstrData} ConstrData
+ * @import { ConstrData, UplcData } from "src/index.js"
  */
 
 /**
  * @param {UplcData} data
  * @param {boolean} strict
- * @returns {Option<UplcData>}
+ * @returns {UplcData | undefined}
  */
 export function unwrapUplcDataOption(data, strict = false) {
     assertConstrData(data)
@@ -33,7 +31,7 @@ export function unwrapUplcDataOption(data, strict = false) {
                 )
             }
 
-            return None
+            return undefined
         default:
             if (strict) {
                 throw new Error(
@@ -41,12 +39,12 @@ export function unwrapUplcDataOption(data, strict = false) {
                 )
             }
 
-            return None
+            return undefined
     }
 }
 
 /**
- * @param {Option<UplcData>} data
+ * @param {UplcData | undefined} data
  * @returns {ConstrData}
  */
 export function wrapUplcDataOption(data) {

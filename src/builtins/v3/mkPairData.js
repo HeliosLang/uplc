@@ -1,8 +1,8 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { mkPairData as mkPairDataV1 } from "../v1/mkPairData.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -10,6 +10,6 @@ import { mkPairData as mkPairDataV1 } from "../v1/mkPairData.js"
  */
 export const mkPairData = {
     ...mkPairDataV1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(112)),
-    memModel: (params) => new ArgSizesConstCost(params.get(113))
+    cpuModel: (params) => makeArgSizesConstCost(params.get(112)),
+    memModel: (params) => makeArgSizesConstCost(params.get(113))
 }

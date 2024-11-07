@@ -1,9 +1,9 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { makeUplcList } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -13,8 +13,8 @@ export const tailList = {
     name: "tailList",
     forceCount: 1,
     nArgs: 1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(149)),
-    memModel: (params) => new ArgSizesConstCost(params.get(150)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(149)),
+    memModel: (params) => makeArgSizesConstCost(params.get(150)),
     call: (args, _ctx) => {
         const [list] = asUplcValues(args)
 

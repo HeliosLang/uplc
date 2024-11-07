@@ -1,21 +1,36 @@
-import { BuiltinCallFrame } from "./BuiltinCallFrame.js"
-import { LambdaCallFrame } from "./LambdaCallFrame.js"
+import { makeBuiltinCallFrame } from "./BuiltinCallFrame.js"
+import { makeLambdaCallFrame } from "./LambdaCallFrame.js"
 import { mixStacks } from "./CekStack.js"
 
 /**
- * @typedef {import("@helios-lang/compiler-utils").Site} Site
- * @typedef {import("./CekContext.js").CekContext} CekContext
- * @typedef {import("./CekFrame.js").CekFrame} CekFrame
- * @typedef {import("./CekStack.js").CekStack} CekStack
- * @typedef {import("./CekState.js").CekStateChange} CekStateChange
- * @typedef {import("./CekTerm.js").CekTerm} CekTerm
- * @typedef {import("./CekValue.js").CekValue} CekValue
+ * @import { Site } from "@helios-lang/compiler-utils"
+ * @import { AssertExtends } from "@helios-lang/type-utils"
+ * @import { CekContext, CekFrame, CekStack, CekStateChange, CekTerm, CekValue } from "src/index.js"
  */
 
 /**
- * @implements {CekFrame}
+ * @typedef {object} PreCallFrame
+ * @prop {(value: CekValue, ctx: CekContext) => CekStateChange} reduce
  */
-export class PreCallFrame {
+
+/**
+ * @typedef {AssertExtends<CekFrame, PreCallFrame>} _PreCallFrameExtendsCekFrame
+ */
+
+/**
+ * @param {CekTerm} arg
+ * @param {CekStack} stack
+ * @param {Site | undefined} callSite
+ * @returns
+ */
+export function makePreCallFrame(arg, stack, callSite) {
+    return new PreCallFrameImpl(arg, stack, callSite)
+}
+
+/**
+ * @implements {PreCallFrame}
+ */
+class PreCallFrameImpl {
     /**
      * @private
      * @readonly
@@ -33,14 +48,14 @@ export class PreCallFrame {
     /**
      * @private
      * @readonly
-     * @type {Option<Site>}
+     * @type {Site | undefined}
      */
     _callSite
 
     /**
      * @param {CekTerm} arg
      * @param {CekStack} stack
-     * @param {Option<Site>} callSite
+     * @param {Site | undefined} callSite
      */
     constructor(arg, stack, callSite) {
         this._arg = arg
@@ -62,7 +77,7 @@ export class PreCallFrame {
                         stack: this._stack
                     }
                 },
-                frame: new LambdaCallFrame(
+                frame: makeLambdaCallFrame(
                     value.lambda.term,
                     mixStacks(value.lambda.stack, this._stack),
                     {
@@ -101,7 +116,7 @@ export class PreCallFrame {
                             stack: this._stack
                         }
                     },
-                    frame: new BuiltinCallFrame(
+                    frame: makeBuiltinCallFrame(
                         value.builtin.id,
                         value.builtin.name,
                         value.builtin.args,

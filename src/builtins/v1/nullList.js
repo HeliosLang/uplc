@@ -1,9 +1,9 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { makeUplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -13,8 +13,8 @@ export const nullList = {
     name: "nullList",
     forceCount: 1,
     nArgs: 1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(119)),
-    memModel: (params) => new ArgSizesConstCost(params.get(120)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(119)),
+    memModel: (params) => makeArgSizesConstCost(params.get(120)),
     call: (args, _ctx) => {
         const [list] = asUplcValues(args)
 

@@ -1,11 +1,19 @@
 /**
- * @typedef {import("./ArgSizesCost.js").ArgSizesCost} ArgSizesCost
+ * @import { ArgSizesCost } from "src/index.js"
  */
+
+/**
+ * @param {bigint} constant
+ * @returns {ArgSizesCost}
+ */
+export function makeArgSizesConstCost(constant) {
+    return new ArgSizesConstCost(constant)
+}
 
 /**
  * @implements {ArgSizesCost}
  */
-export class ArgSizesConstCost {
+class ArgSizesConstCost {
     /**
      * @readonly
      * @type {bigint}

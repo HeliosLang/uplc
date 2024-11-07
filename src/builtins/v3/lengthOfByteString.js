@@ -1,15 +1,14 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { lengthOfByteString as lengthOfByteStringV1 } from "../v1/lengthOfByteString.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
-
 /**
  * @type {Builtin}
  */
 export const lengthOfByteString = {
     ...lengthOfByteStringV1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(88)),
-    memModel: (params) => new ArgSizesConstCost(params.get(89))
+    cpuModel: (params) => makeArgSizesConstCost(params.get(88)),
+    memModel: (params) => makeArgSizesConstCost(params.get(89))
 }

@@ -1,8 +1,11 @@
-import { ArgSizesDiffCost, ArgSizesQuadXYCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesDiffCost,
+    makeArgSizesQuadXYCost
+} from "../../costmodel/index.js"
 import { quotientInteger as quotientIntegerV1 } from "../v1/quotientInteger.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -11,7 +14,7 @@ import { quotientInteger as quotientIntegerV1 } from "../v1/quotientInteger.js"
 export const quotientInteger = {
     ...quotientIntegerV1,
     cpuModel: (params) =>
-        new ArgSizesQuadXYCost(params.get(130), params.get(137), {
+        makeArgSizesQuadXYCost(params.get(130), params.get(137), {
             c00: params.get(131),
             c01: params.get(132),
             c02: params.get(133),
@@ -20,5 +23,5 @@ export const quotientInteger = {
             c20: params.get(136)
         }),
     memModel: (params) =>
-        new ArgSizesDiffCost(params.get(140), params.get(138), params.get(139))
+        makeArgSizesDiffCost(params.get(140), params.get(138), params.get(139))
 }

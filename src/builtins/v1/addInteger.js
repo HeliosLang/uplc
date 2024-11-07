@@ -1,9 +1,9 @@
-import { ArgSizesMaxCost } from "../../costmodel/index.js"
+import { makeArgSizesMaxCost } from "../../costmodel/index.js"
 import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -13,8 +13,8 @@ export const addInteger = {
     name: "addInteger",
     forceCount: 0,
     nArgs: 2,
-    cpuModel: (params) => new ArgSizesMaxCost(params.get(1), params.get(0)),
-    memModel: (params) => new ArgSizesMaxCost(params.get(3), params.get(2)),
+    cpuModel: (params) => makeArgSizesMaxCost(params.get(1), params.get(0)),
+    memModel: (params) => makeArgSizesMaxCost(params.get(3), params.get(2)),
     call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 

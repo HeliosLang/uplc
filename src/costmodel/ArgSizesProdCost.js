@@ -1,11 +1,21 @@
 /**
- * @typedef {import("./ArgSizesCost.js").ArgSizesCost} ArgSizesCost
+ * @import { ArgSizesCost } from "src/index.js"
  */
+
+/**
+ * @param {bigint} a
+ * @param {bigint} b
+ * @param {bigint} constant
+ * @returns {ArgSizesCost}
+ */
+export function makeArgSizesProdCost(a, b, constant) {
+    return new ArgSizesProdCost(a, b, constant)
+}
 
 /**
  * @implements {ArgSizesCost}
  */
-export class ArgSizesProdCost {
+class ArgSizesProdCost {
     /**
      * Slope
      * @readonly

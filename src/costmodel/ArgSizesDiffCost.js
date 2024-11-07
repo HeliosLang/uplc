@@ -1,11 +1,21 @@
 /**
- * @typedef {import("./ArgSizesCost.js").ArgSizesCost} ArgSizesCost
+ * @import { ArgSizesCost } from "src/index.js"
  */
+
+/**
+ * @param {bigint} a
+ * @param {bigint} b
+ * @param {bigint} minimum
+ * @returns {ArgSizesCost}
+ */
+export function makeArgSizesDiffCost(a, b, minimum) {
+    return new ArgSizesDiffCost(a, b, minimum)
+}
 
 /**
  * @implements {ArgSizesCost}
  */
-export class ArgSizesDiffCost {
+class ArgSizesDiffCost {
     /**
      * Slope
      * @readonly

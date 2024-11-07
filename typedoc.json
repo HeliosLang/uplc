@@ -1,0 +1,5 @@
+{
+    "entryPoints": ["./types/index.d.ts"], // Adjust path as necessary
+    "out": "docs",
+    "excludeExternals": true
+}

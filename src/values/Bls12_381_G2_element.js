@@ -4,15 +4,12 @@ import { bytesFlatSize } from "../flat/index.js"
 import { BLS12_381_G2_ELEMENT_TYPE } from "./UplcType.js"
 
 /**
- * @typedef {import("@helios-lang/crypto").Point3<[bigint, bigint]>} Point3
- * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
- * @typedef {import("./UplcValue.js").Bls12_381_G2_element} Bls12_381_G2_element
- * @typedef {import("./UplcValue.js").UplcType} UplcType
- * @typedef {import("./UplcValue.js").UplcValue} UplcValue
+ * @import { Point3 } from "@helios-lang/crypto"
+ * @import { Bls12_381_G2_element, FlatWriter, UplcType, UplcValue } from "src/index.js"
  */
 
 /**
- * @param {Point3 | {bytes: number[]}} args
+ * @param {Point3<[bigint, bigint]> | {bytes: number[]}} args
  * @returns {Bls12_381_G2_element}
  */
 export function makeBls12_381_G2_element(args) {
@@ -30,12 +27,12 @@ export function makeBls12_381_G2_element(args) {
 class Bls12_381_G2_elementImpl {
     /**
      * @readonly
-     * @type {Point3}
+     * @type {Point3<[bigint, bigint]>}
      */
     point
 
     /**
-     * @param {Point3} point
+     * @param {Point3<[bigint, bigint]>} point
      */
     constructor(point) {
         this.point = point

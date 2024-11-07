@@ -1,21 +1,15 @@
-import { None } from "@helios-lang/type-utils"
-
 /**
- * @template TExpr
- * @template TValue
- * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
- */
-
-/**
- * @typedef {import("@helios-lang/compiler-utils").Site} Site
- * @typedef {import("../cek/index.js").CekContext} CekContext
- * @typedef {import("../cek/index.js").CekStack} CekStack
- * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
- * @typedef {import("../cek/index.js").CekValue} CekValue
- * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
- * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- * @typedef {import("./UplcTerm.js").UplcVar} UplcVar
+ * @import { Site } from "@helios-lang/compiler-utils"
+ * @import {
+ *   CekContext,
+ *   CekStack,
+ *   CekStateChange,
+ *   FlatReader,
+ *   FlatWriter,
+ *   UplcTerm,
+ *   UplcValue,
+ *   UplcVar
+ * } from "src/index.js"
  */
 
 export const UPLC_VAR_TAG = 0
@@ -23,8 +17,8 @@ export const UPLC_VAR_TAG = 0
 /**
  * @param {{
  *   index: number
- *   name?: Option<string>
- *   site?: Option<Site>
+ *   name?: string
+ *   site?: Site
  * }} props
  * @returns {UplcVar}
  */
@@ -33,7 +27,7 @@ export function makeUplcVar(props) {
 }
 
 /**
- * @param {FlatReader<UplcTerm, any>} r
+ * @param {FlatReader} r
  * @returns {UplcVar}
  */
 export function decodeUplcVarFromFlat(r) {
@@ -54,23 +48,23 @@ class UplcVarImpl {
     /**
      * Only used for debugging
      * @readonly
-     * @type {Option<string>}
+     * @type {string | undefined}
      */
     name
 
     /**
      * Optional source-map site
      * Mutable so that SourceMap application is easier
-     * @type {Option<Site>}
+     * @type {Site | undefined}
      */
     site
 
     /**
      * @param {number} index
-     * @param {Option<string>} name
-     * @param {Option<Site>} site
+     * @param {string | undefined} name
+     * @param {Site | undefined} site
      */
-    constructor(index, name = None, site = None) {
+    constructor(index, name = undefined, site = undefined) {
         this.index = index
         this.name = name
         this.site = site

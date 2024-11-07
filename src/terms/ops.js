@@ -2,16 +2,7 @@ import { makeUplcCall } from "./UplcCall.js"
 import { makeUplcConst } from "./UplcConst.js"
 
 /**
- * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- * @typedef {import("./UplcTerm.js").UplcBuiltin} UplcBuiltin
- * @typedef {import("./UplcTerm.js").UplcCall} UplcCall
- * @typedef {import("./UplcTerm.js").UplcConst} UplcConst
- * @typedef {import("./UplcTerm.js").UplcDelay} UplcDelay
- * @typedef {import("./UplcTerm.js").UplcError} UplcError
- * @typedef {import("./UplcTerm.js").UplcForce} UplcForce
- * @typedef {import("./UplcTerm.js").UplcLambda} UplcLambda
- * @typedef {import("./UplcTerm.js").UplcVar} UplcVar
+ * @import { UplcBuiltin, UplcCall, UplcConst, UplcDelay, UplcError, UplcForce, UplcLambda, UplcVar, UplcTerm, UplcValue } from "src/index.js"
  */
 
 /**

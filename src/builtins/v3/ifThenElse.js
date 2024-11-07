@@ -1,8 +1,8 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { ifThenElse as ifThenElseV1 } from "../v1/ifThenElse.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -10,6 +10,6 @@ import { ifThenElse as ifThenElseV1 } from "../v1/ifThenElse.js"
  */
 export const ifThenElse = {
     ...ifThenElseV1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(84)),
-    memModel: (params) => new ArgSizesConstCost(params.get(85))
+    cpuModel: (params) => makeArgSizesConstCost(params.get(84)),
+    memModel: (params) => makeArgSizesConstCost(params.get(85))
 }

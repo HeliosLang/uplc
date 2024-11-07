@@ -5,10 +5,6 @@ import { makeUplcInt } from "../values/index.js"
 import { isEmptyCallSiteInfo, isNonEmptyCallSiteInfo } from "./CallSiteInfo.js"
 
 describe(isEmptyCallSiteInfo.name, () => {
-    it("returns true if null", () => {
-        strictEqual(isEmptyCallSiteInfo(null), true)
-    })
-
     it("returns true if undefined", () => {
         strictEqual(isEmptyCallSiteInfo(undefined), true)
     })
@@ -42,10 +38,6 @@ describe(isEmptyCallSiteInfo.name, () => {
 })
 
 describe(isNonEmptyCallSiteInfo.name, () => {
-    it("returns false if null", () => {
-        strictEqual(isNonEmptyCallSiteInfo(null), false)
-    })
-
     it("returns false if undefined", () => {
         strictEqual(isNonEmptyCallSiteInfo(undefined), false)
     })

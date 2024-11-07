@@ -1,9 +1,12 @@
-import { ArgSizesConstCost, ArgSizesMinCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesConstCost,
+    makeArgSizesMinCost
+} from "../../costmodel/index.js"
 import { makeUplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -13,8 +16,8 @@ export const equalsData = {
     name: "equalsData",
     forceCount: 0,
     nArgs: 2,
-    cpuModel: (params) => new ArgSizesMinCost(params.get(64), params.get(63)),
-    memModel: (params) => new ArgSizesConstCost(params.get(65)),
+    cpuModel: (params) => makeArgSizesMinCost(params.get(64), params.get(63)),
+    memModel: (params) => makeArgSizesConstCost(params.get(65)),
     call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 

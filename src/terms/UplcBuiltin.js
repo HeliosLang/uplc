@@ -1,30 +1,25 @@
 import { toInt } from "@helios-lang/codec-utils"
-import { expectSome, None } from "@helios-lang/type-utils"
+import { expectDefined } from "@helios-lang/type-utils"
 
 /**
- * @template TExpr
- * @template TValue
- * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
- */
-
-/**
- * @typedef {import("@helios-lang/codec-utils").IntLike} IntLike
- * @typedef {import("@helios-lang/compiler-utils").Site} Site
- * @typedef {import("../builtins/index.js").Builtin} Builtin
- * @typedef {import("../cek/index.js").CekContext} CekContext
- * @typedef {import("../cek/index.js").CekStack} CekStack
- * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
- * @typedef {import("../cek/index.js").CekValue} CekValue
- * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
- * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./UplcTerm.js").UplcBuiltin} UplcBuiltin
- * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
+ * @import { IntLike } from "@helios-lang/codec-utils"
+ * @import { Site } from "@helios-lang/compiler-utils"
+ * @import {
+ *   Builtin,
+ *   CekContext,
+ *   CekStack,
+ *   CekStateChange,
+ *   FlatReader,
+ *   FlatWriter,
+ *   UplcBuiltin,
+ *   UplcTerm
+ * } from "src/index.js"
  */
 
 export const UPLC_BUILTIN_TAG = 7
 
 /**
- * @param {{id: number, name: string, site?: Option<Site>}} args
+ * @param {{id: number, name: string, site?: Site}} args
  * @returns {UplcBuiltin}
  */
 export function makeUplcBuiltin(args) {
@@ -32,14 +27,14 @@ export function makeUplcBuiltin(args) {
 }
 
 /**
- * @param {FlatReader<UplcTerm, UplcValue>} reader
+ * @param {FlatReader} reader
  * @param {Builtin[]} builtins
  * @returns {UplcBuiltin}
  */
 export function decodeUplcBuiltinFromFlat(reader, builtins) {
     let id = reader.readBuiltinId()
 
-    return makeUplcBuiltin({ id, name: expectSome(builtins[id]).name })
+    return makeUplcBuiltin({ id, name: expectDefined(builtins[id]).name })
 }
 
 /**
@@ -65,16 +60,16 @@ class UplcBuiltinImpl {
     /**
      * Optional source-map site
      * Mutable so that SourceMap application is easier
-     * @type {Option<Site>}
+     * @type {Site | undefined}
      */
     site
 
     /**
      * @param {IntLike} id
      * @param {string} name
-     * @param {Option<Site>} site
+     * @param {Site | undefined} site
      */
-    constructor(id, name, site = None) {
+    constructor(id, name, site = undefined) {
         this.id = toInt(id)
         this.name = name
         this.site = site

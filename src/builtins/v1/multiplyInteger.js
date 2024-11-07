@@ -1,9 +1,9 @@
-import { ArgSizesSumCost } from "../../costmodel/index.js"
+import { makeArgSizesSumCost } from "../../costmodel/index.js"
 import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -13,8 +13,8 @@ export const multiplyInteger = {
     name: "multiplyInteger",
     forceCount: 0,
     nArgs: 2,
-    cpuModel: (params) => new ArgSizesSumCost(params.get(116), params.get(115)),
-    memModel: (params) => new ArgSizesSumCost(params.get(118), params.get(117)),
+    cpuModel: (params) => makeArgSizesSumCost(params.get(116), params.get(115)),
+    memModel: (params) => makeArgSizesSumCost(params.get(118), params.get(117)),
     call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 

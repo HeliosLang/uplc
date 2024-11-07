@@ -1,20 +1,19 @@
-import { None } from "@helios-lang/type-utils"
-
 /**
- * @typedef {import("@helios-lang/compiler-utils").Site} Site
- * @typedef {import("../cek/index.js").CekContext} CekContext
- * @typedef {import("../cek/index.js").CekStack} CekStack
- * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
- * @typedef {import("../cek/index.js").CekValue} CekValue
- * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
- * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- * @typedef {import("./UplcTerm.js").UplcError} UplcError
+ * @import { Site } from "@helios-lang/compiler-utils"
+ * @import {
+ *   CekContext,
+ *   CekStack,
+ *   CekStateChange,
+ *   FlatWriter,
+ *   UplcError,
+ *   UplcTerm
+ * } from "src/index.js"
  */
 
 export const UPLC_ERROR_TAG = 6
 
 /**
- * @param {{site?: Option<Site>}} props
+ * @param {{site?: Site}} props
  * @returns {UplcError}
  */
 export function makeUplcError(props = {}) {
@@ -29,14 +28,14 @@ class UplcErrorImpl {
     /**
      * Optional source-map site
      * Mutable so that SourceMap application is easier
-     * @type {Option<Site>}
+     * @type {Site | undefined}
      */
     site
 
     /**
-     * @param {Option<Site>} site
+     * @param {Site | undefined} site
      */
-    constructor(site = None) {
+    constructor(site = undefined) {
         this.site = site
     }
 

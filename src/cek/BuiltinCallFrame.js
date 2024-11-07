@@ -1,19 +1,41 @@
 import { pushStackCallSites } from "./CekStack.js"
 
 /**
- * @typedef {import("@helios-lang/compiler-utils").Site} Site
- * @typedef {import("./CallSiteInfo.js").CallSiteInfo} CallSiteInfo
- * @typedef {import("./CekContext.js").CekContext} CekContext
- * @typedef {import("./CekFrame.js").CekFrame} CekFrame
- * @typedef {import("./CekStack.js").CekStack} CekStack
- * @typedef {import("./CekState.js").CekStateChange} CekStateChange
- * @typedef {import("./CekValue.js").CekValue} CekValue
+ * @import { Site } from "@helios-lang/compiler-utils"
+ * @import { AssertExtends } from "@helios-lang/type-utils"
+ * @import { CallSiteInfo, CekContext, CekFrame, CekStack, CekStateChange, CekValue } from "src/index.js"
  */
 
 /**
- * @implements {CekFrame}
+ * @typedef {object} BuiltinCallFrame
+ * @prop {number} id
+ * @prop {string} name
+ * @prop {CekValue[]} args
+ * @prop {CekStack} stack
+ * @prop {(value: CekValue, ctx: CekContext) => CekStateChange} reduce
  */
-export class BuiltinCallFrame {
+
+/**
+ * @typedef {AssertExtends<CekFrame, BuiltinCallFrame>} _BuiltinCallFrameExtendsCekFrame
+ */
+
+/**
+ * Creates a new BuiltinCallFrame
+ * @param {number} id
+ * @param {string} name
+ * @param {CekValue[]} args
+ * @param {CekStack} stack
+ * @param {Site | undefined} callSite
+ * @returns {BuiltinCallFrame}
+ */
+export function makeBuiltinCallFrame(id, name, args, stack, callSite) {
+    return new BuiltinCallFrameImpl(id, name, args, stack, callSite)
+}
+
+/**
+ * @implements {BuiltinCallFrame}
+ */
+class BuiltinCallFrameImpl {
     /**
      * @readonly
      * @type {number}
@@ -41,7 +63,7 @@ export class BuiltinCallFrame {
     /**
      * @private
      * @readonly
-     * @type {Option<Site>}
+     * @type {Site | undefined}
      */
     _callSite
 
@@ -50,7 +72,7 @@ export class BuiltinCallFrame {
      * @param {string} name
      * @param {CekValue[]} args
      * @param {CekStack} stack
-     * @param {Option<Site>} callSite
+     * @param {Site | undefined} callSite
      */
     constructor(id, name, args, stack, callSite) {
         this.id = id

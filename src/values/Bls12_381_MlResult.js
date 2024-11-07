@@ -2,11 +2,8 @@ import { F12 } from "@helios-lang/crypto"
 import { BLS12_381_ML_RESULT_TYPE } from "./UplcType.js"
 
 /**
- * @typedef {import("@helios-lang/crypto").FieldElement12} FieldElement12
- * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
- * @typedef {import("./UplcValue.js").Bls12_381_MlResult} Bls12_381_MlResult
- * @typedef {import("./UplcValue.js").UplcType} UplcType
- * @typedef {import("./UplcValue.js").UplcValue} UplcValue
+ * @import { FieldElement12 } from "@helios-lang/crypto"
+ * @import { Bls12_381_MlResult, FlatWriter, UplcType, UplcValue } from "src/index.js"
  */
 
 /**

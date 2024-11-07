@@ -2,8 +2,7 @@ import { REAL_PRECISION } from "@helios-lang/compiler-utils"
 import { expectIntData, makeIntData } from "./IntData.js"
 
 /**
- * @typedef {import("./UplcData.js").UplcData} UplcData
- * @typedef {import("./UplcData.js").IntData} IntData
+ * @import { IntData, UplcData } from "src/index.js"
  */
 
 /**

@@ -24,35 +24,9 @@ import {
 import { traverse } from "../terms/index.js"
 
 /**
- * @typedef {import("@helios-lang/compiler-utils").Site} Site
- * @typedef {import("../terms/index.js").UplcTerm} UplcTerm
- * @typedef {import("../terms/index.js").UplcBuiltin} UplcBuiltin
- * @typedef {import("../terms/index.js").UplcCall} UplcCall
- */
-
-/**
- * @typedef {{
- *   sourceNames: string[]
- *   indices: string // cbor encoded
- *   variableNames?: string // cbor encoded
- *   termDescriptions?: string // cbor encoded
- * }} UplcSourceMapJsonSafe
- */
-
-/**
- * @typedef {{
- *   sourceNames: string[]
- *   indices: number[]
- *   variableNames?: [number, string][]
- *   termDescriptions?: [number, string][]
- * }} UplcSourceMapProps
- */
-
-/**
- * @typedef {{
- *   apply(root: UplcTerm): void
- *   toJsonSafe(): UplcSourceMapJsonSafe
- * }} UplcSourceMap
+ * @import { Site } from "@helios-lang/compiler-utils"
+ * @import { JsonSafe } from "@helios-lang/type-utils"
+ * @import { UplcBuiltin, UplcCall, UplcSourceMap, UplcSourceMapJsonSafe, UplcSourceMapProps, UplcTerm } from "src/index.js"
  */
 
 /**
@@ -127,7 +101,7 @@ function extractUplcSourceMap(root) {
     traverse(root, {
         anyTerm: (term, i) => {
             /**
-             * @type {Option<Site>}
+             * @type {Site | undefined}
              */
             const site = term.site
 

@@ -1,10 +1,10 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { makeIntData } from "../../data/index.js"
 import { makeUplcDataValue } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -14,8 +14,8 @@ export const iData = {
     name: "iData",
     forceCount: 0,
     nArgs: 1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(77)),
-    memModel: (params) => new ArgSizesConstCost(params.get(78)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(77)),
+    memModel: (params) => makeArgSizesConstCost(params.get(78)),
     call: (args, _ctx) => {
         const [a] = asUplcValues(args)
 

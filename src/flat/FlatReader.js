@@ -3,38 +3,17 @@ import { decodeFlatBytes } from "./bytes.js"
 import { decodeFlatInt } from "./int.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").BitReader} BitReader
+ * @import { BitReader } from "@helios-lang/codec-utils"
+ * @import { FlatReader, UplcTerm, UplcValue } from "src/index.js"
  */
 
 /**
- * @template T
- * @typedef {import("./ValueReader.js").ValueReader<T>} ValueReader
- */
-
-/**
- * @template TExpr
- * @template TValue
- * @typedef {{
- *   readBool(): boolean
- *   readBuiltinId(): number
- *   readBytes(): number[]
- *   readInt(): bigint
- *   readTag(): number
- *   readLinkedList(elemSize: number): number[]
- *   readValue(): TValue
- *   readExpr(): TExpr
- * }} FlatReader
- */
-
-/**
- * @template TExpr
- * @template TValue
  * @param {{
  *   bytes: number[] | Uint8Array
- *   readExpr: (r: FlatReader<any, any>) => TExpr
- *   dispatchValueReader: (r: FlatReader<any, any>, typeList: number[]) => ValueReader<TValue>
+ *   readExpr: (r: FlatReader) => UplcTerm
+ *   dispatchValueReader: (r: FlatReader, typeList: number[]) => (() => UplcValue)
  * }} args
- * @returns {FlatReader<TExpr, TValue>}
+ * @returns {FlatReader}
  */
 export function makeFlatReader(args) {
     return new FlatReaderImpl(
@@ -45,14 +24,12 @@ export function makeFlatReader(args) {
 }
 
 /**
- * @template TExpr
- * @template TValue
- * @implements {FlatReader<TExpr, TValue>}
+ * @implements {FlatReader}
  */
 class FlatReaderImpl {
     /**
      * @readonly
-     * @type {() => TExpr}
+     * @type {() => UplcTerm}
      */
     readExpr
 
@@ -66,14 +43,14 @@ class FlatReaderImpl {
     /**
      * @private
      * @readonly
-     * @type {(r: FlatReader<any, any>, typeList: number[]) => ValueReader<TValue>}
+     * @type {(r: FlatReader, typeList: number[]) => (() => UplcValue)}
      */
     _dispatchValueReader
 
     /**
      * @param {number[] | Uint8Array} bytes
-     * @param {(r: FlatReader<any, any>) => TExpr} readExpr
-     * @param {(r: FlatReader<any, any>, typeList: number[]) => ValueReader<TValue>} dispatchValueReader
+     * @param {(r: FlatReader) => UplcTerm} readExpr
+     * @param {(r: FlatReader, typeList: number[]) => (() => UplcValue)} dispatchValueReader
      */
     constructor(bytes, readExpr, dispatchValueReader) {
         this.readExpr = () => readExpr(this)
@@ -138,7 +115,7 @@ class FlatReaderImpl {
     }
 
     /**
-     * @returns {TValue}
+     * @returns {UplcValue}
      */
     readValue() {
         let typeList = this.readLinkedList(4)

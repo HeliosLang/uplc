@@ -1,8 +1,8 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { sndPair as sndPairV1 } from "../v1/sndPair.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -10,6 +10,6 @@ import { sndPair as sndPairV1 } from "../v1/sndPair.js"
  */
 export const sndPair = {
     ...sndPairV1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(165)),
-    memModel: (params) => new ArgSizesConstCost(params.get(166))
+    cpuModel: (params) => makeArgSizesConstCost(params.get(165)),
+    memModel: (params) => makeArgSizesConstCost(params.get(166))
 }

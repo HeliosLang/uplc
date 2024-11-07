@@ -1,10 +1,13 @@
 import { decodeIntBE, decodeIntLE } from "@helios-lang/codec-utils"
-import { ArgSizesQuadYCost, ArgSizesSecondCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesQuadYCost,
+    makeArgSizesSecondCost
+} from "../../costmodel/index.js"
 import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -15,13 +18,13 @@ export const byteStringToInteger = {
     forceCount: 0,
     nArgs: 2,
     cpuModel: (params) =>
-        new ArgSizesQuadYCost({
+        makeArgSizesQuadYCost({
             c0: params.get(246),
             c1: params.get(247),
             c2: params.get(248)
         }),
     memModel: (params) =>
-        new ArgSizesSecondCost(params.get(250), params.get(249)),
+        makeArgSizesSecondCost(params.get(250), params.get(249)),
     call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 

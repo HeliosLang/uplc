@@ -1,8 +1,11 @@
-import { ArgSizesConstCost, ArgSizesThirdCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesConstCost,
+    makeArgSizesThirdCost
+} from "../../costmodel/index.js"
 import { verifyEd25519Signature as verifyEd25519SignatureV1 } from "../v1/verifyEd25519Signature.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -11,6 +14,6 @@ import { verifyEd25519Signature as verifyEd25519SignatureV1 } from "../v1/verify
 export const verifyEd25519Signature = {
     ...verifyEd25519SignatureV1,
     cpuModel: (params) =>
-        new ArgSizesThirdCost(params.get(188), params.get(187)),
-    memModel: (params) => new ArgSizesConstCost(params.get(189))
+        makeArgSizesThirdCost(params.get(188), params.get(187)),
+    memModel: (params) => makeArgSizesConstCost(params.get(189))
 }

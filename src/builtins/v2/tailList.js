@@ -1,8 +1,8 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { tailList as tailListV1 } from "../v1/tailList.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -10,6 +10,6 @@ import { tailList as tailListV1 } from "../v1/tailList.js"
  */
 export const tailList = {
     ...tailListV1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(153)),
-    memModel: (params) => new ArgSizesConstCost(params.get(154))
+    cpuModel: (params) => makeArgSizesConstCost(params.get(153)),
+    memModel: (params) => makeArgSizesConstCost(params.get(154))
 }

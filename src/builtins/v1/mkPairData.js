@@ -1,9 +1,9 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { makeUplcPair } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -13,8 +13,8 @@ export const mkPairData = {
     name: "mkPairData",
     forceCount: 0,
     nArgs: 2,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(107)),
-    memModel: (params) => new ArgSizesConstCost(params.get(108)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(107)),
+    memModel: (params) => makeArgSizesConstCost(params.get(108)),
     call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 

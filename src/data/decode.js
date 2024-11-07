@@ -13,8 +13,8 @@ import { decodeMapData } from "./MapData.js"
 import { decodeListData } from "./ListData.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- * @typedef {import("./UplcData.js").UplcData} UplcData
+ * @import { BytesLike } from "@helios-lang/codec-utils"
+ * @import { UplcData } from "src/index.js"
  */
 
 /**

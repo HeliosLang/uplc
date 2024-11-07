@@ -1,37 +1,5 @@
 /**
- * @typedef {import("./ArgSizesCost.js").ArgSizesCostClass} ArgSizesCostClass
- * @typedef {import("./Cost.js").Cost} Cost
- * @typedef {import("./CostModelParamsProxy.js").CostModelParamsProxy} CostModelParamsProxy
- */
-
-/**
- * @typedef {{
- *   memSize: number
- * }} UplcValue
- */
-
-/**
- * @typedef {{
- *   name: string
- *   cpuModel: ArgSizesCostClass
- *   memModel: ArgSizesCostClass
- * }} BuiltinCostModel
- */
-
-/**
- * @typedef {{
- *   builtinTerm: Cost
- *   callTerm: Cost
- *   constTerm: Cost
- *   delayTerm: Cost
- *   forceTerm: Cost
- *   lambdaTerm: Cost
- *   startupTerm: Cost
- *   varTerm: Cost
- *   constrTerm: Cost
- *   caseTerm: Cost
- *   builtins: Record<string, (argSizes: bigint[]) => Cost>
- * }} CostModel
+ * @import { ArgSizesCostClass, BuiltinCostModel, Cost, CostModel, CostModelParamsProxy, UplcValue } from "src/index.js"
  */
 
 /**

@@ -1,9 +1,9 @@
-import { ArgSizesFirstCost } from "../../costmodel/index.js"
+import { makeArgSizesFirstCost } from "../../costmodel/index.js"
 import { makeUplcByteArray } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -14,9 +14,9 @@ export const serialiseData = {
     forceCount: 0,
     nArgs: 1,
     cpuModel: (params) =>
-        new ArgSizesFirstCost(params.get(134), params.get(133)),
+        makeArgSizesFirstCost(params.get(134), params.get(133)),
     memModel: (params) =>
-        new ArgSizesFirstCost(params.get(136), params.get(135)),
+        makeArgSizesFirstCost(params.get(136), params.get(135)),
     call: (args, _ctx) => {
         const [a] = asUplcValues(args)
 

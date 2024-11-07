@@ -3,17 +3,7 @@ import { bytesFlatSize } from "../flat/index.js"
 import { DATA_TYPE } from "./UplcType.js"
 
 /**
- * @template TExpr
- * @template TValue
- * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
- */
-
-/**
- * @typedef {import("../data/index.js").UplcData} UplcData
- * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
- * @typedef {import("./UplcValue.js").UplcDataValue} UplcDataValue
- * @typedef {import("./UplcValue.js").UplcType} UplcType
- * @typedef {import("./UplcValue.js").UplcValue} UplcValue
+ * @import { FlatReader, FlatWriter, UplcData, UplcDataValue, UplcType, UplcValue } from "src/index.js"
  */
 
 /**
@@ -25,7 +15,7 @@ export function makeUplcDataValue(args) {
 }
 
 /**
- * @param {FlatReader<any, UplcValue>} r
+ * @param {FlatReader} r
  * @returns {UplcDataValue}
  */
 export function decodeUplcDataValueFromFlat(r) {

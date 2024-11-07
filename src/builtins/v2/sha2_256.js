@@ -1,8 +1,11 @@
-import { ArgSizesConstCost, ArgSizesFirstCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesConstCost,
+    makeArgSizesFirstCost
+} from "../../costmodel/index.js"
 import { sha2_256 as sha2_256V1 } from "../v1/sha2_256.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -11,6 +14,6 @@ import { sha2_256 as sha2_256V1 } from "../v1/sha2_256.js"
 export const sha2_256 = {
     ...sha2_256V1,
     cpuModel: (params) =>
-        new ArgSizesFirstCost(params.get(138), params.get(137)),
-    memModel: (params) => new ArgSizesConstCost(params.get(139))
+        makeArgSizesFirstCost(params.get(138), params.get(137)),
+    memModel: (params) => makeArgSizesConstCost(params.get(139))
 }

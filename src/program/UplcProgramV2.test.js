@@ -9,7 +9,7 @@ import {
 } from "./UplcProgramV2.js"
 
 /**
- * @typedef {import("../values/index.js").UplcValue} UplcValue
+ * @import { UplcValue } from "src/index.js"
  */
 
 const dummyArg = makeUplcInt(0)

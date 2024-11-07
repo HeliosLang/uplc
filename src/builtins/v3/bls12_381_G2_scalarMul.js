@@ -1,10 +1,13 @@
 import { G2 } from "@helios-lang/crypto"
-import { ArgSizesConstCost, ArgSizesFirstCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesConstCost,
+    makeArgSizesFirstCost
+} from "../../costmodel/index.js"
 import { makeBls12_381_G2_element } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -15,8 +18,8 @@ export const bls12_381_G2_scalarMul = {
     forceCount: 0,
     nArgs: 2,
     cpuModel: (params) =>
-        new ArgSizesFirstCost(params.get(225), params.get(224)),
-    memModel: (params) => new ArgSizesConstCost(params.get(226)),
+        makeArgSizesFirstCost(params.get(225), params.get(224)),
+    memModel: (params) => makeArgSizesConstCost(params.get(226)),
     call: (args, _ctx) => {
         const [n, a] = asUplcValues(args)
 

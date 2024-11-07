@@ -1,8 +1,11 @@
-import { ArgSizesConstCost, ArgSizesDiagCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesConstCost,
+    makeArgSizesDiagCost
+} from "../../costmodel/index.js"
 import { equalsByteString as equalsByteStringV1 } from "../v1/equalsByteString.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -11,6 +14,6 @@ import { equalsByteString as equalsByteStringV1 } from "../v1/equalsByteString.j
 export const equalsByteString = {
     ...equalsByteStringV1,
     cpuModel: (params) =>
-        new ArgSizesDiagCost(params.get(66), params.get(65), params.get(64)),
-    memModel: (params) => new ArgSizesConstCost(params.get(67))
+        makeArgSizesDiagCost(params.get(66), params.get(65), params.get(64)),
+    memModel: (params) => makeArgSizesConstCost(params.get(67))
 }

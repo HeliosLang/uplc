@@ -1,11 +1,12 @@
-import { ArgSizesProdCost, ArgSizesDiffCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesProdCost,
+    makeArgSizesDiffCost
+} from "../../costmodel/index.js"
 import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../../cek/CekValue.js").CekValue} CekValue
- * @typedef {import("../Builtin.js").Builtin} Builtin
- * @typedef {import("../BuiltinContext.js").BuiltinContext} BuiltinContext
+ * @import { Builtin, BuiltinContext, CekValue } from "src/index.js"
  */
 
 /**
@@ -16,9 +17,9 @@ export const modInteger = {
     forceCount: 0,
     nArgs: 2,
     cpuModel: (params) =>
-        new ArgSizesProdCost(params.get(111), params.get(110), params.get(109)),
+        makeArgSizesProdCost(params.get(111), params.get(110), params.get(109)),
     memModel: (params) =>
-        new ArgSizesDiffCost(params.get(114), params.get(112), params.get(113)),
+        makeArgSizesDiffCost(params.get(114), params.get(112), params.get(113)),
     call: evalModInteger
 }
 

@@ -3,19 +3,11 @@ import { dispatchValueReader } from "../values/index.js"
 import { decodeTerm } from "./decode.js"
 
 /**
- * @template TExpr
- * @template TValue
- * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
+ * @import { Builtin, FlatReader, UplcTerm, UplcValue } from "src/index.js"
  */
 
 /**
- * @typedef {import("../builtins/Builtin.js").Builtin} Builtin
- * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- */
-
-/**
- * @typedef {FlatReader<UplcTerm, UplcValue> & {
+ * @typedef {FlatReader & {
  *   builtins: Builtin[]
  * }} UplcReader
  */
@@ -45,7 +37,7 @@ class UplcReaderImpl {
     /**
      * @private
      * @readonly
-     * @type {FlatReader<UplcTerm, UplcValue>}
+     * @type {FlatReader}
      */
     _reader
 

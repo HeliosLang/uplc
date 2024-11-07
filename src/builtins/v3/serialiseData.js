@@ -1,8 +1,8 @@
-import { ArgSizesFirstCost } from "../../costmodel/index.js"
+import { makeArgSizesFirstCost } from "../../costmodel/index.js"
 import { serialiseData as serialiseDataV2 } from "../v2/serialiseData.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -11,7 +11,7 @@ import { serialiseData as serialiseDataV2 } from "../v2/serialiseData.js"
 export const serialiseData = {
     ...serialiseDataV2,
     cpuModel: (params) =>
-        new ArgSizesFirstCost(params.get(152), params.get(151)),
+        makeArgSizesFirstCost(params.get(152), params.get(151)),
     memModel: (params) =>
-        new ArgSizesFirstCost(params.get(154), params.get(153))
+        makeArgSizesFirstCost(params.get(154), params.get(153))
 }

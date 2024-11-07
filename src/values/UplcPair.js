@@ -1,10 +1,7 @@
 import { makePairType } from "./UplcType.js"
 
 /**
- * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
- * @typedef {import("./UplcValue.js").UplcPair} UplcPair
- * @typedef {import("./UplcValue.js").UplcType} UplcType
- * @typedef {import("./UplcValue.js").UplcValue} UplcValue
+ * @import { FlatWriter, UplcPair, UplcType, UplcValue } from "src/index.js"
  */
 
 /**

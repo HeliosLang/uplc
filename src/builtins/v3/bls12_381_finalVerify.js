@@ -1,10 +1,10 @@
 import { finalVerify } from "@helios-lang/crypto"
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { makeUplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -14,8 +14,8 @@ export const bls12_381_finalVerify = {
     name: "bls12_381_finalVerify",
     forceCount: 0,
     nArgs: 2,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(229)),
-    memModel: (params) => new ArgSizesConstCost(params.get(230)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(229)),
+    memModel: (params) => makeArgSizesConstCost(params.get(230)),
     call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 

@@ -2,10 +2,8 @@ import { decodeInt, encodeInt } from "@helios-lang/cbor"
 import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- * @typedef {import("@helios-lang/codec-utils").IntLike} IntLike
- * @typedef {import("./UplcData.js").IntData} IntData
- * @typedef {import("./UplcData.js").UplcData} UplcData
+ * @import { BytesLike, IntLike } from "@helios-lang/codec-utils"
+ * @import { IntData, UplcData } from "src/index.js"
  */
 
 /**

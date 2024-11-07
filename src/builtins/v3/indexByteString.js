@@ -1,8 +1,8 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { indexByteString as indexByteStringV1 } from "../v1/indexByteString.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -10,6 +10,6 @@ import { indexByteString as indexByteStringV1 } from "../v1/indexByteString.js"
  */
 export const indexByteString = {
     ...indexByteStringV1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(86)),
-    memModel: (params) => new ArgSizesConstCost(params.get(87))
+    cpuModel: (params) => makeArgSizesConstCost(params.get(86)),
+    memModel: (params) => makeArgSizesConstCost(params.get(87))
 }

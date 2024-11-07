@@ -1,7 +1,7 @@
 import { strictEqual, match, deepEqual } from "node:assert"
 import { describe, it } from "node:test"
 import { makeTokenSite } from "@helios-lang/compiler-utils"
-import { expectSome } from "@helios-lang/type-utils"
+import { expectDefined } from "@helios-lang/type-utils"
 import {
     makeUplcBuiltin,
     makeUplcCall,
@@ -15,7 +15,7 @@ import { makeUplcString } from "../values/index.js"
 import { UplcRuntimeError } from "./UplcRuntimeError.js"
 
 /**
- * @typedef {import("./CallSiteInfo.js").CallSiteInfo} CallSiteInfo
+ * @import { CallSiteInfo } from "src/index.js"
  */
 
 describe(UplcRuntimeError.name, () => {
@@ -157,7 +157,7 @@ describe(UplcRuntimeError.name, () => {
         throw new UplcRuntimeError("my error", callSites)
     } catch (err) {
         if (err instanceof UplcRuntimeError) {
-            const stack = expectSome(err.stack)
+            const stack = expectDefined(err.stack)
 
             // in Node the error message is part of the stack itself, so we ignore it for the sake of the test (checking the err.message field directly instead)
             it("message property correctly set", () => {

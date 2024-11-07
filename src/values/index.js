@@ -26,19 +26,3 @@ export {
 export { UNIT_VALUE } from "./UplcUnit.js"
 
 export { dispatchValueReader } from "./reader.js"
-
-/**
- * @typedef {import("./UplcValue.js").UplcType} UplcType
- * @typedef {import("./UplcValue.js").UplcValue} UplcValue
- * @typedef {import("./UplcValue.js").Bls12_381_G1_element} Bls12_381_G1_element
- * @typedef {import("./UplcValue.js").Bls12_381_G2_element} Bls12_381_G2_element
- * @typedef {import("./UplcValue.js").Bls12_381_MlResult} Bls12_381_MlResult
- * @typedef {import("./UplcValue.js").UplcBool} UplcBool
- * @typedef {import("./UplcValue.js").UplcByteArray} UplcByteArray
- * @typedef {import("./UplcValue.js").UplcDataValue} UplcDataValue
- * @typedef {import("./UplcValue.js").UplcInt} UplcInt
- * @typedef {import("./UplcValue.js").UplcList} UplcList
- * @typedef {import("./UplcValue.js").UplcPair} UplcPair
- * @typedef {import("./UplcValue.js").UplcString} UplcString
- * @typedef {import("./UplcValue.js").UplcUnit} UplcUnit
- */

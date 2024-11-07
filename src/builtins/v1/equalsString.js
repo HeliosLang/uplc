@@ -1,9 +1,12 @@
-import { ArgSizesConstCost, ArgSizesDiagCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesConstCost,
+    makeArgSizesDiagCost
+} from "../../costmodel/index.js"
 import { makeUplcBool } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -14,8 +17,8 @@ export const equalsString = {
     forceCount: 0,
     nArgs: 2,
     cpuModel: (params) =>
-        new ArgSizesDiagCost(params.get(71), params.get(70), params.get(69)),
-    memModel: (params) => new ArgSizesConstCost(params.get(72)),
+        makeArgSizesDiagCost(params.get(71), params.get(70), params.get(69)),
+    memModel: (params) => makeArgSizesConstCost(params.get(72)),
     call: (args, _ctx) => {
         const [a, b] = asUplcValues(args)
 

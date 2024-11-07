@@ -1,14 +1,10 @@
 import { decodeConstr, encodeConstr } from "@helios-lang/cbor"
 import { toInt } from "@helios-lang/codec-utils"
-import { isSome, None } from "@helios-lang/type-utils"
 import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- * @typedef {import("@helios-lang/codec-utils").ByteStream} ByteStream
- * @typedef {import("@helios-lang/codec-utils").IntLike} IntLike
- * @typedef {import("./UplcData.js").ConstrData} ConstrData
- * @typedef {import("./UplcData.js").UplcData} UplcData
+ * @import { BytesLike, ByteStream, IntLike } from "@helios-lang/codec-utils"
+ * @import { ConstrData, UplcData } from "src/index.js"
  */
 
 /**
@@ -21,19 +17,19 @@ export function makeConstrData(args) {
 
 /**
  * @param {UplcData} data
- * @param {Option<number>} tag
- * @param {Option<number>} nFields
+ * @param {number | undefined} tag
+ * @param {number | undefined} nFields
  * @returns {asserts data is ConstrData}
  */
-export function assertConstrData(data, tag = None, nFields = None) {
+export function assertConstrData(data, tag = undefined, nFields = undefined) {
     if (data.kind == "constr") {
-        if (isSome(tag) && data.tag != tag) {
+        if (tag !== undefined && data.tag != tag) {
             throw new Error(
                 `expected ConstrData with tag ${tag}, got tag ${data.tag}`
             )
         }
 
-        if (isSome(nFields) && data.length != nFields) {
+        if (nFields !== undefined && data.length != nFields) {
             throw new Error(
                 `expected ConstrData with ${nFields} fields, got ${data.length} fields`
             )
@@ -51,6 +47,22 @@ export function assertConstrData(data, tag = None, nFields = None) {
 export function decodeConstrData(bytes, itemDecoder) {
     const [tag, fields] = decodeConstr(bytes, itemDecoder)
     return makeConstrData({ tag, fields })
+}
+
+/**
+ * @param {UplcData} data
+ * @param {number | undefined} expectedTag
+ * @param {number | undefined} expectedFields
+ * @returns {ConstrData}
+ */
+export function expectConstrData(
+    data,
+    expectedTag = undefined,
+    expectedFields = undefined
+) {
+    assertConstrData(data, expectedTag, expectedFields)
+
+    return data
 }
 
 /**

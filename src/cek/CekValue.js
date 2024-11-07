@@ -1,36 +1,5 @@
-export {}
-
 /**
- * @typedef {import("../builtins/index.js").Builtin} Builtin
- * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./CekStack.js").CekStack} CekStack - circular import, but is allowed in JSDocs
- * @typedef {import("./CekTerm.js").CekTerm} CekTerm - circular import, but is allowed in JSDocs
- */
-
-/**
- * Generalized UplcValue
- * The optional name is used for debugging
- * @typedef {{name?: string} & ({
- *   value: UplcValue
- * } | {
- *   delay: {
- *     term: CekTerm
- *     stack: CekStack
- *   }
- * } | {
- *   lambda: {
- *     term: CekTerm
- *     argName?: string
- *     stack: CekStack
- *   }
- * } | {
- *   builtin: {
- *     id: number
- *     name: string
- *     forceCount: number
- *     args: CekValue[]
- *   }
- * })} CekValue
+ * @import { Builtin, CekStack, CekTerm, CekValue, UplcValue } from "src/index.js"
  */
 
 /**

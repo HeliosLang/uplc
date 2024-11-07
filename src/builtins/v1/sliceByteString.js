@@ -1,10 +1,10 @@
-import { ArgSizesThirdCost } from "../../costmodel/index.js"
+import { makeArgSizesThirdCost } from "../../costmodel/index.js"
 import { makeUplcByteArray } from "../../values/index.js"
 import { asCekValue } from "../cast.js"
 import { asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -15,9 +15,9 @@ export const sliceByteString = {
     forceCount: 0,
     nArgs: 3,
     cpuModel: (params) =>
-        new ArgSizesThirdCost(params.get(140), params.get(139)),
+        makeArgSizesThirdCost(params.get(140), params.get(139)),
     memModel: (params) =>
-        new ArgSizesThirdCost(params.get(142), params.get(141)),
+        makeArgSizesThirdCost(params.get(142), params.get(141)),
     call: (args, _ctx) => {
         const [a, b, c] = asUplcValues(args)
 

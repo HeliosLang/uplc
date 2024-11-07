@@ -1,9 +1,9 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { makeBls12_381_G1_element } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -13,8 +13,8 @@ export const bls12_381_G1_uncompress = {
     name: "bls12_381_G1_uncompress",
     forceCount: 0,
     nArgs: 1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(211)),
-    memModel: (params) => new ArgSizesConstCost(params.get(212)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(211)),
+    memModel: (params) => makeArgSizesConstCost(params.get(212)),
     call: (args, _ctx) => {
         const [a] = asUplcValues(args)
 

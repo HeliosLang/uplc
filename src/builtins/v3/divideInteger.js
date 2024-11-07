@@ -1,8 +1,11 @@
-import { ArgSizesDiffCost, ArgSizesQuadXYCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesDiffCost,
+    makeArgSizesQuadXYCost
+} from "../../costmodel/index.js"
 import { divideInteger as divideIntegerV1 } from "../v1/divideInteger.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -11,7 +14,7 @@ import { divideInteger as divideIntegerV1 } from "../v1/divideInteger.js"
 export const divideInteger = {
     ...divideIntegerV1,
     cpuModel: (params) =>
-        new ArgSizesQuadXYCost(params.get(49), params.get(56), {
+        makeArgSizesQuadXYCost(params.get(49), params.get(56), {
             c00: params.get(50),
             c01: params.get(51),
             c02: params.get(52),
@@ -20,5 +23,5 @@ export const divideInteger = {
             c20: params.get(55)
         }),
     memModel: (params) =>
-        new ArgSizesDiffCost(params.get(59), params.get(57), params.get(58))
+        makeArgSizesDiffCost(params.get(59), params.get(57), params.get(58))
 }

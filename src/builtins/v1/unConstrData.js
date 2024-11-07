@@ -1,4 +1,4 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import {
     DATA_TYPE,
     makeUplcDataValue,
@@ -9,7 +9,7 @@ import {
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -19,8 +19,8 @@ export const unConstrData = {
     name: "unConstrData",
     forceCount: 0,
     nArgs: 1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(155)),
-    memModel: (params) => new ArgSizesConstCost(params.get(156)),
+    cpuModel: (params) => makeArgSizesConstCost(params.get(155)),
+    memModel: (params) => makeArgSizesConstCost(params.get(156)),
     call: (args, _ctx) => {
         const [dataValue] = asUplcValues(args)
 

@@ -51,7 +51,7 @@ import { unMapData } from "./unMapData.js"
 import { verifyEd25519Signature } from "./verifyEd25519Signature.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**

@@ -1,8 +1,8 @@
-import { ArgSizesMaxCost } from "../../costmodel/index.js"
+import { makeArgSizesMaxCost } from "../../costmodel/index.js"
 import { subtractInteger as subtractIntegerV1 } from "../v1/subtractInteger.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -10,6 +10,6 @@ import { subtractInteger as subtractIntegerV1 } from "../v1/subtractInteger.js"
  */
 export const subtractInteger = {
     ...subtractIntegerV1,
-    cpuModel: (params) => new ArgSizesMaxCost(params.get(150), params.get(149)),
-    memModel: (params) => new ArgSizesMaxCost(params.get(152), params.get(151))
+    cpuModel: (params) => makeArgSizesMaxCost(params.get(150), params.get(149)),
+    memModel: (params) => makeArgSizesMaxCost(params.get(152), params.get(151))
 }

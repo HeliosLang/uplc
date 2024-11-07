@@ -26,6 +26,7 @@
         "eslint": "^9.12.0",
         "eslint-plugin-jsdoc": "^50.3.1",
         "prettier": "^3.3.3",
+        "typedoc": "^0.26.9",
         "typescript": "^5.6.2"
     },
     "dependencies": {
@@ -34,7 +35,7 @@
         "@helios-lang/compiler-utils": "^0.3.2",
         "@helios-lang/crypto": "^0.2.0",
         "@helios-lang/era": "^0.1.4",
-        "@helios-lang/type-utils": "^0.1.25"
+        "@helios-lang/type-utils": "^0.2.8"
     },
     "prettier": {
         "trailingComma": "none",

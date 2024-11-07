@@ -1,8 +1,8 @@
-import { ArgSizesConstCost } from "../../costmodel/index.js"
+import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { unMapData as unMapDataV1 } from "../v1/unMapData.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -10,6 +10,6 @@ import { unMapData as unMapDataV1 } from "../v1/unMapData.js"
  */
 export const unMapData = {
     ...unMapDataV1,
-    cpuModel: (params) => new ArgSizesConstCost(params.get(183)),
-    memModel: (params) => new ArgSizesConstCost(params.get(184))
+    cpuModel: (params) => makeArgSizesConstCost(params.get(183)),
+    memModel: (params) => makeArgSizesConstCost(params.get(184))
 }

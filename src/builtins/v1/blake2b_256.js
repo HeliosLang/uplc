@@ -1,10 +1,13 @@
 import { blake2b as hash } from "@helios-lang/crypto"
-import { ArgSizesConstCost, ArgSizesFirstCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesConstCost,
+    makeArgSizesFirstCost
+} from "../../costmodel/index.js"
 import { makeUplcByteArray } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../Builtin.js").Builtin} Builtin
+ * @import { Builtin } from "src/index.js"
  */
 
 /**
@@ -14,8 +17,8 @@ export const blake2b_256 = {
     name: "blake2b_256",
     forceCount: 0,
     nArgs: 1,
-    cpuModel: (params) => new ArgSizesFirstCost(params.get(15), params.get(14)),
-    memModel: (params) => new ArgSizesConstCost(params.get(16)),
+    cpuModel: (params) => makeArgSizesFirstCost(params.get(15), params.get(14)),
+    memModel: (params) => makeArgSizesConstCost(params.get(16)),
     call: (args, _ctx) => {
         const [a] = asUplcValues(args)
 

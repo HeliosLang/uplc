@@ -1,29 +1,45 @@
 import { getLastSelfValue, pushStackValueAndCallSite } from "./CekStack.js"
 
 /**
- * @typedef {import("@helios-lang/compiler-utils").Site} Site
- * @typedef {import("./CallSiteInfo.js").CallSiteInfo} CallSiteInfo
- * @typedef {import("./CekContext.js").CekContext} CekContext
- * @typedef {import("./CekFrame.js").CekFrame} CekFrame
- * @typedef {import("./CekStack.js").CekStack} CekStack
- * @typedef {import("./CekState.js").CekStateChange} CekStateChange
- * @typedef {import("./CekTerm.js").CekTerm} CekTerm
- * @typedef {import("./CekValue.js").CekValue} CekValue
+ * @import { Site } from "@helios-lang/compiler-utils"
+ * @import { AssertExtends } from "@helios-lang/type-utils"
+ * @import { CallSiteInfo, CekContext, CekFrame, CekStack, CekStateChange, CekTerm, CekValue } from "src/index.js"
  */
 
 /**
  * Information which is helpful when debugging
  * @typedef {{
- *   callSite?: Option<Site>
- *   name?: Option<string>
- *   argName?: Option<string>
+ *   callSite?: Site
+ *   name?: string
+ *   argName?: string
  * }} LambdaCallFrameInfo
  */
 
 /**
- * @implements {CekFrame}
+ * @typedef {object} LambdaCallFrame
+ * @prop {CekTerm} term
+ * @prop {CekStack} stack
+ * @prop {(value: CekValue) => CekStateChange} reduce
  */
-export class LambdaCallFrame {
+
+/**
+ * @typedef {AssertExtends<CekFrame, LambdaCallFrame>} _LambdaCallFrameExtendsCekFrame
+ */
+
+/**
+ * @param {CekTerm} term
+ * @param {CekStack} stack
+ * @param {LambdaCallFrameInfo} info
+ * @returns {LambdaCallFrame}
+ */
+export function makeLambdaCallFrame(term, stack, info = {}) {
+    return new LambdaCallFrameImpl(term, stack, info)
+}
+
+/**
+ * @implements {LambdaCallFrame}
+ */
+class LambdaCallFrameImpl {
     /**
      * @readonly
      * @type {CekTerm}
@@ -68,7 +84,7 @@ export class LambdaCallFrame {
 
         /**
          * TODO: cleaner way of getting `self` and other variables that are in the stacks of callbacks
-         * @type {Option<CekValue>}
+         * @type {CekValue | undefined}
          */
         const lastSelfValue = getLastSelfValue(this.stack)
 

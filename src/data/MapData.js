@@ -2,10 +2,8 @@ import { decodeMap, encodeMap } from "@helios-lang/cbor"
 import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- * @typedef {import("@helios-lang/codec-utils").ByteStream} ByteStream
- * @typedef {import("./UplcData.js").MapData} MapData
- * @typedef {import("./UplcData.js").UplcData} UplcData
+ * @import { BytesLike, ByteStream } from "@helios-lang/codec-utils"
+ * @import { MapData, UplcData } from "src/index.js"
  */
 
 /**

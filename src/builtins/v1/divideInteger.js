@@ -1,11 +1,12 @@
-import { ArgSizesProdCost, ArgSizesDiffCost } from "../../costmodel/index.js"
+import {
+    makeArgSizesProdCost,
+    makeArgSizesDiffCost
+} from "../../costmodel/index.js"
 import { makeUplcInt } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @typedef {import("../../cek/CekValue.js").CekValue} CekValue
- * @typedef {import("../Builtin.js").Builtin} Builtin
- * @typedef {import("../BuiltinContext.js").BuiltinContext} BuiltinContext
+ * @import { Builtin, BuiltinContext, CekValue } from "src/index.js"
  */
 
 /**
@@ -16,9 +17,9 @@ export const divideInteger = {
     forceCount: 0,
     nArgs: 2,
     cpuModel: (params) =>
-        new ArgSizesProdCost(params.get(51), params.get(50), params.get(49)),
+        makeArgSizesProdCost(params.get(51), params.get(50), params.get(49)),
     memModel: (params) =>
-        new ArgSizesDiffCost(params.get(54), params.get(52), params.get(53)),
+        makeArgSizesDiffCost(params.get(54), params.get(52), params.get(53)),
     call: evalDivideInteger
 }
 

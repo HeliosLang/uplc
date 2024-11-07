@@ -3,9 +3,8 @@ import { decodeBytes, encodeBytes } from "@helios-lang/cbor"
 import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
- * @typedef {import("@helios-lang/codec-utils").BytesLike} BytesLike
- * @typedef {import("./UplcData.js").ByteArrayData} ByteArrayData
- * @typedef {import("./UplcData.js").UplcData} UplcData
+ * @import { BytesLike } from "@helios-lang/codec-utils"
+ * @import { ByteArrayData, UplcData } from "src/index.js"
  */
 
 /**

@@ -15,6 +15,16 @@ export {
     DEFAULT_COST_MODEL_PARAMS_V3
 } from "./costmodel/index.js"
 export {
+    assertByteArrayData,
+    assertConstrData,
+    assertIntData,
+    assertListData,
+    assertMapData,
+    expectByteArrayData,
+    expectConstrData,
+    expectIntData,
+    expectListData,
+    expectMapData,
     makeByteArrayData,
     makeConstrData,
     makeIntData,
@@ -31,12 +41,12 @@ export {
 export { makeFlatReader, makeFlatWriter } from "./flat/index.js"
 export { makeBasicUplcLogger } from "./logging/index.js"
 export {
-    decodeUplcProgramV1FromCbor as decodeUplcProgramV1FromCbor,
-    decodeUplcProgramV1FromFlat as decodeUplcProgramV1FromFlat,
-    decodeUplcProgramV2FromCbor as decodeUplcProgramV2FromCbor,
-    decodeUplcProgramV2FromFlat as decodeUplcProgramV2FromFlat,
-    decodeUplcProgramV3FromCbor as decodeUplcProgramV3FromCbor,
-    decodeUplcProgramV3FromFlat as decodeUplcProgramV3FromFlat,
+    decodeUplcProgramV1FromCbor,
+    decodeUplcProgramV1FromFlat,
+    decodeUplcProgramV2FromCbor,
+    decodeUplcProgramV2FromFlat,
+    decodeUplcProgramV3FromCbor,
+    decodeUplcProgramV3FromFlat,
     deserializeUplcSourceMap,
     makeUplcProgramV1,
     makeUplcProgramV2,
@@ -82,52 +92,598 @@ export {
 } from "./values/index.js"
 
 /**
- * @template TExpr
- * @template TValue
- * @typedef {import("./flat/index.js").FlatReader<TExpr, TValue>} FlatReader
+ * @import { Site } from "@helios-lang/compiler-utils"
+ * @import { FieldElement12, Point3 } from "@helios-lang/crypto"
+ * @import { Either } from "@helios-lang/type-utils"
  */
 
 /**
- * @typedef {import("./builtins/index.js").Builtin} Builtin
- * @typedef {import("./cek/index.js").CallSiteInfo} CallSiteInfo
- * @typedef {import("./cek/index.js").CekResult} CekResult
- * @typedef {import("./costmodel/index.js").Cost} Cost
- * @typedef {import("./costmodel/index.js").CostBreakdown} CostBreakdown
- * @typedef {import("./data/index.js").UplcData} UplcData
- * @typedef {import("./data/index.js").ByteArrayData} ByteArrayData
- * @typedef {import("./data/index.js").ConstrData} ConstrData
- * @typedef {import("./data/index.js").IntData} IntData
- * @typedef {import("./data/index.js").ListData} ListData
- * @typedef {import("./data/index.js").MapData} MapData
- * @typedef {import("./flat/index.js").FlatWriter} FlatWriter
- * @typedef {import("./logging/index.js").UplcLogger} UplcLogger
- * @typedef {import("./program/index.js").PlutusVersion} PlutusVersion
- * @typedef {import("./program/index.js").UplcProgram} UplcProgram
- * @typedef {import("./program/index.js").UplcProgramV1} UplcProgramV1
- * @typedef {import("./program/index.js").UplcProgramV2} UplcProgramV2
- * @typedef {import("./program/index.js").UplcProgramV3} UplcProgramV3
- * @typedef {import("./program/index.js").UplcSourceMap} UplcSourceMap
- * @typedef {import("./program/index.js").UplcSourceMapJsonSafe} UplcSourceMapJsonSafe
- * @typedef {import("./terms/index.js").UplcTerm} UplcTerm
- * @typedef {import("./terms/index.js").UplcBuiltin} UplcBuiltin
- * @typedef {import("./terms/index.js").UplcCall} UplcCall
- * @typedef {import("./terms/index.js").UplcConst} UplcConst
- * @typedef {import("./terms/index.js").UplcDelay} UplcDelay
- * @typedef {import("./terms/index.js").UplcError} UplcError
- * @typedef {import("./terms/index.js").UplcForce} UplcForce
- * @typedef {import("./terms/index.js").UplcLambda} UplcLambda
- * @typedef {import("./terms/index.js").UplcVar} UplcVar
- * @typedef {import("./values/index.js").UplcType} UplcType
- * @typedef {import("./values/index.js").UplcValue} UplcValue
- * @typedef {import("./values/index.js").Bls12_381_G1_element} Bls12_381_G1_element
- * @typedef {import("./values/index.js").Bls12_381_G2_element} Bls12_381_G2_element
- * @typedef {import("./values/index.js").Bls12_381_MlResult} Bls12_381_MlResult
- * @typedef {import("./values/index.js").UplcBool} UplcBool
- * @typedef {import("./values/index.js").UplcByteArray} UplcByteArray
- * @typedef {import("./values/index.js").UplcDataValue} UplcDataValue
- * @typedef {import("./values/index.js").UplcInt} UplcInt
- * @typedef {import("./values/index.js").UplcList} UplcList
- * @typedef {import("./values/index.js").UplcPair} UplcPair
- * @typedef {import("./values/index.js").UplcString} UplcString
- * @typedef {import("./values/index.js").UplcUnit} UplcUnit
+ * @typedef {{
+ *   calcCost: (argSizes: bigint[]) => bigint
+ * }} ArgSizesCost
+ */
+
+/**
+ * @typedef {(params: CostModelParamsProxy) => ArgSizesCost} ArgSizesCostClass
+ */
+
+/**
+ * @typedef {(args: CekValue[], ctx: BuiltinContext) => CekValue} BuiltinCallback
+ */
+
+/**
+ * @typedef {BuiltinCostModel & {
+ *   forceCount: number
+ *   nArgs: number
+ *   call: BuiltinCallback
+ * }} Builtin
+ */
+
+/**
+ * @typedef {{
+ *   print: (message: string) => void
+ * }} BuiltinContext
+ */
+
+/**
+ * @typedef {{
+ *   name: string
+ *   cpuModel: ArgSizesCostClass
+ *   memModel: ArgSizesCostClass
+ * }} BuiltinCostModel
+ */
+
+/**
+ * So we can later add things like env function name, function values
+ * @typedef {{
+ *   site?: Site
+ *   functionName?: string
+ *   arguments?: CekValue[]
+ * }} CallSiteInfo
+ */
+
+/**
+ * @typedef {BuiltinContext & {
+ *   cost: CostTracker
+ *   getBuiltin: (id: number) => (undefined | Builtin)
+ *   popLastMessage: () => string | undefined
+ *   print: (message: string, site?: Site | undefined) => void
+ * }} CekContext
+ */
+
+/**
+ * @typedef {{
+ *   reduce: (value: CekValue, ctx: CekContext) => CekStateChange
+ * }} CekFrame
+ */
+
+/**
+ * Return value is optional and can be omitted if the UplcValue doesn't suffice to contain it (eg. lambda functions)
+ * @typedef {{
+ *   result: Either<
+ *     {
+ *       error: string
+ *       callSites: CallSiteInfo[]
+ *     },
+ *     string | UplcValue
+ *   >
+ *   cost: Cost
+ *   logs: {message: string, site?: Site}[]
+ *   breakdown: CostBreakdown
+ * }} CekResult
+ */
+
+/**
+ * @typedef {{
+ *   values: CekValue[]
+ *   callSites: CallSiteInfo[]
+ * }} CekStack
+ */
+
+/**
+ * @typedef {{
+ *   computing: {
+ *     term: CekTerm
+ *     stack: CekStack
+ *   }
+ * } | {
+ *   reducing: CekValue
+ * } | {
+ *   error: {
+ *     message: string
+ *     stack: CekStack
+ *   }
+ * }} CekState
+ */
+
+/**
+ * @typedef {{
+ *   state: CekState
+ *   frame?: CekFrame
+ * }} CekStateChange
+ */
+
+/**
+ * @typedef {{
+ *   site: Site | undefined
+ *   compute(stack: CekStack, ctx: CekContext): CekStateChange
+ *   toString(): string
+ * }} CekTerm
+ */
+
+/**
+ * Generalized UplcValue
+ * The optional name is used for debugging
+ * @typedef {{name?: string} & ({
+ *   value: UplcValue
+ * } | {
+ *   delay: {
+ *     term: CekTerm
+ *     stack: CekStack
+ *   }
+ * } | {
+ *   lambda: {
+ *     term: CekTerm
+ *     argName?: string
+ *     stack: CekStack
+ *   }
+ * } | {
+ *   builtin: {
+ *     id: number
+ *     name: string
+ *     forceCount: number
+ *     args: CekValue[]
+ *   }
+ * })} CekValue
+ */
+
+/**
+ * @typedef {{
+ *   cpu: bigint
+ *   mem: bigint
+ * }} Cost
+ */
+
+/**
+ * @typedef {{
+ *   [name: string]: (Cost & {count: number})
+ * }} CostBreakdown
+ */
+
+/**
+ * @typedef {{
+ *   builtinTerm: Cost
+ *   callTerm: Cost
+ *   constTerm: Cost
+ *   delayTerm: Cost
+ *   forceTerm: Cost
+ *   lambdaTerm: Cost
+ *   startupTerm: Cost
+ *   varTerm: Cost
+ *   constrTerm: Cost
+ *   caseTerm: Cost
+ *   builtins: Record<string, (argSizes: bigint[]) => Cost>
+ * }} CostModel
+ */
+
+/**
+ * @typedef {{
+ *   get: (key: number, def?: bigint | undefined) => bigint
+ * }} CostModelParamsProxy
+ */
+
+/**
+ * @typedef {Cost & {
+ *   costModel: CostModel
+ *   breakdown: CostBreakdown
+ *   incrBuiltinCost(): void
+ *   incrCallCost(): void
+ *   incrConstCost(): void
+ *   incrDelayCost(): void
+ *   incrForceCost(): void
+ *   incrLambdaCost(): void
+ *   incrStartupCost(): void
+ *   incrVarCost(): void
+ *   incrArgSizesCost(name: string, argSizes: bigint[]): void
+ * }} CostTracker
+ */
+
+/**
+ * @typedef {object} FlatReader
+ * @prop {() => boolean} readBool
+ * @prop {() => number} readBuiltinId
+ * @prop {() => number[]} readBytes
+ * @prop {() => bigint} readInt
+ * @prop {() => number} readTag
+ * @prop {(elemSize: number) => number[]} readLinkedList
+ * @prop {() => UplcValue} readValue
+ * @prop {() => UplcTerm} readExpr
+ */
+
+/**
+ * @typedef {object} FlatWriter
+ * @prop {(b: boolean) => void} writeBool
+ * @prop {(bytes: number[]) => void} writeBytes
+ * @prop {(x: bigint) => void} writeInt
+ * @prop {(items: {toFlat: (w: FlatWriter) => void}[]) => void} writeList
+ * @prop {(tag: number) => void} writeTermTag
+ * @prop {(typeBits: string) => void} writeTypeBits
+ * @prop {(id: number) => void} writeBuiltinId
+ * @prop {() => number[]} finalize
+ */
+
+/**
+ * Interface for Plutus-core data classes (not the same as Plutus-core value classes!)
+ * @typedef {ByteArrayData | ConstrData | IntData | ListData | MapData} UplcData
+ */
+
+/**
+ * @typedef {{
+ *   memSize: number
+ *   isEqual: (other: UplcData) => boolean
+ *   toCbor: () => number[]
+ *   toSchemaJson: () => string
+ *   toString: () => string
+ *   rawData?: any
+ *   dataPath?: string
+ * }} CommonUplcDataProps
+ */
+
+/**
+ * @typedef {CommonUplcDataProps & {
+ *   kind: "bytes"
+ *   bytes: number[]
+ *   toHex: () => string
+ * }} ByteArrayData
+ */
+
+/**
+ * @typedef {CommonUplcDataProps & {
+ *   kind: "constr"
+ *   tag: number
+ *   fields: UplcData[]
+ *   length: number
+ *   expectFields: (n: number) => ConstrData
+ *   expectTag: (tag: number, msg?: string) => ConstrData
+ * }} ConstrData
+ */
+
+/**
+ * @typedef {CommonUplcDataProps & {
+ *   kind: "int"
+ *   value: bigint
+ * }} IntData
+ */
+
+/**
+ * @typedef {CommonUplcDataProps & {
+ *   kind: "list"
+ *   items: UplcData[]
+ *   length: number
+ *   list: UplcData[]
+ * }} ListData
+ */
+
+/**
+ * @typedef {CommonUplcDataProps & {
+ *   kind: "map"
+ *   items: [UplcData, UplcData][]
+ *   length: number
+ *   list: [UplcData, UplcData][]
+ * }} MapData
+ */
+
+/**
+ * Gathers log messages produced by a Helios program
+ * Note: logError is intended for messages that are passed to console.error() or equivalent, not for the Error messages that are simply part of thrown errors
+ * @typedef {{
+ *   logPrint: (message: string, site?: Site | undefined) => void
+ *   logError?: (message: string, stack?: Site | undefined) => void
+ *   lastMessage: string
+ *   logTrace?: (message: string, site?: Site | undefined) => void
+ *   flush?: () => void
+ *   reset? : (reason: "build" | "validate") => void
+ * }} UplcLogger
+ */
+
+/**
+ * @typedef {UplcLogger & {
+ *   lastMessage: string
+ * }} BasicUplcLogger
+ */
+
+/**
+ * @typedef {UplcProgramV1 | UplcProgramV2 | UplcProgramV3} UplcProgram
+ */
+
+/**
+ * @typedef {"1.0.0" | "1.1.0"} UplcVersion
+ * @typedef {"PlutusScriptV1" | "PlutusScriptV2" | "PlutusScriptV3"} PlutusVersion
+ * @typedef {1 | 2 | 3} PlutusVersionTag
+ */
+
+/**
+ * @typedef {{
+ *   root: UplcTerm
+ *   ir?: string
+ *   eval(args: UplcValue[] | undefined, options?: {
+ *      logOptions?: UplcLogger,
+ *      costModelParams?: number[],
+ *   }): CekResult
+ *   hash(): number[]
+ *   toCbor(): number[]
+ *   toFlat(): number[]
+ *   toString(): string
+ * }} CommonUplcProgramProps
+ */
+
+/**
+ * @typedef {CommonUplcProgramProps & {
+ *   plutusVersion: "PlutusScriptV1"
+ *   plutusVersionTag: 1
+ *   uplcVersion: "1.0.0"
+ *   alt?: UplcProgramV1
+ *   apply: (args: UplcValue[]) => UplcProgramV1
+ *   withAlt: (alt: UplcProgramV1) => UplcProgramV1
+ * }} UplcProgramV1
+ */
+
+/**
+ * @typedef {CommonUplcProgramProps & {
+ *   plutusVersion: "PlutusScriptV2"
+ *   plutusVersionTag: 2
+ *   uplcVersion: "1.0.0"
+ *   alt?: UplcProgramV2
+ *   apply: (args: UplcValue[]) => UplcProgramV2
+ *   withAlt: (alt: UplcProgramV2) => UplcProgramV2
+ * }} UplcProgramV2
+ */
+
+/**
+ * @typedef {CommonUplcProgramProps & {
+ *   plutusVersion: "PlutusScriptV3"
+ *   plutusVersionTag: 3
+ *   uplcVersion: "1.1.0"
+ *   alt?: UplcProgramV3
+ *   apply: (args: UplcValue[]) => UplcProgramV3
+ *   withAlt: (alt: UplcProgramV3) => UplcProgramV3
+ * }} UplcProgramV3
+ */
+
+/**
+ * @typedef {{
+ *   sourceNames: string[]
+ *   indices: string // cbor encoded
+ *   variableNames?: string // cbor encoded
+ *   termDescriptions?: string // cbor encoded
+ * }} UplcSourceMapJsonSafe
+ */
+
+/**
+ * @typedef {{
+ *   sourceNames: string[]
+ *   indices: number[]
+ *   variableNames?: [number, string][]
+ *   termDescriptions?: [number, string][]
+ * }} UplcSourceMapProps
+ */
+
+/**
+ * @typedef {{
+ *   apply(root: UplcTerm): void
+ *   toJsonSafe(): UplcSourceMapJsonSafe
+ * }} UplcSourceMap
+ */
+
+/**
+ * @typedef {CekTerm & {
+ *   toFlat: (writer: FlatWriter) => void
+ *   children: UplcTerm[]
+ * }} CommonUplcTermProps
+ */
+
+/**
+ * @typedef {(
+ *   UplcBuiltin
+ *   | UplcCall
+ *   | UplcConst
+ *   | UplcDelay
+ *   | UplcError
+ *   | UplcForce
+ *   | UplcLambda
+ *   | UplcVar
+ * )} UplcTerm
+ */
+
+/**
+ * @typedef {CommonUplcTermProps & {
+ *   kind: "builtin"
+ *   id: number
+ * }} UplcBuiltin
+ */
+
+/**
+ * @typedef {CommonUplcTermProps & {
+ *   kind: "call"
+ *   fn: UplcTerm
+ *   arg: UplcTerm
+ * }} UplcCall
+ */
+
+/**
+ * @typedef {CommonUplcTermProps & {
+ *   kind: "const"
+ *   flatSize: number
+ *   serializableTerm: UplcTerm
+ *   value: UplcValue
+ * }} UplcConst
+ */
+
+/**
+ * @typedef {CommonUplcTermProps & {
+ *   kind: "delay"
+ *   arg: UplcTerm
+ * }} UplcDelay
+ */
+
+/**
+ * @typedef {CommonUplcTermProps & {
+ *   kind: "error"
+ * }} UplcError
+ */
+
+/**
+ * @typedef {CommonUplcTermProps & {
+ *   kind: "force"
+ *   arg: UplcTerm
+ * }} UplcForce
+ */
+
+/**
+ * @typedef {CommonUplcTermProps & {
+ *   kind: "lambda"
+ *   expr: UplcTerm
+ *   argName?: string
+ * }} UplcLambda
+ */
+
+/**
+ * @typedef {CommonUplcTermProps & {
+ *   kind: "var"
+ *   index: number
+ *   name?: string
+ * }} UplcVar
+ */
+
+/**
+ * @typedef {{
+ *   typeBits: string
+ *   isData(): boolean
+ *   isDataPair(): boolean
+ *   isEqual(other: UplcType): boolean
+ *   toString(): string
+ * }} UplcType
+ */
+
+/**
+ * UplcValue instances are passed around by Uplc terms.
+ *   - memSize: size in words (8 bytes, 64 bits) occupied during on-chain evaluation
+ *   - flatSize: size taken up in serialized Uplc program (number of bits)
+ *   - typeBits: each serialized value is preceded by some typeBits
+ *   - toFlat: serialize as flat format bits (without typeBits)
+ *
+ * @typedef {{
+ *   memSize: number
+ *   flatSize: number
+ *   type: UplcType
+ *   isEqual: (other: UplcValue) => boolean
+ *   toFlat: (writer: FlatWriter) => void
+ *   toString: () => string
+ * }} CommonUplcValueProps
+ */
+
+/**
+ * @typedef {(
+ *   UplcInt
+ *   | UplcByteArray
+ *   | UplcString
+ *   | UplcUnit
+ *   | UplcBool
+ *   | UplcList
+ *   | UplcPair
+ *   | UplcDataValue
+ *   | Bls12_381_G1_element
+ *   | Bls12_381_G2_element
+ *   | Bls12_381_MlResult
+ * )} UplcValue
+ */
+
+/**
+ * @typedef {CommonUplcValueProps & {
+ *   kind: "int"
+ *   value: bigint
+ *   signed: boolean
+ *   toFlatUnsigned: (w: FlatWriter) => void
+ *   toSigned: () => UplcInt
+ *   toUnsigned: () => UplcInt
+ * }} UplcInt
+ */
+
+/**
+ * @typedef {CommonUplcValueProps & {
+ *   kind: "bytes"
+ *   bytes: number[]
+ * }} UplcByteArray
+ */
+
+/**
+ * @typedef {CommonUplcValueProps & {
+ *   kind: "string"
+ *   value: string
+ *   string: string
+ * }} UplcString
+ */
+
+/**
+ * @typedef {CommonUplcValueProps & {
+ *   kind: "unit"
+ * }} UplcUnit
+ */
+
+/**
+ * @typedef {CommonUplcValueProps & {
+ *   kind: "bool"
+ *   value: boolean
+ *   bool: boolean
+ *   toUplcData: () => ConstrData
+ * }} UplcBool
+ */
+
+/**
+ * @typedef {CommonUplcValueProps & {
+ *   kind: "list"
+ *   itemType: UplcType
+ *   items: UplcValue[]
+ *   length: number
+ *   isDataList: () => boolean
+ *   isDataMap: () => boolean
+ * }} UplcList
+ */
+
+/**
+ * @typedef {CommonUplcValueProps & {
+ *   kind: "pair"
+ *   first: UplcValue
+ *   second: UplcValue
+ * }} UplcPair
+ */
+
+/**
+ * @typedef {CommonUplcValueProps & {
+ *   kind: "data"
+ *   value: UplcData
+ * }} UplcDataValue
+ */
+
+/**
+ * @typedef {CommonUplcValueProps & {
+ *   kind: "bls12_381_G1_element"
+ *   point: Point3<bigint>
+ *   compress: () => number[]
+ * }} Bls12_381_G1_element
+ */
+
+/**
+ * @typedef {CommonUplcValueProps & {
+ *   kind: "bls12_381_G2_element"
+ *   point: Point3<[bigint, bigint]>
+ *   compress: () => number[]
+ * }} Bls12_381_G2_element
+ */
+
+/**
+ * @typedef {CommonUplcValueProps & {
+ *   kind: "bls12_381_mlresult"
+ *   element: FieldElement12
+ * }} Bls12_381_MlResult
  */

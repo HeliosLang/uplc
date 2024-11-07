@@ -1,13 +1,5 @@
-import { None, isNone, isSome } from "@helios-lang/type-utils"
-
 /**
- * @typedef {import("./Cost.js").Cost} Cost
- */
-
-/**
- * @typedef {{
- *   get: (key: number, def?: Option<bigint>) => bigint
- * }} CostModelParamsProxy
+ * @import { Cost, CostModelParamsProxy } from "src/index.js"
  */
 
 /**
@@ -39,14 +31,14 @@ class CostModelParamsProxyImpl {
     /**
      * Throws an error if key not found
      * @param {number} key
-     * @param {Option<bigint>} def
+     * @param {bigint | undefined} def
      * @returns {bigint}
      */
-    get(key, def = None) {
+    get(key, def = undefined) {
         const v = this._params[key]
 
-        if (isNone(v)) {
-            if (isSome(def)) {
+        if (v === undefined) {
+            if (def !== undefined) {
                 return def
             } else {
                 throw new Error(`CostModelParams[${key}] undefined`)

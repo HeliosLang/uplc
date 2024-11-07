@@ -1,22 +1,16 @@
-import { None } from "@helios-lang/type-utils"
-import { PreCallFrame } from "../cek/index.js"
+import { makePreCallFrame } from "../cek/index.js"
 
 /**
- * @template TExpr
- * @template TValue
- * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
- */
-
-/**
- * @typedef {import("@helios-lang/compiler-utils").Site} Site
- * @typedef {import("../cek/index.js").CekContext} CekContext
- * @typedef {import("../cek/index.js").CekStack} CekStack
- * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
- * @typedef {import("../cek/index.js").CekValue} CekValue
- * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
- * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./UplcTerm.js").UplcCall} UplcCall
- * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
+ * @import { Site } from "@helios-lang/compiler-utils"
+ * @import {
+ *   CekContext,
+ *   CekStack,
+ *   CekStateChange,
+ *   FlatReader,
+ *   FlatWriter,
+ *   UplcCall,
+ *   UplcTerm
+ * } from "src/index.js"
  */
 
 export const UPLC_CALL_TAG = 3
@@ -25,11 +19,11 @@ export const UPLC_CALL_TAG = 3
  * @param {{
  *   fn: UplcTerm
  *   arg: UplcTerm
- *   site?: Option<Site>
+ *   site?: Site
  * } | {
  *   fn: UplcTerm
  *   args: UplcTerm[]
- *   site?: Option<Site>
+ *   site?: Site
  * }} props
  * @returns {UplcCall}
  */
@@ -49,7 +43,7 @@ export function makeUplcCall(props) {
 }
 
 /**
- * @param {FlatReader<UplcTerm, UplcValue>} r
+ * @param {FlatReader} r
  * @returns {UplcCall}
  */
 export function decodeUplcCallFromFlat(r) {
@@ -76,16 +70,16 @@ class UplcCallImpl {
     /**
      * Optional source-map site
      * Mutable so that SourceMap application is easier
-     * @type {Option<Site>}
+     * @type {Site | undefined}
      */
     site
 
     /**
      * @param {UplcTerm} fn
      * @param {UplcTerm} arg
-     * @param {Option<Site>} site
+     * @param {Site | undefined} site
      */
-    constructor(fn, arg, site = None) {
+    constructor(fn, arg, site = undefined) {
         this.fn = fn
         this.arg = arg
         this.site = site
@@ -120,7 +114,7 @@ class UplcCallImpl {
                     stack: stack
                 }
             },
-            frame: new PreCallFrame(this.arg, stack, this.site)
+            frame: makePreCallFrame(this.arg, stack, this.site)
         }
     }
 

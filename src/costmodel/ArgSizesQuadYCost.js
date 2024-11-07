@@ -1,5 +1,5 @@
 /**
- * @typedef {import("./ArgSizesCost.js").ArgSizesCost} ArgSizesCost
+ * @import { ArgSizesCost } from "src/index.js"
  */
 
 /**
@@ -11,13 +11,21 @@
  */
 
 /**
+ * @param {QuadCoeffs} coeffs
+ * @returns {ArgSizesCost}
+ */
+export function makeArgSizesQuadYCost(coeffs) {
+    return new ArgSizesQuadYCost(coeffs)
+}
+
+/**
  * Let `y` denote the size of the second arg:
  *
  *   cost = c0 + c1*y + c2*y*y
  *
  * @implements {ArgSizesCost}
  */
-export class ArgSizesQuadYCost {
+class ArgSizesQuadYCost {
     /**
      * @readonly
      * @type {QuadCoeffs}

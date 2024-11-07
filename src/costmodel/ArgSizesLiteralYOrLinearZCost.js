@@ -1,11 +1,20 @@
 /**
- * @typedef {import("./ArgSizesCost.js").ArgSizesCost} ArgSizesCost
+ * @import { ArgSizesCost } from "src/index.js"
  */
+
+/**
+ * @param {bigint} slope
+ * @param {bigint} intercept
+ * @returns {ArgSizesCost}
+ */
+export function makeArgSizesLiteralYOrLinearZCost(slope, intercept) {
+    return new ArgSizesLiteralYOrLinearZCost(slope, intercept)
+}
 
 /**
  * @implements {ArgSizesCost}
  */
-export class ArgSizesLiteralYOrLinearZCost {
+class ArgSizesLiteralYOrLinearZCost {
     /**
      * @readonly
      * @type {bigint}

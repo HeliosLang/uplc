@@ -1,32 +1,27 @@
-import { None } from "@helios-lang/type-utils"
 import { builtinsV3 } from "../builtins/index.js"
 import { makeUplcByteArray } from "../values/index.js"
 import { makeUplcBuiltin } from "./UplcBuiltin.js"
 import { makeUplcCall } from "./UplcCall.js"
 
 /**
- * @template TExpr
- * @template TValue
- * @typedef {import("../flat/index.js").FlatReader<TExpr, TValue>} FlatReader
- */
-
-/**
- * @typedef {import("@helios-lang/compiler-utils").Site} Site
- * @typedef {import("../cek/index.js").CekContext} CekContext
- * @typedef {import("../cek/index.js").CekStack} CekStack
- * @typedef {import("../cek/index.js").CekStateChange} CekStateChange
- * @typedef {import("../cek/index.js").CekValue} CekValue
- * @typedef {import("../flat/index.js").FlatWriter} FlatWriter
- * @typedef {import("../values/index.js").UplcValue} UplcValue
- * @typedef {import("./UplcTerm.js").UplcTerm} UplcTerm
- * @typedef {import("./UplcTerm.js").UplcConst} UplcConst
+ * @import { Site } from "@helios-lang/compiler-utils"
+ * @import {
+ *   CekContext,
+ *   CekStack,
+ *   CekStateChange,
+ *   FlatReader,
+ *   FlatWriter,
+ *   UplcConst,
+ *   UplcTerm,
+ *   UplcValue
+ * } from "src/index.js"
  */
 
 export const UPLC_CONST_TAG = 4
 
 /**
  *
- * @param {{value: UplcValue, site?: Option<Site>}} props
+ * @param {{value: UplcValue, site?: Site}} props
  * @returns {UplcConst}
  */
 export function makeUplcConst(props) {
@@ -34,7 +29,7 @@ export function makeUplcConst(props) {
 }
 
 /**
- * @param {FlatReader<UplcTerm, UplcValue>} r
+ * @param {FlatReader} r
  * @returns {UplcConst}
  */
 export function decodeUplcConstFromFlat(r) {
@@ -56,15 +51,15 @@ class UplcConstImpl {
     /**
      * Optional source-map site
      * Mutable so that SourceMap application is easier
-     * @type {Option<Site>}
+     * @type {Site | undefined}
      */
     site
 
     /**
      * @param {UplcValue} value
-     * @param {Option<Site>} site
+     * @param {Site | undefined} site
      */
-    constructor(value, site = None) {
+    constructor(value, site = undefined) {
         this.value = value
         this.site = site
 
