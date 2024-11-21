@@ -2,7 +2,7 @@ import { decodeUtf8, encodeUtf8 } from "@helios-lang/codec-utils"
 import { expectByteArrayData, makeByteArrayData } from "./ByteArrayData.js"
 
 /**
- * @import { ByteArrayData, UplcData } from "src/index.js"
+ * @import { ByteArrayData, UplcData } from "../index.js"
  */
 
 /**

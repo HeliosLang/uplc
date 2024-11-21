@@ -4,7 +4,7 @@ import { INT_TYPE } from "./UplcType.js"
 
 /**
  * @import { IntLike } from "@helios-lang/codec-utils"
- * @import { FlatReader, FlatWriter, UplcInt, UplcType, UplcValue } from "src/index.js"
+ * @import { FlatReader, FlatWriter, UplcInt, UplcType, UplcValue } from "../index.js"
  */
 
 /**

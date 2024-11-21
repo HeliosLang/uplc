@@ -9,7 +9,7 @@
  *   UplcTerm,
  *   UplcValue,
  *   UplcVar
- * } from "src/index.js"
+ * } from "../index.js"
  */
 
 export const UPLC_VAR_TAG = 0

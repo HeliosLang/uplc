@@ -5,7 +5,7 @@ import {
 import { modInteger as modIntegerV1 } from "../v1/modInteger.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

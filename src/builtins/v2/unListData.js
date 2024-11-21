@@ -2,7 +2,7 @@ import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { unListData as unListDataV1 } from "../v1/unListData.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

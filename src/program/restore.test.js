@@ -6,7 +6,7 @@ import { makeUplcProgramV1 } from "./UplcProgramV1.js"
 import { makeUplcProgramV3 } from "./UplcProgramV3.js"
 
 /**
- * @import { PlutusVersion, UplcProgram, UplcProgramV1, UplcProgramV2, UplcProgramV3 } from "src/index.js"
+ * @import { PlutusVersion, UplcProgram, UplcProgramV1, UplcProgramV2, UplcProgramV3 } from "../index.js"
  */
 
 describe(restoreUplcProgram.name, () => {

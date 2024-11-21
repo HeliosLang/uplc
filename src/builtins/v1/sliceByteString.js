@@ -4,7 +4,7 @@ import { asCekValue } from "../cast.js"
 import { asUplcValues } from "../cast.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

@@ -5,7 +5,7 @@ import {
 import { equalsData as equalsDataV1 } from "../v1/equalsData.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

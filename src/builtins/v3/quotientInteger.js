@@ -5,7 +5,7 @@ import {
 import { quotientInteger as quotientIntegerV1 } from "../v1/quotientInteger.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

@@ -15,7 +15,7 @@ import { makeUplcString } from "../values/index.js"
 import { UplcRuntimeError } from "./UplcRuntimeError.js"
 
 /**
- * @import { CallSiteInfo } from "src/index.js"
+ * @import { CallSiteInfo } from "../index.js"
  */
 
 describe(UplcRuntimeError.name, () => {

@@ -14,7 +14,7 @@ import { makeUplcCall } from "./UplcCall.js"
  *   UplcConst,
  *   UplcTerm,
  *   UplcValue
- * } from "src/index.js"
+ * } from "../index.js"
  */
 
 export const UPLC_CONST_TAG = 4

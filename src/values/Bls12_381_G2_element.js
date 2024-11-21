@@ -5,7 +5,7 @@ import { BLS12_381_G2_ELEMENT_TYPE } from "./UplcType.js"
 
 /**
  * @import { Point3 } from "@helios-lang/crypto"
- * @import { Bls12_381_G2_element, FlatWriter, UplcType, UplcValue } from "src/index.js"
+ * @import { Bls12_381_G2_element, FlatWriter, UplcType, UplcValue } from "../index.js"
  */
 
 /**

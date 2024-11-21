@@ -1,5 +1,5 @@
 /**
- * @import { BasicUplcLogger } from "src/index.js"
+ * @import { BasicUplcLogger } from "../index.js"
  */
 
 /**

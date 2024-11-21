@@ -3,7 +3,7 @@ import { getLastSelfValue, pushStackValueAndCallSite } from "./CekStack.js"
 /**
  * @import { Site } from "@helios-lang/compiler-utils"
  * @import { AssertExtends } from "@helios-lang/type-utils"
- * @import { CallSiteInfo, CekContext, CekFrame, CekStack, CekStateChange, CekTerm, CekValue } from "src/index.js"
+ * @import { CallSiteInfo, CekContext, CekFrame, CekStack, CekStateChange, CekTerm, CekValue } from "../index.js"
  */
 
 /**

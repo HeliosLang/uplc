@@ -12,7 +12,7 @@ import {
 
 /**
  * @import { BytesLike } from "@helios-lang/codec-utils"
- * @import { Builtin, CekResult, CostModel, UplcLogger, UplcProgram, UplcTerm, UplcValue, UplcVersion } from "src/index.js"
+ * @import { Builtin, CekResult, CostModel, UplcLogger, UplcProgram, UplcTerm, UplcValue, UplcVersion } from "../index.js"
  */
 
 /**

@@ -3,7 +3,7 @@ import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
  * @import { BytesLike, ByteStream } from "@helios-lang/codec-utils"
- * @import { MapData, UplcData } from "src/index.js"
+ * @import { MapData, UplcData } from "../index.js"
  */
 
 /**

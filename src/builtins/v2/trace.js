@@ -2,7 +2,7 @@ import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { trace as traceV1 } from "../v1/trace.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

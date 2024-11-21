@@ -2,7 +2,7 @@ import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { iData as iDataV1 } from "../v1/iData.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

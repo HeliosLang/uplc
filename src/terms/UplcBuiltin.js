@@ -13,7 +13,7 @@ import { expectDefined } from "@helios-lang/type-utils"
  *   FlatWriter,
  *   UplcBuiltin,
  *   UplcTerm
- * } from "src/index.js"
+ * } from "../index.js"
  */
 
 export const UPLC_BUILTIN_TAG = 7

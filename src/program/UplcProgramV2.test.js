@@ -9,7 +9,7 @@ import {
 } from "./UplcProgramV2.js"
 
 /**
- * @import { UplcValue } from "src/index.js"
+ * @import { UplcValue } from "../index.js"
  */
 
 const dummyArg = makeUplcInt(0)

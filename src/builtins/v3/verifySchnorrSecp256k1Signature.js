@@ -5,7 +5,7 @@ import {
 import { verifySchnorrSecp256k1Signature as verifySchnorrSecp256k1SignatureV2 } from "../v2/verifySchnorrSecp256k1Signature.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

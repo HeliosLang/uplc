@@ -1,5 +1,5 @@
 /**
- * @import { Cost, CostBreakdown, CostModel, CostTracker } from "src/index.js"
+ * @import { Cost, CostBreakdown, CostModel, CostTracker } from "../index.js"
  */
 
 /**

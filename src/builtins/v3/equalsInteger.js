@@ -5,7 +5,7 @@ import {
 import { equalsInteger as equalsIntegerV1 } from "../v1/equalsInteger.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

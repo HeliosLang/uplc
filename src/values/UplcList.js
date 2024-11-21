@@ -1,7 +1,7 @@
 import { makeListType } from "./UplcType.js"
 
 /**
- * @import { FlatReader, FlatWriter, UplcList, UplcType, UplcValue } from "src/index.js"
+ * @import { FlatReader, FlatWriter, UplcList, UplcType, UplcValue } from "../index.js"
  */
 
 /**

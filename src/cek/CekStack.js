@@ -1,7 +1,7 @@
 import { isNonEmptyCallSiteInfo } from "./CallSiteInfo.js"
 
 /**
- * @import { CallSiteInfo, CekStack, CekValue } from "src/index.js"
+ * @import { CallSiteInfo, CekStack, CekValue } from "../index.js"
  */
 
 /**

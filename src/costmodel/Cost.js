@@ -7,7 +7,7 @@ import {
 
 /**
  * @import { BytesLike } from "@helios-lang/codec-utils"
- * @import { Cost } from "src/index.js"
+ * @import { Cost } from "../index.js"
  */
 
 /**

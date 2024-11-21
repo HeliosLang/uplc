@@ -2,7 +2,7 @@ import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { headList as headListV1 } from "../v1/headList.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

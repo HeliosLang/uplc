@@ -5,7 +5,7 @@ import {
 import { equalsByteString as equalsByteStringV1 } from "../v1/equalsByteString.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

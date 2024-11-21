@@ -9,7 +9,7 @@ import { makeUplcType } from "./UplcType.js"
 import { UNIT_VALUE } from "./UplcUnit.js"
 
 /**
- * @import { FlatReader, UplcValue } from "src/index.js"
+ * @import { FlatReader, UplcValue } from "../index.js"
  */
 
 /**

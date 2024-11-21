@@ -5,7 +5,7 @@ import {
 import { divideInteger as divideIntegerV1 } from "../v1/divideInteger.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

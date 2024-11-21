@@ -4,7 +4,7 @@ import { decodeFlatInt } from "./int.js"
 
 /**
  * @import { BitReader } from "@helios-lang/codec-utils"
- * @import { FlatReader, UplcTerm, UplcValue } from "src/index.js"
+ * @import { FlatReader, UplcTerm, UplcValue } from "../index.js"
  */
 
 /**

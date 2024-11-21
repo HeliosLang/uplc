@@ -2,7 +2,7 @@ import { makeUplcCall } from "./UplcCall.js"
 import { makeUplcConst } from "./UplcConst.js"
 
 /**
- * @import { UplcBuiltin, UplcCall, UplcConst, UplcDelay, UplcError, UplcForce, UplcLambda, UplcVar, UplcTerm, UplcValue } from "src/index.js"
+ * @import { UplcBuiltin, UplcCall, UplcConst, UplcDelay, UplcError, UplcForce, UplcLambda, UplcVar, UplcTerm, UplcValue } from "../index.js"
  */
 
 /**

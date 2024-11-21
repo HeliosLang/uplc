@@ -1,7 +1,7 @@
 import { UNIT_TYPE } from "./UplcType.js"
 
 /**
- * @import { FlatWriter, UplcType, UplcUnit, UplcValue } from "src/index.js"
+ * @import { FlatWriter, UplcType, UplcUnit, UplcValue } from "../index.js"
  */
 
 /**

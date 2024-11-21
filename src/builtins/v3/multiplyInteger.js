@@ -2,7 +2,7 @@ import { makeArgSizesSumCost } from "../../costmodel/index.js"
 import { multiplyInteger as multiplyIntegerV1 } from "../v1/multiplyInteger.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

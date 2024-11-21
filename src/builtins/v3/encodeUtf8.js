@@ -2,7 +2,7 @@ import { makeArgSizesFirstCost } from "../../costmodel/index.js"
 import { encodeUtf8 as encodeUtf8V1 } from "../v1/encodeUtf8.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

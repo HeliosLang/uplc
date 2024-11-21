@@ -1,5 +1,5 @@
 /**
- * @import { ArgSizesCostClass, BuiltinCostModel, Cost, CostModel, CostModelParamsProxy, UplcValue } from "src/index.js"
+ * @import { ArgSizesCostClass, BuiltinCostModel, Cost, CostModel, CostModelParamsProxy, UplcValue } from "../index.js"
  */
 
 /**

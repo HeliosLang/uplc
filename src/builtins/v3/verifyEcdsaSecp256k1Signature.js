@@ -2,7 +2,7 @@ import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { verifyEcdsaSecp256k1Signature as verifyEcdsaSecp256k1SignatureV2 } from "../v2/verifyEcdsaSecp256k1Signature.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

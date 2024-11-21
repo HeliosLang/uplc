@@ -3,7 +3,7 @@ import { dispatchValueReader } from "../values/index.js"
 import { decodeTerm } from "./decode.js"
 
 /**
- * @import { Builtin, FlatReader, UplcTerm, UplcValue } from "src/index.js"
+ * @import { Builtin, FlatReader, UplcTerm, UplcValue } from "../index.js"
  */
 
 /**

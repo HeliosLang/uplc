@@ -2,7 +2,7 @@ import { makeArgSizesMaxCost } from "../../costmodel/index.js"
 import { subtractInteger as subtractIntegerV1 } from "../v1/subtractInteger.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

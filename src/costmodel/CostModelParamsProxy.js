@@ -1,5 +1,5 @@
 /**
- * @import { Cost, CostModelParamsProxy } from "src/index.js"
+ * @import { Cost, CostModelParamsProxy } from "../index.js"
  */
 
 /**

@@ -5,7 +5,7 @@ import {
 import { equalsString as equalsStringV1 } from "../v1/equalsString.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

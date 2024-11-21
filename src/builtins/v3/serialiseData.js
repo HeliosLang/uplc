@@ -2,7 +2,7 @@ import { makeArgSizesFirstCost } from "../../costmodel/index.js"
 import { serialiseData as serialiseDataV2 } from "../v2/serialiseData.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

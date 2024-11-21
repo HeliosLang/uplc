@@ -5,7 +5,7 @@ import { BYTE_ARRAY_TYPE } from "./UplcType.js"
 
 /**
  * @import { BytesLike } from "@helios-lang/codec-utils"
- * @import { FlatReader, FlatWriter, UplcByteArray, UplcType, UplcValue } from "src/index.js"
+ * @import { FlatReader, FlatWriter, UplcByteArray, UplcType, UplcValue } from "../index.js"
  */
 
 /**

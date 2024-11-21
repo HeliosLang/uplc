@@ -10,7 +10,7 @@ import { makePreCallFrame } from "../cek/index.js"
  *   FlatWriter,
  *   UplcCall,
  *   UplcTerm
- * } from "src/index.js"
+ * } from "../index.js"
  */
 
 export const UPLC_CALL_TAG = 3

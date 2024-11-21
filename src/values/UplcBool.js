@@ -2,7 +2,7 @@ import { makeConstrData } from "../data/index.js"
 import { BOOL_TYPE } from "./UplcType.js"
 
 /**
- * @import { ConstrData, FlatReader, FlatWriter, UplcBool, UplcType, UplcValue } from "src/index.js"
+ * @import { ConstrData, FlatReader, FlatWriter, UplcBool, UplcType, UplcValue } from "../index.js"
  */
 
 /**

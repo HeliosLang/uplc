@@ -75,7 +75,7 @@ import { verifyEd25519Signature } from "./verifyEd25519Signature.js"
 import { verifySchnorrSecp256k1Signature } from "./verifySchnorrSecp256k1Signature.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

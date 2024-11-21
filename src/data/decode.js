@@ -14,7 +14,7 @@ import { decodeListData } from "./ListData.js"
 
 /**
  * @import { BytesLike } from "@helios-lang/codec-utils"
- * @import { UplcData } from "src/index.js"
+ * @import { UplcData } from "../index.js"
  */
 
 /**

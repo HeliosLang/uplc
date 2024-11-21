@@ -57,7 +57,7 @@ import {
 
 /**
  * @import { Site, TokenReader } from "@helios-lang/compiler-utils"
- * @import { Bls12_381_G1_element, Bls12_381_G2_element, Builtin, UplcBool, UplcByteArray, UplcData, UplcDataValue, UplcInt, UplcLambda, UplcString, UplcTerm, UplcType, UplcUnit, UplcValue, UplcVersion } from "src/index.js"
+ * @import { Bls12_381_G1_element, Bls12_381_G2_element, Builtin, UplcBool, UplcByteArray, UplcData, UplcDataValue, UplcInt, UplcLambda, UplcString, UplcTerm, UplcType, UplcUnit, UplcValue, UplcVersion } from "../index.js"
  */
 
 /**

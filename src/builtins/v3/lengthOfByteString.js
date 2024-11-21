@@ -2,7 +2,7 @@ import { makeArgSizesConstCost } from "../../costmodel/index.js"
 import { lengthOfByteString as lengthOfByteStringV1 } from "../v1/lengthOfByteString.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 /**
  * @type {Builtin}

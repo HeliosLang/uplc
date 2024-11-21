@@ -8,7 +8,7 @@
  *   FlatWriter,
  *   UplcDelay,
  *   UplcTerm
- * } from "src/index.js"
+ * } from "../index.js"
  */
 
 export const UPLC_DELAY_TAG = 1

@@ -4,7 +4,7 @@ import { encodeFlatInt } from "./int.js"
 
 /**
  * @import { BitWriter } from "@helios-lang/codec-utils"
- * @import { FlatWriter } from "src/index.js"
+ * @import { FlatWriter } from "../index.js"
  */
 
 /**

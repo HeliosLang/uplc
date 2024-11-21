@@ -4,7 +4,7 @@ import { makeUplcDataValue } from "../../values/index.js"
 import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**
@@ -37,16 +37,16 @@ export const constrData = {
 
         return asCekValue(
             makeUplcDataValue(
-                makeConstrData({
-                    tag: Number(tag.value),
-                    fields: fields.items.map((f) => {
+                makeConstrData(
+                    tag.value,
+                    fields.items.map((f) => {
                         if (f.kind == "data") {
                             return f.value
                         } else {
                             throw new Error("expected only data value fields")
                         }
                     })
-                })
+                )
             )
         )
     }

@@ -3,7 +3,7 @@ import { BLS12_381_ML_RESULT_TYPE } from "./UplcType.js"
 
 /**
  * @import { FieldElement12 } from "@helios-lang/crypto"
- * @import { Bls12_381_MlResult, FlatWriter, UplcType, UplcValue } from "src/index.js"
+ * @import { Bls12_381_MlResult, FlatWriter, UplcType, UplcValue } from "../index.js"
  */
 
 /**

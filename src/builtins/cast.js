@@ -1,5 +1,5 @@
 /**
- * @import { CekValue, UplcValue } from "src/index.js"
+ * @import { CekValue, UplcValue } from "../index.js"
  */
 
 /**

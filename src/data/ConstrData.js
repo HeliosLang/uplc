@@ -4,15 +4,35 @@ import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
 
 /**
  * @import { BytesLike, ByteStream, IntLike } from "@helios-lang/codec-utils"
- * @import { ConstrData, UplcData } from "src/index.js"
+ * @import { ConstrData, UplcData } from "../index.js"
  */
 
 /**
- * @param {{tag: number, fields: UplcData[]}} args
+ * @overload
+ * @param {IntLike} tag
+ * @param {UplcData[]} fields
  * @returns {ConstrData}
  */
-export function makeConstrData(args) {
-    return new ConstrDataImpl(args.tag, args.fields)
+/**
+ * @overload
+ * @param {{tag: IntLike, fields: UplcData[]}} props
+ * @returns {ConstrData}
+ */
+/**
+ * @param {(
+ *   [IntLike, UplcData[]]
+ *   | [{tag: IntLike, fields: UplcData[]}]
+ * )} args
+ * @returns {ConstrData}
+ */
+export function makeConstrData(...args) {
+    if (args.length == 1) {
+        return new ConstrDataImpl(args[0].tag, args[0].fields)
+    } else if (args.length == 2) {
+        return new ConstrDataImpl(args[0], args[1])
+    } else {
+        throw new Error("invalid number of arguments for makeConstrData()")
+    }
 }
 
 /**

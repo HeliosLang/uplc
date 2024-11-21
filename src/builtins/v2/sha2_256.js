@@ -5,7 +5,7 @@ import {
 import { sha2_256 as sha2_256V1 } from "../v1/sha2_256.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

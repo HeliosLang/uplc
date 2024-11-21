@@ -5,7 +5,7 @@ import { mixStacks } from "./CekStack.js"
 /**
  * @import { Site } from "@helios-lang/compiler-utils"
  * @import { AssertExtends } from "@helios-lang/type-utils"
- * @import { CekContext, CekFrame, CekStack, CekStateChange, CekTerm, CekValue } from "src/index.js"
+ * @import { CekContext, CekFrame, CekStack, CekStateChange, CekTerm, CekValue } from "../index.js"
  */
 
 /**

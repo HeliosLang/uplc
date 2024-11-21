@@ -1,7 +1,7 @@
 import { makePairType } from "./UplcType.js"
 
 /**
- * @import { FlatWriter, UplcPair, UplcType, UplcValue } from "src/index.js"
+ * @import { FlatWriter, UplcPair, UplcType, UplcValue } from "../index.js"
  */
 
 /**

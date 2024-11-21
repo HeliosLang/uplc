@@ -1,5 +1,5 @@
 /**
- * @import { Builtin, CekStack, CekTerm, CekValue, UplcValue } from "src/index.js"
+ * @import { Builtin, CekStack, CekTerm, CekValue, UplcValue } from "../index.js"
  */
 
 /**

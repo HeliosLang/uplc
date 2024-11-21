@@ -5,7 +5,7 @@ import {
 import { remainderInteger as remainderIntegerV1 } from "../v1/remainderInteger.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

@@ -3,7 +3,7 @@ import { bytesFlatSize } from "../flat/index.js"
 import { DATA_TYPE } from "./UplcType.js"
 
 /**
- * @import { FlatReader, FlatWriter, UplcData, UplcDataValue, UplcType, UplcValue } from "src/index.js"
+ * @import { FlatReader, FlatWriter, UplcData, UplcDataValue, UplcType, UplcValue } from "../index.js"
  */
 
 /**

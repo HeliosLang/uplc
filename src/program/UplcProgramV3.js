@@ -18,7 +18,7 @@ import { deserializeUplcSourceMap } from "./UplcSourceMap.js"
 
 /**
  * @import { BytesLike } from "@helios-lang/codec-utils"
- * @import { CekResult, UplcLogger, UplcProgramV3, UplcSourceMapJsonSafe, UplcTerm, UplcValue } from "src/index.js"
+ * @import { CekResult, UplcLogger, UplcProgramV3, UplcSourceMapJsonSafe, UplcTerm, UplcValue } from "../index.js"
  */
 
 /**

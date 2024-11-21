@@ -5,7 +5,7 @@ import {
 import { lessThanByteString as lessThanByteStringV1 } from "../v1/lessThanByteString.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 /**
  * @type {Builtin}

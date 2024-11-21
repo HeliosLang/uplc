@@ -10,7 +10,7 @@ import { makeForceFrame } from "../cek/index.js"
  *   FlatWriter,
  *   UplcForce,
  *   UplcTerm
- * } from "src/index.js"
+ * } from "../index.js"
  */
 
 export const UPLC_FORCE_TAG = 5

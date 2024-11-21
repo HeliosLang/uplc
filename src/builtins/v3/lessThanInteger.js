@@ -5,7 +5,7 @@ import {
 import { lessThanInteger as lessThanIntegerV1 } from "../v1/lessThanInteger.js"
 
 /**
- * @import { Builtin } from "src/index.js"
+ * @import { Builtin } from "../../index.js"
  */
 
 /**

@@ -1,7 +1,7 @@
 import { stringifyCekValue } from "./CekValue.js"
 
 /**
- * @import { CallSiteInfo, CekValue } from "src/index.js"
+ * @import { CallSiteInfo, CekValue } from "../index.js"
  */
 
 export class UplcRuntimeError extends Error {

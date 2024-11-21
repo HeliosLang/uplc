@@ -8,7 +8,7 @@ import { UPLC_LAMBDA_TAG, decodeUplcLambdaFromFlat } from "./UplcLambda.js"
 import { UPLC_VAR_TAG, decodeUplcVarFromFlat } from "./UplcVar.js"
 
 /**
- * @import { Builtin, FlatReader, UplcTerm, UplcValue } from "src/index.js"
+ * @import { Builtin, FlatReader, UplcTerm, UplcValue } from "../index.js"
  */
 
 /**

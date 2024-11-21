@@ -16,7 +16,7 @@ import { stringifyNonUplcValue } from "./CekValue.js"
  *   CostTracker,
  *   UplcLogger,
  *   UplcValue
- * } from "src/index.js"
+ * } from "../index.js"
  */
 
 /**

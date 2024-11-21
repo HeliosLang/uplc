@@ -1,5 +1,5 @@
 /**
- * @import { ArgSizesCost } from "src/index.js"
+ * @import { ArgSizesCost } from "../index.js"
  */
 
 /**

@@ -1,7 +1,7 @@
 import { assertConstrData, makeConstrData } from "./ConstrData.js"
 
 /**
- * @import { ConstrData, UplcData } from "src/index.js"
+ * @import { ConstrData, UplcData } from "../index.js"
  */
 
 /**

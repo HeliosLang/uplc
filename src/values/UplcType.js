@@ -1,7 +1,7 @@
 import { byteToBits } from "@helios-lang/codec-utils"
 
 /**
- * @import { UplcType, UplcValue } from "src/index.js"
+ * @import { UplcType, UplcValue } from "../index.js"
  */
 
 // common type bits
