@@ -9,7 +9,7 @@ import { assertConstrData, makeConstrData } from "./ConstrData.js"
  * @returns {ConstrData}
  */
 export function boolToUplcData(b) {
-    return makeConstrData({ tag: b ? 1 : 0, fields: [] })
+    return makeConstrData(b ? 1 : 0, [])
 }
 
 /**

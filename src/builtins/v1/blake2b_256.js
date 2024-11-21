@@ -12,6 +12,7 @@ import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
  * @type {Builtin}
+ * @__PURE__
  */
 export const blake2b_256 = {
     name: "blake2b_256",

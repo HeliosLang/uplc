@@ -170,9 +170,7 @@ const conformanceTests = [
         src: "(program 1.0.0 (con data (Constr 1 [I 1])))",
         mem: 200n,
         cpu: 23100n,
-        result: makeUplcDataValue(
-            makeConstrData({ tag: 1, fields: [makeIntData(1)] })
-        )
+        result: makeUplcDataValue(makeConstrData(1, [makeIntData(1)]))
     },
     {
         src: "(program 1.0.0 (con data (I 12354898)))",
@@ -186,7 +184,7 @@ const conformanceTests = [
         cpu: 23100n,
         result: makeUplcDataValue(
             makeListData([
-                makeConstrData({ tag: 1, fields: [] }),
+                makeConstrData(1, []),
                 makeIntData(1234),
                 makeByteArrayData("ABCDEF")
             ])
@@ -205,7 +203,7 @@ const conformanceTests = [
                 ],
                 [
                     makeListData([makeIntData(-12364689486)]),
-                    makeConstrData({ tag: 7, fields: [] })
+                    makeConstrData(7, [])
                 ]
             ])
         )

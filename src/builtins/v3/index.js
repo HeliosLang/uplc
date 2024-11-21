@@ -80,6 +80,7 @@ import { verifySchnorrSecp256k1Signature } from "./verifySchnorrSecp256k1Signatu
 
 /**
  * @type {Builtin[]}
+ * @__PURE__
  */
 export const builtinsV3 = [
     addInteger, // 0

@@ -12,6 +12,7 @@ import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
  * @type {Builtin}
+ * @__PURE__
  */
 export const sha3_256 = {
     name: "sha3_256",

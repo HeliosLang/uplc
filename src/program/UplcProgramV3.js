@@ -39,11 +39,45 @@ const UPLC_VERSION = "1.1.0"
  */
 
 /**
- * @param {{root: UplcTerm, options?: UplcProgramV3Options}} props
+ * @overload
+ * @param {UplcTerm} root
  * @returns {UplcProgramV3}
  */
-export function makeUplcProgramV3(props) {
-    return new UplcProgramV3Impl(props.root, props.options ?? {})
+/**
+ * @overload
+ * @param {UplcTerm} root
+ * @param {UplcProgramV3Options} options
+ * @returns {UplcProgramV3}
+ */
+/**
+ * @overload
+ * @param {{
+ *   root: UplcTerm
+ *   options?: UplcProgramV3Options
+ * }} props
+ * @returns {UplcProgramV3}
+ */
+/**
+ * @param {(
+ *   [UplcTerm]
+ *   | [UplcTerm, UplcProgramV3Options]
+ *   | [{root: UplcTerm, options?: UplcProgramV3Options}]
+ * )} args
+ * @returns {UplcProgramV3}
+ */
+export function makeUplcProgramV3(...args) {
+    if (args.length == 2) {
+        return new UplcProgramV3Impl(args[0], args[1])
+    } else if (args.length == 1) {
+        const arg = args[0]
+        if ("root" in arg) {
+            return new UplcProgramV3Impl(arg.root, arg.options ?? {})
+        } else {
+            return new UplcProgramV3Impl(arg, {})
+        }
+    } else {
+        throw new Error("invalid number of arguments for makeUplcProgramV1")
+    }
 }
 
 /**

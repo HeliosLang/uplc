@@ -49,8 +49,8 @@ export function unwrapUplcDataOption(data, strict = false) {
  */
 export function wrapUplcDataOption(data) {
     if (data) {
-        return makeConstrData({ tag: 0, fields: [data] })
+        return makeConstrData(0, [data])
     } else {
-        return makeConstrData({ tag: 1, fields: [] })
+        return makeConstrData(1, [])
     }
 }

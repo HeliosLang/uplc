@@ -66,7 +66,7 @@ export function assertConstrData(data, tag = undefined, nFields = undefined) {
  */
 export function decodeConstrData(bytes, itemDecoder) {
     const [tag, fields] = decodeConstr(bytes, itemDecoder)
-    return makeConstrData({ tag, fields })
+    return makeConstrData(tag, fields)
 }
 
 /**

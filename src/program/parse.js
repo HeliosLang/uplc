@@ -501,7 +501,7 @@ function parseData(r) {
         const tag = m[1].value
         const fields = allOrUndefined(m[2].fields.map(parseData))
 
-        return fields ? makeConstrData({ tag: Number(tag), fields }) : undefined
+        return fields ? makeConstrData(tag, fields) : undefined
     } else if (r.matches(word("I"))) {
         if ((m = r.matches(intlit()))) {
             return makeIntData(m.value)

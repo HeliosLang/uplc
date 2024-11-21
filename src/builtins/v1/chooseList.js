@@ -7,6 +7,7 @@ import { asUplcValue } from "../cast.js"
 
 /**
  * @type {Builtin}
+ * @__PURE__
  */
 export const chooseList = {
     name: "chooseList",

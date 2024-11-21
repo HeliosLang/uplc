@@ -9,6 +9,7 @@ import { asCekValue, asUplcValues } from "../cast.js"
 /**
  * Prepends an item
  * @type {Builtin}
+ * @__PURE__
  */
 export const mkCons = {
     name: "mkCons",

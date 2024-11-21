@@ -101,6 +101,6 @@ class UplcBoolImpl {
      * @returns {ConstrData}
      */
     toUplcData() {
-        return makeConstrData({ tag: this.value ? 1 : 0, fields: [] })
+        return makeConstrData(this.value ? 1 : 0, [])
     }
 }
