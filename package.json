@@ -7,6 +7,7 @@
     "type": "module",
     "scripts": {
         "build": "pnpm run prettify && pnpm run lint && pnpm run build:types && pnpm run test:suite",
+        "build:docs": "typedoc --tsconfig ./jsconfig.json",
         "build:types": "tsc -p jsconfig.json --noEmit false --emitDeclarationOnly",
         "lint": "eslint .",
         "prepack": "pnpm run build",

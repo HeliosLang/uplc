@@ -18,16 +18,7 @@ import { deserializeUplcSourceMap } from "./UplcSourceMap.js"
 
 /**
  * @import { BytesLike } from "@helios-lang/codec-utils"
- * @import { CekResult, UplcLogger, UplcProgramV1, UplcSourceMapJsonSafe, UplcTerm, UplcValue } from "../index.js"
- */
-
-/**
- * The optional ir property can be lazy because it is only used for debugging and might require an expensive formatting operation
- * @typedef {{
- *   alt?: UplcProgramV1
- *   ir?: (() => string) | string
- *   sourceMap?: UplcSourceMapJsonSafe
- * }} UplcProgramV1Options
+ * @import { CekResult, UplcLogger, UplcProgramV1, UplcProgramV1Options, UplcSourceMapJsonSafe, UplcTerm, UplcValue } from "../index.js"
  */
 
 const PLUTUS_VERSION = "PlutusScriptV1"
@@ -83,7 +74,7 @@ export function makeUplcProgramV1(...args) {
 /**
  * @param {BytesLike} bytes
  * @param {UplcProgramV1Options} options
- * @returns {UplcProgramV1Impl}
+ * @returns {UplcProgramV1}
  */
 export function decodeUplcProgramV1FromCbor(bytes, options = {}) {
     return new UplcProgramV1Impl(
@@ -95,7 +86,7 @@ export function decodeUplcProgramV1FromCbor(bytes, options = {}) {
 /**
  * @param {number[]} bytes
  * @param {UplcProgramV1Options} options
- * @returns {UplcProgramV1Impl}
+ * @returns {UplcProgramV1}
  */
 export function decodeUplcProgramV1FromFlat(bytes, options = {}) {
     return new UplcProgramV1Impl(

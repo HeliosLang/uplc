@@ -4,12 +4,7 @@ import { decodeUplcProgramV3FromCbor } from "./UplcProgramV3.js"
 
 /**
  * @import { BytesLike } from "@helios-lang/codec-utils"
- * @import { PlutusVersion, UplcProgram, UplcProgramV1, UplcProgramV2, UplcProgramV3 } from "../index.js"
- */
-/**
- * @typedef {import("./UplcProgramV1.js").UplcProgramV1Options} UplcProgramV1Options
- * @typedef {import("./UplcProgramV2.js").UplcProgramV2Options} UplcProgramV2Options
- * @typedef {import("./UplcProgramV3.js").UplcProgramV3Options} UplcProgramV3Options
+ * @import { PlutusVersion, UplcProgram, UplcProgramV1, UplcProgramV1Options, UplcProgramV2, UplcProgramV2Options, UplcProgramV3, UplcProgramV3Options } from "../index.js"
  */
 
 /**

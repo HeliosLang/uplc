@@ -1,5 +1,8 @@
 {
-    "entryPoints": ["./types/index.d.ts"], // Adjust path as necessary
+    "entryPoints": ["./src/index.js"],
     "out": "docs",
+    "plugin": [
+        "@helios-lang/type-utils/src/typedoc-external-links-resolver.js"
+    ],
     "excludeExternals": true
 }

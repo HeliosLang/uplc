@@ -403,6 +403,33 @@ export {
  */
 
 /**
+ * The optional ir property can be lazy because it is only used for debugging and might require an expensive formatting operation
+ * @typedef {{
+ *   alt?: UplcProgramV1
+ *   ir?: (() => string) | string
+ *   sourceMap?: UplcSourceMapJsonSafe
+ * }} UplcProgramV1Options
+ */
+
+/**
+ * The optional ir property can be lazy because it is only used for debugging and might require an expensive formatting operation
+ * @typedef {{
+ *   alt?: UplcProgramV2
+ *   ir?: (() => string) | string
+ *   sourceMap?: UplcSourceMapJsonSafe
+ * }} UplcProgramV2Options
+ */
+
+/**
+ * The optional ir property can be lazy because it is only used for debugging and might require an expensive formatting operation
+ * @typedef {{
+ *   alt?: UplcProgramV3
+ *   ir?: (() => string) | string
+ *   sourceMap?: UplcSourceMapJsonSafe
+ * }} UplcProgramV3Options
+ */
+
+/**
  * @typedef {{
  *   root: UplcTerm
  *   ir?: string
