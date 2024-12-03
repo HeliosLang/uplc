@@ -34,7 +34,7 @@ export const mkCons = {
 
         if (!list.itemType.isEqual(item.type)) {
             throw new Error(
-                `item type doesn't correspond with list type in mkCons`
+                `item type doesn't correspond with list type in mkCons; expected ${list.itemType.toString()}, got ${item.type.toString()}`
             )
         }
 

@@ -1,11 +1,19 @@
 import { stringifyCekValue } from "./CekValue.js"
 
 /**
- * @import { CallSiteInfo, CekValue } from "../index.js"
+ * @import { CallSiteInfo, CekValue, UplcData } from "../index.js"
  */
 
 export class UplcRuntimeError extends Error {
     /**
+     * Optional field indicating a ScriptContext (UPLC) in which the error occurred
+     * @readonly
+     * @type {UplcData | undefined}
+     */
+    scriptContext
+
+    /**
+     * private field so that it doesn't show up when the error isn't caught (i.e. not enumerable)
      * @readonly
      * @type {CallSiteInfo[]}
      */
@@ -14,8 +22,9 @@ export class UplcRuntimeError extends Error {
     /**
      * @param {string} message
      * @param {CallSiteInfo[]} callSites
+     * @param {UplcData} [scriptContext]
      */
-    constructor(message, callSites = []) {
+    constructor(message, callSites = [], scriptContext) {
         super(message)
 
         this.frames = callSites
@@ -25,6 +34,12 @@ export class UplcRuntimeError extends Error {
             writable: true,
             configurable: false
         })
+        Object.defineProperty(this, "scriptContext", {
+            enumerable: false,
+            writable: true,
+            configurable: false
+        })
+        this.scriptContext = scriptContext
 
         prepareHeliosStackTrace(this, callSites)
     }
