@@ -103,12 +103,20 @@ class ConstrDataImpl {
     fields
 
     /**
+     * @readonly
+     * @type {string | undefined}
+     */
+    dataPath
+
+    /**
      * @param {IntLike} tag
      * @param {UplcData[]} fields
+     * @param {string} [dataPath]
      */
-    constructor(tag, fields) {
+    constructor(tag, fields, dataPath) {
         this.tag = toInt(tag)
         this.fields = fields
+        this.dataPath = dataPath
     }
 
     /**
