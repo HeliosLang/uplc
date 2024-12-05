@@ -22,7 +22,7 @@ import { decodeListData } from "./ListData.js"
  * @returns {UplcData}
  */
 export function decodeUplcData(bytes) {
-    const stream = makeByteStream({ bytes })
+    const stream = makeByteStream(bytes)
 
     if (isList(stream)) {
         return decodeListData(stream, decodeUplcData)

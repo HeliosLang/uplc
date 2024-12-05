@@ -7,7 +7,6 @@ import { asCekValue, asUplcValues } from "../cast.js"
 
 /**
  * @type {Builtin}
- * @__PURE__
  */
 export const headList = {
     name: "headList",

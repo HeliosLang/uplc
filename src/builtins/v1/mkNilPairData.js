@@ -8,7 +8,6 @@ import { asCekValue, asUplcValue } from "../cast.js"
 
 /**
  * @type {Builtin}
- * @__PURE__
  */
 export const mkNilPairData = {
     name: "mkNilPairData",

@@ -13,7 +13,6 @@ import { UPLC_VAR_TAG, decodeUplcVarFromFlat } from "./UplcVar.js"
 
 /**
  * Reads a single UplcTerm
- * @template {UplcTerm} TExpr
  * @param {FlatReader} r
  * @param {Builtin[]} builtins
  * @returns {UplcTerm}

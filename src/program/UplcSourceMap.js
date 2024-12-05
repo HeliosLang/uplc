@@ -119,8 +119,8 @@ function extractUplcSourceMap(root) {
                     indices.push([i, j, site.line, site.column])
                 }
 
-                if (site.alias) {
-                    termDescriptions.push([i, site.alias])
+                if (site.description) {
+                    termDescriptions.push([i, site.description])
                 }
             }
         },
@@ -234,9 +234,9 @@ class UplcSourceMapImpl {
                         this.termDescriptions[termDescriptionsPos][1]
 
                     if (term.site) {
-                        term.site = term.site.withAlias(description)
+                        term.site = term.site.withDescription(description)
                     } else {
-                        term.site = makeDummySite().withAlias(description)
+                        term.site = makeDummySite().withDescription(description)
                     }
                 }
             },

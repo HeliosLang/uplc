@@ -22,7 +22,7 @@ import {
  * @returns {UplcTerm}
  */
 export function decodeCborProgram(bytes, expectedUplcVersion, builtins) {
-    const stream = makeByteStream({ bytes })
+    const stream = makeByteStream(bytes)
 
     if (!isBytes(stream)) {
         throw new Error("unexpected")

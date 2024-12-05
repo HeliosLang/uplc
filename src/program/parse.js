@@ -105,12 +105,9 @@ function findVarName(ctx, name) {
 export function parseProgram(s, ctx) {
     const [major, minor, patch] = ctx.uplcVersion.split(".")
 
-    const tokenizer = makeTokenizer({
-        source: makeSource({ content: s, options: { name: "<na>" } }),
-        options: {
-            tokenizeReal: false,
-            allowLeadingZeroes: true
-        }
+    const tokenizer = makeTokenizer(makeSource(s, { name: "<na>" }), {
+        tokenizeReal: false,
+        allowLeadingZeroes: true
     })
 
     const tokens = tokenizer.tokenize()
