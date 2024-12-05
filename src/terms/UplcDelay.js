@@ -85,7 +85,7 @@ class UplcDelayImpl {
         return {
             state: {
                 reducing: {
-                    name: this.site?.alias,
+                    name: this.site?.description,
                     delay: {
                         term: this.arg,
                         stack: stack

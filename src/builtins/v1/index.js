@@ -56,9 +56,8 @@ import { verifyEd25519Signature } from "./verifyEd25519Signature.js"
 
 /**
  * @type {Builtin[]}
- * @__PURE__
  */
-export const builtinsV1 = [
+export const builtinsV1 = /* @__PURE__ */ [
     addInteger, // 0
     subtractInteger, // 1
     multiplyInteger, // 2
@@ -114,6 +113,7 @@ export const builtinsV1 = [
 
 /**
  * @type {Map<string, Builtin>}
- * @__PURE__
  */
-export const builtinsV1Map = new Map(builtinsV1.map((bi) => [bi.name, bi]))
+export const builtinsV1Map = /* @__PURE__ */ new Map(
+    builtinsV1.map((bi) => [bi.name, bi])
+)

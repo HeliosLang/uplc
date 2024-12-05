@@ -91,7 +91,7 @@ class UplcLambdaImpl {
         return {
             state: {
                 reducing: {
-                    name: this.site?.alias,
+                    name: this.site?.description,
                     lambda: {
                         term: this.expr,
                         argName: this.argName ?? undefined,
