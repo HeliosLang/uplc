@@ -11,23 +11,24 @@ import { UPLC_DATA_NODE_MEM_SIZE } from "./UplcData.js"
  * @overload
  * @param {IntLike} tag
  * @param {UplcData[]} fields
+ * @param {string} [dataPath]
  * @returns {ConstrData}
  */
 /**
  * @overload
- * @param {{tag: IntLike, fields: UplcData[]}} props
+ * @param {{tag: IntLike, fields: UplcData[], dataPath?: string}} props
  * @returns {ConstrData}
  */
 /**
  * @param {(
- *   [IntLike, UplcData[]]
- *   | [{tag: IntLike, fields: UplcData[]}]
+ *   [IntLike, UplcData[], string?]
+ *   | [{tag: IntLike, fields: UplcData[], dataPath?: string}]
  * )} args
  * @returns {ConstrData}
  */
 export function makeConstrData(...args) {
     if (args.length == 1) {
-        return new ConstrDataImpl(args[0].tag, args[0].fields)
+        return new ConstrDataImpl(args[0].tag, args[0].fields, args[0].dataPath)
     } else if (args.length == 2) {
         return new ConstrDataImpl(args[0], args[1])
     } else {
