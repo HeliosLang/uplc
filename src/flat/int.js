@@ -74,7 +74,7 @@ export function decodeFlatInt(reader) {
 
 /**
  * @param {BitWriter} bitWriter
- * @param {bigint} x
+ * @param {bigint} x positive number
  */
 export function encodeFlatInt(bitWriter, x) {
     let bitString = padBits(x.toString(2), 7)

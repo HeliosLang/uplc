@@ -8,14 +8,33 @@ import { INT_TYPE } from "./UplcType.js"
  */
 
 /**
- * @param {IntLike | {value: IntLike, signed?: boolean}} args
+ * @overload
+ * @param {IntLike} value
+ * @param {boolean} [signed]
  * @returns {UplcInt}
  */
-export function makeUplcInt(args) {
-    if (typeof args == "number" || typeof args == "bigint") {
-        return new UplcIntImpl(args)
+/**
+ * @overload
+ * @param {{value: IntLike, signed?: boolean}} args
+ * @returns {UplcInt}
+ */
+/**
+ * @param {(
+ *   [IntLike, boolean?] |
+ *   [{value: IntLike, signed?: boolean}]
+ * )} args
+ * @returns {UplcInt}
+ */
+export function makeUplcInt(...args) {
+    if (args.length == 1) {
+        const arg = args[0]
+        if (typeof arg == "number" || typeof arg == "bigint") {
+            return new UplcIntImpl(arg)
+        } else {
+            return new UplcIntImpl(arg.value, arg.signed ?? true)
+        }
     } else {
-        return new UplcIntImpl(args.value, args.signed ?? true)
+        return new UplcIntImpl(args[0], args[1])
     }
 }
 
@@ -87,12 +106,12 @@ class UplcIntImpl {
     }
 
     /**
-     * 4 for type + 7 for simple int, or 4 + (7 + 1)*ceil(n/7) for large int
+     * 4 for type + (7 + 1)*ceil(log2(value)/7) for data
      * @type {number}
      */
     get flatSize() {
         const n = this.toUnsigned().value.toString(2).length
-        return 4 + (n <= 7 ? 7 : Math.ceil(n / 7) * 8)
+        return 4 + Math.ceil(n / 7) * 8
     }
 
     /**
@@ -107,7 +126,11 @@ class UplcIntImpl {
      * @returns {boolean}
      */
     isEqual(other) {
-        return other.kind == "int" && this.value == other.value
+        return (
+            other.kind == "int" &&
+            this.value == other.value &&
+            this.signed == other.signed
+        )
     }
 
     /**

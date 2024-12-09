@@ -24,6 +24,20 @@ export function makeUplcReader(args) {
 }
 
 /**
+ * Reused by some Uplc unit tests
+ * @param {number[] | Uint8Array} bytes
+ * @param {Builtin[]} builtins
+ * @returns {FlatReader}
+ */
+export function makeDefaultFlatReader(bytes, builtins) {
+    return makeFlatReader({
+        bytes,
+        readExpr: (r) => decodeTerm(r, builtins),
+        dispatchValueReader
+    })
+}
+
+/**
  * @implements {UplcReader}
  */
 class UplcReaderImpl {
@@ -47,11 +61,7 @@ class UplcReaderImpl {
      */
     constructor(bytes, builtins) {
         this.builtins = builtins
-        this._reader = makeFlatReader({
-            bytes,
-            readExpr: (r) => decodeTerm(r, builtins),
-            dispatchValueReader
-        })
+        this._reader = makeDefaultFlatReader(bytes, builtins)
     }
 
     /**

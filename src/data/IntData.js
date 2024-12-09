@@ -59,6 +59,22 @@ export function expectIntData(
 }
 
 /**
+ * Math.log2 truncates, but we need a rounding down version
+ * @param {bigint} x positive number
+ * @returns {number}
+ */
+export function log2i(x) {
+    let p = 0
+
+    while (x > 1n) {
+        x >>= 1n
+        p++
+    }
+
+    return p
+}
+
+/**
  * Calculate the mem size of a integer (without the DATA_NODE overhead)
  * @param {bigint} value
  * @returns {number}
@@ -69,7 +85,7 @@ export function calcIntMemSize(value) {
     } else {
         const abs = value > 0n ? value : -value
 
-        return Math.floor(Math.floor(Math.log2(Number(abs))) / 64) + 1
+        return Math.floor(log2i(abs) / 64) + 1
     }
 }
 
