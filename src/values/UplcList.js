@@ -5,11 +5,29 @@ import { makeListType } from "./UplcType.js"
  */
 
 /**
+ * @overload
+ * @param {UplcType} UplcType
+ * @param {UplcValue[]} items
+ * @returns {UplcList}
+ */
+/**
+ * @overload
  * @param {{itemType: UplcType, items: UplcValue[]}} args
  * @returns {UplcList}
  */
-export function makeUplcList(args) {
-    return new UplcListImpl(args.itemType, args.items)
+/**
+ * @param {(
+ *   [UplcType, UplcValue[]]
+ *   | [{itemType: UplcType, items: UplcValue[]}]
+ * )} args
+ * @returns {UplcList}
+ */
+export function makeUplcList(...args) {
+    if (args.length == 2) {
+        return new UplcListImpl(args[0], args[1])
+    } else {
+        return new UplcListImpl(args[0].itemType, args[0].items)
+    }
 }
 
 /**
@@ -129,11 +147,22 @@ class UplcListImpl {
      * @returns {boolean}
      */
     isEqual(other) {
-        return (
-            other.kind == "list" &&
-            this.items.length == other.items.length &&
-            this.items.every((item, i) => item.isEqual(other.items[i]))
-        )
+        if (other.kind == "list") {
+            if (this.items.length == 0) {
+                // for empty list case we must also compare the itemType
+                return (
+                    other.items.length == 0 &&
+                    this.itemType.isEqual(other.itemType)
+                )
+            } else {
+                return (
+                    this.items.length == other.items.length &&
+                    this.items.every((item, i) => item.isEqual(other.items[i]))
+                )
+            }
+        } else {
+            return false
+        }
     }
 
     /**
@@ -147,6 +176,11 @@ class UplcListImpl {
      * @returns {string}
      */
     toString() {
-        return `[${this.items.map((item) => item.toString()).join(", ")}]`
+        if (this.items.length == 0) {
+            // need to add some type information so that empty lists of different types don't look the same
+            return `[]${this.itemType.toString()}`
+        } else {
+            return `[${this.items.map((item) => item.toString()).join(", ")}]`
+        }
     }
 }

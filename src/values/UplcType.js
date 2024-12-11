@@ -33,26 +33,66 @@ export function makeUplcType(args) {
 }
 
 /**
+ * @overload
+ * @param {UplcType} itemType
+ * @returns {UplcType}
+ */
+/**
+ * @overload
  * @param {{item: UplcType}} args
  * @returns {UplcType}
  */
-export function makeListType(args) {
-    return new UplcTypeImpl([CONTAINER, LIST, args.item.typeBits].join("1"))
-}
-
 /**
- * @param {{first: UplcType, second: UplcType}} args
+ * @param {([UplcType] | [{item: UplcType}])} args
  * @returns {UplcType}
  */
-export function makePairType(args) {
+export function makeListType(...args) {
+    const arg = args[0]
+
     return new UplcTypeImpl(
         [
             CONTAINER,
-            CONTAINER,
-            PAIR,
-            args.first.typeBits,
-            args.second.typeBits
+            LIST,
+            "item" in arg ? arg.item.typeBits : arg.typeBits
         ].join("1")
+    )
+}
+
+/**
+ * @overload
+ * @param {UplcType} first
+ * @param {UplcType} second
+ * @returns {UplcType}
+ */
+/**
+ * @overload
+ * @param {{first: UplcType, second: UplcType}} args
+ * @returns {UplcType}
+ */
+/**
+ * @param {([UplcType, UplcType] | [{first: UplcType, second: UplcType}])} args
+ * @returns {UplcType}
+ */
+export function makePairType(...args) {
+    /**
+     * @type {UplcType}
+     */
+    let first
+
+    /**
+     * @type {UplcType}
+     */
+    let second
+    if (args.length == 2) {
+        first = args[0]
+        second = args[1]
+    } else {
+        first = args[0].first
+        second = args[0].second
+    }
+
+    return new UplcTypeImpl(
+        [CONTAINER, CONTAINER, PAIR, first.typeBits, second.typeBits].join("1")
     )
 }
 
