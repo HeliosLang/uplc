@@ -1,4 +1,4 @@
-import { strict as assert } from 'node:assert';
+import { strictEqual } from 'node:assert';
 import { test } from 'node:test';
 import { makeConstrData } from './ConstrData.js';
 import { UPLC_DATA_NODE_MEM_SIZE } from './UplcData.js';
@@ -13,5 +13,5 @@ test('ConstrData.memSize', () => {
     // Assume UPLC_DATA_NODE_MEM_SIZE is a constant import, adjust based on your logic.
     const expectedMemSize = UPLC_DATA_NODE_MEM_SIZE + testFields.reduce((sum, field) => sum + field.memSize, 0);
 
-    assert.equal(constrData.memSize, expectedMemSize);
+    strictEqual(constrData.memSize, expectedMemSize);
 });
