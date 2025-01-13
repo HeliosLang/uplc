@@ -8,8 +8,8 @@ import { verifyEcdsaSecp256k1Signature as verifyEcdsaSecp256k1SignatureV2 } from
 /**
  * @type {Builtin}
  */
-export const verifyEcdsaSecp256k1Signature = {
+export const verifyEcdsaSecp256k1Signature = /* @__PURE__ */ (() => ({
     ...verifyEcdsaSecp256k1SignatureV2,
     cpuModel: (params) => makeArgSizesConstCost(params.get(185)),
     memModel: (params) => makeArgSizesConstCost(params.get(186))
-}
+}))()

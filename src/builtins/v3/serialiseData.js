@@ -8,10 +8,10 @@ import { serialiseData as serialiseDataV2 } from "../v2/serialiseData.js"
 /**
  * @type {Builtin}
  */
-export const serialiseData = {
+export const serialiseData = /* @__PURE__ */ (() => ({
     ...serialiseDataV2,
     cpuModel: (params) =>
         makeArgSizesFirstCost(params.get(152), params.get(151)),
     memModel: (params) =>
         makeArgSizesFirstCost(params.get(154), params.get(153))
-}
+}))()

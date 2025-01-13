@@ -8,8 +8,8 @@ import { unListData as unListDataV1 } from "../v1/unListData.js"
 /**
  * @type {Builtin}
  */
-export const unListData = {
+export const unListData = /* @__PURE__ */ (() => ({
     ...unListDataV1,
     cpuModel: (params) => makeArgSizesConstCost(params.get(181)),
     memModel: (params) => makeArgSizesConstCost(params.get(182))
-}
+}))()

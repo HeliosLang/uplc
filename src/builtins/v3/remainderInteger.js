@@ -11,7 +11,7 @@ import { remainderInteger as remainderIntegerV1 } from "../v1/remainderInteger.j
 /**
  * @type {Builtin}
  */
-export const remainderInteger = {
+export const remainderInteger = /* @__PURE__ */ (() => ({
     ...remainderIntegerV1,
     cpuModel: (params) =>
         makeArgSizesQuadXYCost(params.get(141), params.get(148), {
@@ -24,4 +24,4 @@ export const remainderInteger = {
         }),
     memModel: (params) =>
         makeArgSizesSecondCost(params.get(150), params.get(149))
-}
+}))()

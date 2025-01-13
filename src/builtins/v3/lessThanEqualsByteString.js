@@ -11,8 +11,8 @@ import { lessThanEqualsByteString as lessThanEqualsByteStringV1 } from "../v1/le
 /**
  * @type {Builtin}
  */
-export const lessThanEqualsByteString = {
+export const lessThanEqualsByteString = /* @__PURE__ */ (() => ({
     ...lessThanEqualsByteStringV1,
     cpuModel: (params) => makeArgSizesMinCost(params.get(94), params.get(93)),
     memModel: (params) => makeArgSizesConstCost(params.get(95))
-}
+}))()

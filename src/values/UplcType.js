@@ -265,22 +265,24 @@ class UplcTypeImpl {
     }
 }
 
-export const INT_TYPE = makeUplcType({ typeBits: INT })
-export const BYTE_ARRAY_TYPE = makeUplcType({ typeBits: BYTE_ARRAY })
-export const STRING_TYPE = makeUplcType({ typeBits: STRING })
-export const UNIT_TYPE = makeUplcType({ typeBits: UNIT })
-export const BOOL_TYPE = makeUplcType({ typeBits: BOOL })
-export const DATA_TYPE = makeUplcType({ typeBits: DATA })
-export const DATA_PAIR_TYPE = makePairType({
+export const INT_TYPE = /* @__PURE__ */ makeUplcType({ typeBits: INT })
+export const BYTE_ARRAY_TYPE = /* @__PURE__ */ makeUplcType({
+    typeBits: BYTE_ARRAY
+})
+export const STRING_TYPE = /* @__PURE__ */ makeUplcType({ typeBits: STRING })
+export const UNIT_TYPE = /* @__PURE__ */ makeUplcType({ typeBits: UNIT })
+export const BOOL_TYPE = /* @__PURE__ */ makeUplcType({ typeBits: BOOL })
+export const DATA_TYPE = /* @__PURE__ */ makeUplcType({ typeBits: DATA })
+export const DATA_PAIR_TYPE = /* @__PURE__ */ makePairType({
     first: DATA_TYPE,
     second: DATA_TYPE
 })
-export const BLS12_381_G1_ELEMENT_TYPE = makeUplcType({
+export const BLS12_381_G1_ELEMENT_TYPE = /* @__PURE__ */ makeUplcType({
     typeBits: BLS12_381_G1_ELEMENT
 })
-export const BLS12_381_G2_ELEMENT_TYPE = makeUplcType({
+export const BLS12_381_G2_ELEMENT_TYPE = /* @__PURE__ */ makeUplcType({
     typeBits: BLS12_381_G2_ELEMENT
 })
-export const BLS12_381_ML_RESULT_TYPE = makeUplcType({
+export const BLS12_381_ML_RESULT_TYPE = /* @__PURE__ */ makeUplcType({
     typeBits: BLS12_381_ML_RESULT
 })

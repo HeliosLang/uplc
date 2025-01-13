@@ -11,7 +11,7 @@ import { modInteger as modIntegerV1 } from "../v1/modInteger.js"
 /**
  * @type {Builtin}
  */
-export const modInteger = {
+export const modInteger = /* @__PURE__ */ (() => ({
     ...modIntegerV1,
     cpuModel: (params) =>
         makeArgSizesQuadXYCost(params.get(114), params.get(121), {
@@ -24,4 +24,4 @@ export const modInteger = {
         }),
     memModel: (params) =>
         makeArgSizesSecondCost(params.get(123), params.get(122))
-}
+}))()

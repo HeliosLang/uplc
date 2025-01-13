@@ -8,8 +8,8 @@ import { ifThenElse as ifThenElseV1 } from "../v1/ifThenElse.js"
 /**
  * @type {Builtin}
  */
-export const ifThenElse = {
+export const ifThenElse = /* @__PURE__ */ (() => ({
     ...ifThenElseV1,
     cpuModel: (params) => makeArgSizesConstCost(params.get(84)),
     memModel: (params) => makeArgSizesConstCost(params.get(85))
-}
+}))()

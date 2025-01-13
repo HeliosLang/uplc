@@ -8,8 +8,8 @@ import { unMapData as unMapDataV1 } from "../v1/unMapData.js"
 /**
  * @type {Builtin}
  */
-export const unMapData = {
+export const unMapData = /* @__PURE__ */ (() => ({
     ...unMapDataV1,
     cpuModel: (params) => makeArgSizesConstCost(params.get(165)),
     memModel: (params) => makeArgSizesConstCost(params.get(166))
-}
+}))()

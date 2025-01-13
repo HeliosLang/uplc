@@ -64,4 +64,4 @@ class UplcUnitImpl {
 /**
  * @type {UplcUnit}
  */
-export const UNIT_VALUE = new UplcUnitImpl()
+export const UNIT_VALUE = (() => /* @__PURE__ */ new UplcUnitImpl())()

@@ -8,8 +8,8 @@ import { headList as headListV1 } from "../v1/headList.js"
 /**
  * @type {Builtin}
  */
-export const headList = {
+export const headList = /* @__PURE__ */ (() => ({
     ...headListV1,
     cpuModel: (params) => makeArgSizesConstCost(params.get(80)),
     memModel: (params) => makeArgSizesConstCost(params.get(81))
-}
+}))()

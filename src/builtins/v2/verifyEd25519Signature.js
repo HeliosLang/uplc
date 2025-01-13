@@ -11,9 +11,9 @@ import { verifyEd25519Signature as verifyEd25519SignatureV1 } from "../v1/verify
 /**
  * @type {Builtin}
  */
-export const verifyEd25519Signature = {
+export const verifyEd25519Signature = /* @__PURE__ */ (() => ({
     ...verifyEd25519SignatureV1,
     cpuModel: (params) =>
         makeArgSizesThirdCost(params.get(170), params.get(169)),
     memModel: (params) => makeArgSizesConstCost(params.get(171))
-}
+}))()

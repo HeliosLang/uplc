@@ -8,8 +8,8 @@ import { mkPairData as mkPairDataV1 } from "../v1/mkPairData.js"
 /**
  * @type {Builtin}
  */
-export const mkPairData = {
+export const mkPairData = /* @__PURE__ */ (() => ({
     ...mkPairDataV1,
     cpuModel: (params) => makeArgSizesConstCost(params.get(112)),
     memModel: (params) => makeArgSizesConstCost(params.get(113))
-}
+}))()

@@ -8,8 +8,8 @@ import { subtractInteger as subtractIntegerV1 } from "../v1/subtractInteger.js"
 /**
  * @type {Builtin}
  */
-export const subtractInteger = {
+export const subtractInteger = /* @__PURE__ */ (() => ({
     ...subtractIntegerV1,
     cpuModel: (params) => makeArgSizesMaxCost(params.get(150), params.get(149)),
     memModel: (params) => makeArgSizesMaxCost(params.get(152), params.get(151))
-}
+}))()

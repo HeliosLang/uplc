@@ -8,8 +8,8 @@ import { trace as traceV1 } from "../v1/trace.js"
 /**
  * @type {Builtin}
  */
-export const trace = {
+export const trace = /* @__PURE__ */ (() => ({
     ...traceV1,
     cpuModel: (params) => makeArgSizesConstCost(params.get(155)),
     memModel: (params) => makeArgSizesConstCost(params.get(156))
-}
+}))()

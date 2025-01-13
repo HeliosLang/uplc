@@ -11,7 +11,7 @@ import { quotientInteger as quotientIntegerV1 } from "../v1/quotientInteger.js"
 /**
  * @type {Builtin}
  */
-export const quotientInteger = {
+export const quotientInteger = /* @__PURE__ */ (() => ({
     ...quotientIntegerV1,
     cpuModel: (params) =>
         makeArgSizesQuadXYCost(params.get(130), params.get(137), {
@@ -24,4 +24,4 @@ export const quotientInteger = {
         }),
     memModel: (params) =>
         makeArgSizesDiffCost(params.get(140), params.get(138), params.get(139))
-}
+}))()

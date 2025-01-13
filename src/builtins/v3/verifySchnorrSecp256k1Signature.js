@@ -11,9 +11,9 @@ import { verifySchnorrSecp256k1Signature as verifySchnorrSecp256k1SignatureV2 } 
 /**
  * @type {Builtin}
  */
-export const verifySchnorrSecp256k1Signature = {
+export const verifySchnorrSecp256k1Signature = /* @__PURE__ */ (() => ({
     ...verifySchnorrSecp256k1SignatureV2,
     cpuModel: (params) =>
         makeArgSizesThirdCost(params.get(191), params.get(190)),
     memModel: (params) => makeArgSizesConstCost(params.get(192))
-}
+}))()

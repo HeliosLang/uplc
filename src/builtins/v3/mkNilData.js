@@ -8,8 +8,8 @@ import { mkNilData as mkNilDataV1 } from "../v1/mkNilData.js"
 /**
  * @type {Builtin}
  */
-export const mkNilData = {
+export const mkNilData = /* @__PURE__ */ (() => ({
     ...mkNilDataV1,
     cpuModel: (params) => makeArgSizesConstCost(params.get(108)),
     memModel: (params) => makeArgSizesConstCost(params.get(109))
-}
+}))()

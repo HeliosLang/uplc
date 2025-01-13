@@ -11,9 +11,9 @@ import { sha2_256 as sha2_256V1 } from "../v1/sha2_256.js"
 /**
  * @type {Builtin}
  */
-export const sha2_256 = {
+export const sha2_256 = /* @__PURE__ */ (() => ({
     ...sha2_256V1,
     cpuModel: (params) =>
         makeArgSizesFirstCost(params.get(156), params.get(155)),
     memModel: (params) => makeArgSizesConstCost(params.get(157))
-}
+}))()

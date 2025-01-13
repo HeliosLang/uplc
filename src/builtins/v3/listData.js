@@ -8,8 +8,8 @@ import { listData as listDataV1 } from "../v1/listData.js"
 /**
  * @type {Builtin}
  */
-export const listData = {
+export const listData = /* @__PURE__ */ (() => ({
     ...listDataV1,
     cpuModel: (params) => makeArgSizesConstCost(params.get(102)),
     memModel: (params) => makeArgSizesConstCost(params.get(103))
-}
+}))()

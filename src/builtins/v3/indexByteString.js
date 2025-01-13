@@ -8,8 +8,8 @@ import { indexByteString as indexByteStringV1 } from "../v1/indexByteString.js"
 /**
  * @type {Builtin}
  */
-export const indexByteString = {
+export const indexByteString = /* @__PURE__ */ (() => ({
     ...indexByteStringV1,
     cpuModel: (params) => makeArgSizesConstCost(params.get(86)),
     memModel: (params) => makeArgSizesConstCost(params.get(87))
-}
+}))()

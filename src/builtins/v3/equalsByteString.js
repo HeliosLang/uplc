@@ -11,9 +11,9 @@ import { equalsByteString as equalsByteStringV1 } from "../v1/equalsByteString.j
 /**
  * @type {Builtin}
  */
-export const equalsByteString = {
+export const equalsByteString = /* @__PURE__ */ (() => ({
     ...equalsByteStringV1,
     cpuModel: (params) =>
         makeArgSizesDiagCost(params.get(66), params.get(65), params.get(64)),
     memModel: (params) => makeArgSizesConstCost(params.get(67))
-}
+}))()

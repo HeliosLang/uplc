@@ -10,8 +10,8 @@ import { lessThanEqualsInteger as lessThanEqualsIntegerV1 } from "../v1/lessThan
 /**
  * @type {Builtin}
  */
-export const lessThanEqualsInteger = {
+export const lessThanEqualsInteger = /* @__PURE__ */ (() => ({
     ...lessThanEqualsIntegerV1,
     cpuModel: (params) => makeArgSizesMinCost(params.get(97), params.get(96)),
     memModel: (params) => makeArgSizesConstCost(params.get(98))
-}
+}))()

@@ -8,8 +8,8 @@ import { fstPair as fstPairV1 } from "../v1/fstPair.js"
 /**
  * @type {Builtin}
  */
-export const fstPair = {
+export const fstPair = /* @__PURE__ */ (() => ({
     ...fstPairV1,
     cpuModel: (params) => makeArgSizesConstCost(params.get(78)),
     memModel: (params) => makeArgSizesConstCost(params.get(79))
-}
+}))()

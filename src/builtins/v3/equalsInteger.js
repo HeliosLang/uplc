@@ -11,8 +11,8 @@ import { equalsInteger as equalsIntegerV1 } from "../v1/equalsInteger.js"
 /**
  * @type {Builtin}
  */
-export const equalsInteger = {
+export const equalsInteger = /* @__PURE__ */ (() => ({
     ...equalsIntegerV1,
     cpuModel: (params) => makeArgSizesMinCost(params.get(72), params.get(71)),
     memModel: (params) => makeArgSizesConstCost(params.get(73))
-}
+}))()

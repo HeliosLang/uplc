@@ -8,10 +8,10 @@ import { sliceByteString as sliceByteStringV1 } from "../v1/sliceByteString.js"
 /**
  * @type {Builtin}
  */
-export const sliceByteString = {
+export const sliceByteString = /* @__PURE__ */ (() => ({
     ...sliceByteStringV1,
     cpuModel: (params) =>
         makeArgSizesThirdCost(params.get(162), params.get(161)),
     memModel: (params) =>
         makeArgSizesThirdCost(params.get(164), params.get(163))
-}
+}))()

@@ -81,7 +81,7 @@ import { verifySchnorrSecp256k1Signature } from "./verifySchnorrSecp256k1Signatu
 /**
  * @type {Builtin[]}
  */
-export const builtinsV3 = /* @__PURE__ */ [
+export const builtinsV3 = [
     addInteger, // 0
     subtractInteger, // 1
     multiplyInteger, // 2
@@ -162,6 +162,7 @@ export const builtinsV3 = /* @__PURE__ */ [
 /**
  * @type {Map<string, Builtin>}
  */
-export const builtinsV3Map = /* @__PURE__ */ new Map(
-    builtinsV3.map((bi) => [bi.name, bi])
-)
+export const builtinsV3Map = (() =>
+    /* @__PURE__ */ new Map(
+        /* @__PURE__ */ builtinsV3.map((bi) => [bi.name, bi])
+    ))()

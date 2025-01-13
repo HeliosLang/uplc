@@ -11,7 +11,7 @@ import { divideInteger as divideIntegerV1 } from "../v1/divideInteger.js"
 /**
  * @type {Builtin}
  */
-export const divideInteger = {
+export const divideInteger = /* @__PURE__ */ (() => ({
     ...divideIntegerV1,
     cpuModel: (params) =>
         makeArgSizesQuadXYCost(params.get(49), params.get(56), {
@@ -24,4 +24,4 @@ export const divideInteger = {
         }),
     memModel: (params) =>
         makeArgSizesDiffCost(params.get(59), params.get(57), params.get(58))
-}
+}))()
