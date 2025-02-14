@@ -32,7 +32,7 @@
         "typescript": "^5.6.2"
     },
     "dependencies": {
-        "@helios-lang/cbor": "^0.2.6",
+        "@helios-lang/cbor": "^0.3.0",
         "@helios-lang/codec-utils": "^0.3.4",
         "@helios-lang/compiler-utils": "^0.5.3",
         "@helios-lang/crypto": "^0.2.3",
