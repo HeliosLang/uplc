@@ -1,0 +1,184 @@
+(program
+  1.0.0
+  [
+    (lam
+      i
+      [
+        [
+          [
+            (force
+              (force
+                (delay
+                  (delay
+                    (lam
+                      f
+                      [
+                        (force
+                          (force
+                            (delay
+                              (delay
+                                (lam
+                                  f
+                                  [
+                                    (force (delay (lam s [ s s ])))
+                                    (lam
+                                      s
+                                      (lam
+                                        x
+                                        [
+                                          [
+                                            f
+                                            [
+                                              (force (delay (lam s [ s s ]))) s
+                                            ]
+                                          ]
+                                          x
+                                        ]
+                                      )
+                                    )
+                                  ]
+                                )
+                              )
+                            )
+                          )
+                        )
+                        (lam
+                          rec
+                          (lam
+                            z
+                            (lam
+                              xs
+                              [
+                                [ (force xs) z ]
+                                (lam x (lam xs_ [ [ rec [ [ f z ] x ] ] xs_ ]))
+                              ]
+                            )
+                          )
+                        )
+                      ]
+                    )
+                  )
+                )
+              )
+            )
+            (builtin multiplyInteger)
+          ]
+          (con integer 1)
+        ]
+        [
+          [
+            (lam
+              n
+              (lam
+                m
+                [
+                  [
+                    (force
+                      (force
+                        (delay
+                          (delay
+                            (lam
+                              f
+                              [
+                                (force (delay (lam s [ s s ])))
+                                (lam
+                                  s
+                                  (lam
+                                    x
+                                    [
+                                      [
+                                        f [ (force (delay (lam s [ s s ]))) s ]
+                                      ]
+                                      x
+                                    ]
+                                  )
+                                )
+                              ]
+                            )
+                          )
+                        )
+                      )
+                    )
+                    (lam
+                      rec
+                      (lam
+                        n_
+                        [
+                          [
+                            [
+                              (force
+                                (delay
+                                  (lam
+                                    b
+                                    (lam
+                                      x
+                                      (lam
+                                        y
+                                        [
+                                          [
+                                            [
+                                              [ (force (builtin ifThenElse)) b ]
+                                              x
+                                            ]
+                                            y
+                                          ]
+                                          (con unit ())
+                                        ]
+                                      )
+                                    )
+                                  )
+                                )
+                              )
+                              [ [ (builtin lessThanEqualsInteger) n_ ] m ]
+                            ]
+                            (lam
+                              u
+                              [
+                                [
+                                  (force
+                                    (delay
+                                      (lam
+                                        x
+                                        (lam
+                                          xs
+                                          (delay (lam z (lam f [ [ f x ] xs ])))
+                                        )
+                                      )
+                                    )
+                                  )
+                                  n_
+                                ]
+                                [
+                                  rec
+                                  [
+                                    (lam
+                                      i
+                                      [
+                                        [ (builtin addInteger) i ]
+                                        (con integer 1)
+                                      ]
+                                    )
+                                    n_
+                                  ]
+                                ]
+                              ]
+                            )
+                          ]
+                          (lam u (force (delay (delay (lam z (lam f z))))))
+                        ]
+                      )
+                    )
+                  ]
+                  n
+                ]
+              )
+            )
+            (con integer 1)
+          ]
+          i
+        ]
+      ]
+    )
+    (con integer 4)
+  ]
+)

@@ -3,13 +3,12 @@
  */
 
 /**
- * @param {bigint} a
- * @param {bigint} b
- * @param {bigint} constant
+ * @param {bigint} a - slope
+ * @param {bigint} b - intercept
  * @returns {ArgSizesCost}
  */
-export function makeArgSizesProdCost(a, b, constant) {
-    return new ArgSizesProdCost(a, b, constant)
+export function makeArgSizesProdCost(a, b) {
+    return new ArgSizesProdCost(a, b)
 }
 
 /**
@@ -31,20 +30,12 @@ class ArgSizesProdCost {
     b
 
     /**
-     * @readonly
-     * @type {bigint}
-     */
-    constant
-
-    /**
      * @param {bigint} a - slope
      * @param {bigint} b - intercept
-     * @param {bigint} constant
      */
-    constructor(a, b, constant) {
+    constructor(a, b) {
         this.a = a
         this.b = b
-        this.constant = constant
     }
 
     /**
@@ -60,10 +51,6 @@ class ArgSizesProdCost {
 
         const [x, y] = argSizes
 
-        if (x < y) {
-            return this.constant
-        } else {
-            return x * y * this.a + this.b
-        }
+        return x * y * this.a + this.b
     }
 }

@@ -2,7 +2,10 @@ import { deepEqual, strictEqual, throws } from "node:assert"
 import { describe, it } from "node:test"
 import { hexToBytes } from "@helios-lang/codec-utils"
 import { expectLeft, expectRight } from "@helios-lang/type-utils"
-import { BABBAGE_COST_MODEL_PARAMS_V1 } from "../costmodel/index.js"
+import {
+    BABBAGE_COST_MODEL_PARAMS_V1,
+    CONWAY_COST_MODEL_PARAMS_V1
+} from "../costmodel/index.js"
 import {
     makeByteArrayData,
     makeConstrData,
@@ -127,7 +130,7 @@ describe("UplcProgramV1", () => {
 
 /**
  * Taken from: https://github.com/IntersectMBO/plutus/tree/master/plutus-conformance/test-cases/uplc/evaluation/
- * @type {{src: string, mem: bigint, cpu: bigint, result: string | UplcValue}[]}
+ * @type {{src: string, mem: bigint, cpu: bigint, result: string | UplcValue, model?: string}[]}
  */
 const conformanceTests = [
     {
@@ -776,6 +779,22 @@ const conformanceTests = [
         result: makeUplcBool(false)
     },
     {
+        src: "(program 1.0.0 [(builtin listData) (con (list data) [(I 0), (B #1234), (Map [(I 9, List [B #abcd]), (B #4321, I 1234)])])])",
+        mem: 432n,
+        cpu: 81952n,
+        result: makeUplcDataValue(
+            makeListData([
+                makeIntData(0),
+                makeByteArrayData("1234"),
+                makeMapData([
+                    [makeIntData(9), makeListData([makeByteArrayData("abcd")])],
+                    [makeByteArrayData("4321"), makeIntData(1234)]
+                ])
+            ])
+        ),
+        model: "conway"
+    },
+    {
         src: "(program 1.0.0 [[(force (builtin mkCons)) (con integer 0)] (con (list integer) [])])",
         mem: 732n,
         cpu: 203593n,
@@ -1318,44 +1337,46 @@ const runtimeErrorTests = [
 ]
 
 describe(`UplcProgramV1 conformance`, () => {
-    conformanceTests.forEach(({ src, mem, cpu, result: expectedResult }) => {
-        it(src, () => {
-            const program = parseUplcProgramV1(src)
+    conformanceTests.forEach(
+        ({ src, mem, cpu, result: expectedResult, model }) => {
+            it(src, () => {
+                const program = parseUplcProgramV1(src)
 
-            const { result, cost } = program.eval(undefined, {
-                costModelParams: BABBAGE_COST_MODEL_PARAMS_V1
-            })
+                const { result, cost } = program.eval(undefined, {
+                    costModelParams: chooseModelParams(model)
+                })
 
-            const resultRight = expectRight(result)
-            const expectedResultRight = expectedResult
+                const resultRight = expectRight(result)
+                const expectedResultRight = expectedResult
 
-            if (
-                typeof resultRight == "string" ||
-                typeof expectedResultRight == "string"
-            ) {
                 if (
-                    typeof resultRight == "string" &&
+                    typeof resultRight == "string" ||
                     typeof expectedResultRight == "string"
                 ) {
-                    strictEqual(resultRight, expectedResultRight)
+                    if (
+                        typeof resultRight == "string" &&
+                        typeof expectedResultRight == "string"
+                    ) {
+                        strictEqual(resultRight, expectedResultRight)
+                    } else {
+                        throw new Error("incomparable term")
+                    }
                 } else {
-                    throw new Error("incomparable term")
-                }
-            } else {
-                const isEqual = expectedResultRight.isEqual(resultRight)
+                    const isEqual = expectedResultRight.isEqual(resultRight)
 
-                if (!isEqual) {
-                    throw new Error(
-                        `expected ${expectedResultRight.toString()}, got ${resultRight.toString()}`
-                    )
+                    if (!isEqual) {
+                        throw new Error(
+                            `expected ${expectedResultRight.toString()}, got ${resultRight.toString()}`
+                        )
+                    }
+                    strictEqual(isEqual, true)
                 }
-                strictEqual(isEqual, true)
-            }
 
-            strictEqual(mem, cost.mem)
-            strictEqual(cpu, cost.cpu)
-        })
-    })
+                strictEqual(mem, cost.mem)
+                strictEqual(cpu, cost.cpu)
+            })
+        }
+    )
 
     syntaxErrorTests.forEach((s) => {
         it(`fails to parse "${s}"`, () => {
@@ -1374,3 +1395,17 @@ describe(`UplcProgramV1 conformance`, () => {
         })
     })
 })
+
+/**
+ * @param {string | undefined} model
+ * @returns {number[]}
+ */
+function chooseModelParams(model) {
+    if (!model || model == "babbage") {
+        return BABBAGE_COST_MODEL_PARAMS_V1
+    } else if (model == "conway") {
+        return CONWAY_COST_MODEL_PARAMS_V1
+    } else {
+        throw new Error(`model ${model} not handled`)
+    }
+}

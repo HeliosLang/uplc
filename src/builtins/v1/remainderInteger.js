@@ -1,5 +1,5 @@
 import {
-    makeArgSizesProdCost,
+    makeArgSizesProdBelowDiagCost,
     makeArgSizesDiffCost
 } from "../../costmodel/index.js"
 import { makeUplcInt } from "../../values/index.js"
@@ -17,7 +17,11 @@ export const remainderInteger = {
     forceCount: 0,
     nArgs: 2,
     cpuModel: (params) =>
-        makeArgSizesProdCost(params.get(129), params.get(128), params.get(127)),
+        makeArgSizesProdBelowDiagCost(
+            params.get(129),
+            params.get(128),
+            params.get(127)
+        ),
     memModel: (params) =>
         makeArgSizesDiffCost(params.get(132), params.get(130), params.get(131)),
     call: evalRemainderInteger

@@ -1,5 +1,5 @@
 import {
-    makeArgSizesProdCost,
+    makeArgSizesProdBelowDiagCost,
     makeArgSizesDiffCost
 } from "../../costmodel/index.js"
 import { makeUplcInt } from "../../values/index.js"
@@ -17,7 +17,11 @@ export const divideInteger = {
     forceCount: 0,
     nArgs: 2,
     cpuModel: (params) =>
-        makeArgSizesProdCost(params.get(51), params.get(50), params.get(49)),
+        makeArgSizesProdBelowDiagCost(
+            params.get(51),
+            params.get(50),
+            params.get(49)
+        ),
     memModel: (params) =>
         makeArgSizesDiffCost(params.get(54), params.get(52), params.get(53)),
     call: evalDivideInteger

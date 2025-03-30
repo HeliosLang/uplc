@@ -6,6 +6,7 @@ export { makeArgSizesLiteralYOrLinearZCost } from "./ArgSizesLiteralYOrLinearZCo
 export { makeArgSizesMaxCost } from "./ArgSizesMaxCost.js"
 export { makeArgSizesMinCost } from "./ArgSizesMinCost.js"
 export { makeArgSizesProdCost } from "./ArgSizesProdCost.js"
+export { makeArgSizesProdBelowDiagCost } from "./ArgSizesProdBelowDiagCost.js"
 export { makeArgSizesQuadXYCost } from "./ArgSizesQuadXYCost.js"
 export { makeArgSizesQuadYCost } from "./ArgSizesQuadYCost.js"
 export { makeArgSizesQuadZCost } from "./ArgSizesQuadZCost.js"

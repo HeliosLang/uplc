@@ -65,6 +65,8 @@ import {
  *   uplcVersion: string
  *   builtins: Builtin[]
  *   varNames?: string[]
+ *   allowUnresolvedNames?: boolean
+ *   programName?: string
  * }} ParseContext
  */
 
@@ -103,9 +105,28 @@ function findVarName(ctx, name) {
  * @returns {UplcTerm}
  */
 export function parseProgram(s, ctx) {
-    const [major, minor, patch] = ctx.uplcVersion.split(".")
+    const [actualVersion, r] = parseProgramVersion(s, ctx.programName ?? "<na>")
 
-    const tokenizer = makeTokenizer(makeSource(s, { name: "<na>" }), {
+    if (actualVersion != ctx.uplcVersion) {
+        throw new Error(
+            `expected uplc version ${ctx.uplcVersion}, got ${actualVersion}`
+        )
+    }
+
+    const term = parseTerm(r, ctx)
+    r.end()
+    r.errors.throw()
+
+    return expectDefined(term)
+}
+
+/**
+ * @param {string} src
+ * @param {string} [name]
+ * @returns {[string, TokenReader]}
+ */
+export function parseProgramVersion(src, name = "<na>") {
+    const tokenizer = makeTokenizer(makeSource(src, { name }), {
         tokenizeReal: false,
         allowLeadingZeroes: true
     })
@@ -120,32 +141,33 @@ export function parseProgram(s, ctx) {
     let r = makeTokenReader({ tokens })
     let m
 
-    /**
-     * @type {UplcTerm | undefined}
-     */
-    let term = undefined
-
     if ((m = r.matches(group("(", { length: 1 })))) {
         r.end()
         r = m.fields[0]
-        r.assert(
-            word("program"),
-            intlit(major),
-            symbol("."),
-            intlit(minor),
-            symbol("."),
-            intlit(patch)
-        )
 
-        term = parseTerm(r, ctx)
-        r.end()
+        if (
+            (m = r.matches(
+                word("program"),
+                intlit(),
+                symbol("."),
+                intlit(),
+                symbol("."),
+                intlit()
+            ))
+        ) {
+            const major = m[1]
+            const minor = m[3]
+            const patch = m[5]
+
+            return [`${major.value}.${minor.value}.${patch.value}`, r]
+        } else {
+            r.endMatch()
+        }
     } else {
         r.endMatch()
     }
 
-    r.errors.throw()
-
-    return expectDefined(term)
+    throw r.errors.errors[0]
 }
 
 /**
@@ -153,13 +175,15 @@ export function parseProgram(s, ctx) {
  * @param {ParseContext} ctx
  * @returns {UplcTerm | undefined}
  */
-function parseTerm(r, ctx) {
+export function parseTerm(r, ctx) {
     let m
 
     if ((m = r.matches(anyWord))) {
         const i = findVarName(ctx, m.value)
         if (i !== undefined) {
             return makeUplcVar({ index: i, name: m.value, site: m.site })
+        } else if (ctx.allowUnresolvedNames) {
+            return makeUplcVar({ index: -1, name: m.value, site: m.site })
         } else {
             r.errors.syntax(
                 m.site,
@@ -477,8 +501,7 @@ function parseDataValue(r) {
 
         d = parseData(r)
     } else {
-        r.endMatch()
-        return undefined
+        d = parseData(r)
     }
 
     return d ? makeUplcDataValue(d) : undefined

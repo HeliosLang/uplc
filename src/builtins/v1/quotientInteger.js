@@ -1,5 +1,5 @@
 import {
-    makeArgSizesProdCost,
+    makeArgSizesProdBelowDiagCost,
     makeArgSizesDiffCost
 } from "../../costmodel/index.js"
 import { makeUplcInt } from "../../values/index.js"
@@ -17,7 +17,11 @@ export const quotientInteger = {
     forceCount: 0,
     nArgs: 2,
     cpuModel: (params) =>
-        makeArgSizesProdCost(params.get(123), params.get(122), params.get(121)),
+        makeArgSizesProdBelowDiagCost(
+            params.get(123),
+            params.get(122),
+            params.get(121)
+        ),
     memModel: (params) =>
         makeArgSizesDiffCost(params.get(126), params.get(124), params.get(125)),
     call: evalQuotientInteger

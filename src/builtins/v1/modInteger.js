@@ -1,5 +1,5 @@
 import {
-    makeArgSizesProdCost,
+    makeArgSizesProdBelowDiagCost,
     makeArgSizesDiffCost
 } from "../../costmodel/index.js"
 import { makeUplcInt } from "../../values/index.js"
@@ -17,7 +17,11 @@ export const modInteger = {
     forceCount: 0,
     nArgs: 2,
     cpuModel: (params) =>
-        makeArgSizesProdCost(params.get(111), params.get(110), params.get(109)),
+        makeArgSizesProdBelowDiagCost(
+            params.get(111),
+            params.get(110),
+            params.get(109)
+        ),
     memModel: (params) =>
         makeArgSizesDiffCost(params.get(114), params.get(112), params.get(113)),
     call: evalModInteger
