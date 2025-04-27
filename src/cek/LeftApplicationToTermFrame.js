@@ -4,7 +4,7 @@ import { mixStacks } from "./CekStack.js"
 
 /**
  * @import { Site } from "@helios-lang/compiler-utils"
- * @import { 
+ * @import {
  *   CekContext,
  *   CekFrame,
  *   CekStack,
