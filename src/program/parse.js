@@ -25,13 +25,15 @@ import {
 import {
     makeUplcBuiltin,
     makeUplcCall,
+    makeUplcCase,
     makeUplcConst,
+    makeUplcConstr,
     makeUplcDelay,
     makeUplcError,
     makeUplcForce,
     makeUplcLambda,
     makeUplcVar
-} from "../terms/index.js" // TODO: implement UplcCase and UplcConstr terms
+} from "../terms/index.js"
 import {
     BLS12_381_G1_ELEMENT_TYPE,
     BLS12_381_G2_ELEMENT_TYPE,
@@ -219,6 +221,14 @@ export function parseTerm(r, ctx) {
             const term = parseLambda(r, m.site, ctx)
             r.end()
             return term
+        } else if ((m = r.matches(word("constr")))) {
+            const term = parseConstr(r, m.site, ctx)
+            r.end()
+            return term
+        } else if ((m = r.matches(word("case")))) {
+            const term = parseCase(r, m.site, ctx)
+            r.end()
+            return term
         } else {
             r.endMatch()
             return undefined
@@ -317,6 +327,69 @@ function parseConst(r, site) {
     } else {
         return undefined
     }
+}
+
+/**
+ *
+ * @param {TokenReader} r
+ * @param {Site} site
+ * @param {ParseContext} ctx
+ * @returns {UplcTerm | undefined}
+ */
+function parseCase(r, site, ctx) {
+    if (ctx.uplcVersion == "1.0.0") {
+        r.errors.syntax(site, "case can't be used before uplc version 1.1.0")
+    }
+
+    const arg = parseTerm(r, ctx)
+
+    /**
+     * @type {UplcTerm[]}
+     */
+    const cases = []
+
+    while (!r.isEof()) {
+        const c = parseTerm(r, ctx)
+
+        if (c) {
+            cases.push(c)
+        }
+    }
+
+    if (arg) {
+        return makeUplcCase(arg, cases, site)
+    } else {
+        return undefined
+    }
+}
+
+/**
+ * @param {TokenReader} r
+ * @param {Site} site
+ * @param {ParseContext} ctx
+ * @returns {UplcTerm | undefined}
+ */
+function parseConstr(r, site, ctx) {
+    if (ctx.uplcVersion == "1.0.0") {
+        r.errors.syntax(site, "constr can't be used before uplc version 1.1.0")
+    }
+
+    const tag = parseInt(r)
+
+    /**
+     * @type {UplcTerm[]}
+     */
+    const args = []
+
+    while (!r.isEof()) {
+        const arg = parseTerm(r, ctx)
+
+        if (arg) {
+            args.push(arg)
+        }
+    }
+
+    return makeUplcConstr(tag?.value ?? 0, args, site)
 }
 
 /**

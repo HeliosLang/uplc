@@ -59,8 +59,7 @@ export async function loopTests(root, callback) {
                 if (budgetStr != "parse error") {
                     const [version, _] = parseProgramVersion(uplcStr, testPath)
 
-                    if (version != "1.0.0") {
-                        // TODO: also handle plutus version 1.1.0
+                    if (!["1.0.0", "1.1.0"].includes(version)) {
                         continue
                     }
                 }

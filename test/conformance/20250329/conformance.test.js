@@ -1,13 +1,13 @@
 import { strictEqual, throws } from "node:assert"
 import { join } from "node:path"
+import { expectLeft, expectRight } from "@helios-lang/type-utils"
 import { CONWAY_COST_MODEL_PARAMS_V2 } from "../../../src/costmodel/CostModelParamsV2.js"
+import { CONWAY_COST_MODEL_PARAMS_V3 } from "../../../src/costmodel/CostModelParamsV3.js"
 import {
     loopTests,
     parseBudget,
     parseUplcProgram
 } from "../conformance-utils.js"
-import { expectRight } from "@helios-lang/type-utils"
-import { expectLeft } from "@helios-lang/type-utils"
 
 const root = join(import.meta.dirname, "uplc", "evaluation")
 
@@ -32,12 +32,18 @@ await loopTests(root, async (testPath, uplcStr, budgetStr, resultStr) => {
             case "evaluation failure":
                 const program = parseUplc()
 
-                if (program.plutusVersion == "PlutusScriptV2") {
+                if (
+                    program.plutusVersion == "PlutusScriptV2" ||
+                    program.plutusVersion == "PlutusScriptV3"
+                ) {
                     // ignore other versions
 
                     throws(() => {
                         const { result } = program.eval(undefined, {
-                            costModelParams: CONWAY_COST_MODEL_PARAMS_V2
+                            costModelParams:
+                                program.plutusVersion == "PlutusScriptV2"
+                                    ? CONWAY_COST_MODEL_PARAMS_V2
+                                    : CONWAY_COST_MODEL_PARAMS_V3
                         })
 
                         const { error } = expectLeft(result)
@@ -57,20 +63,28 @@ await loopTests(root, async (testPath, uplcStr, budgetStr, resultStr) => {
             programName: `${testPath}.expected`
         })
 
-        if (program.plutusVersion == "PlutusScriptV2") {
-            if (expectedProgram.plutusVersion != "PlutusScriptV2") {
-                throw new Error(
-                    "expected result version not the same as the golden program version"
-                )
-            }
-
+        if (
+            program.plutusVersion == "PlutusScriptV2" ||
+            program.plutusVersion == "PlutusScriptV3"
+        ) {
             const { result, cost } = program.eval(undefined, {
-                costModelParams: CONWAY_COST_MODEL_PARAMS_V2
+                costModelParams:
+                    program.plutusVersion == "PlutusScriptV2"
+                        ? CONWAY_COST_MODEL_PARAMS_V2
+                        : CONWAY_COST_MODEL_PARAMS_V3
             })
 
-            const { result: expected } = expectedProgram.eval(undefined)
+            const { result: expected } = expectedProgram.eval(undefined, {
+                costModelParams:
+                    expectedProgram.plutusVersion == "PlutusScriptV2"
+                        ? CONWAY_COST_MODEL_PARAMS_V2
+                        : CONWAY_COST_MODEL_PARAMS_V3
+            })
 
-            const resultRight = expectRight(result)
+            const resultRight = expectRight(
+                result,
+                `expected evaluation ok, but got '${"left" in result ? result.left.error : ""}'`
+            )
             const expectedResultRight = expectRight(expected)
 
             if (

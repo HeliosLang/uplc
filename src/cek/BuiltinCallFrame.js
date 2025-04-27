@@ -1,3 +1,5 @@
+import { expectDefined } from "@helios-lang/type-utils"
+import { applyCekValues } from "./applyCekValues.js"
 import { pushStackCallSites } from "./CekStack.js"
 
 /**
@@ -33,6 +35,7 @@ export function makeBuiltinCallFrame(id, name, args, stack, callSite) {
 }
 
 /**
+ * TODO: get rid of this as it isn't required according to the CEK machine specifications
  * @implements {BuiltinCallFrame}
  */
 class BuiltinCallFrameImpl {
@@ -88,7 +91,21 @@ class BuiltinCallFrameImpl {
      * @returns {CekStateChange}
      */
     reduce(value, ctx) {
-        const b = ctx.getBuiltin(this.id)
+        const b = expectDefined(ctx.getBuiltin(this.id))
+
+        return applyCekValues(
+            {
+                builtin: {
+                    id: this.id,
+                    name: this.name,
+                    forceCount: b?.forceCount,
+                    args: this.args
+                }
+            },
+            value,
+            this.stack,
+            ctx
+        )
 
         if (!b) {
             return {

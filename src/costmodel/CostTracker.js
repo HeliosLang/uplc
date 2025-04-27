@@ -73,8 +73,16 @@ class CostTrackerImpl {
         this.incrCost("callTerm", this.costModel.callTerm)
     }
 
+    incrCaseCost() {
+        this.incrCost("caseTerm", this.costModel.caseTerm)
+    }
+
     incrConstCost() {
         this.incrCost("constTerm", this.costModel.constTerm)
+    }
+
+    incrConstrCost() {
+        this.incrCost("constrTerm", this.costModel.constrTerm)
     }
 
     incrDelayCost() {

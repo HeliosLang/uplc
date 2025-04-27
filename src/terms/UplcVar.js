@@ -97,7 +97,7 @@ class UplcVarImpl {
 
         if (!v) {
             throw new Error(
-                `${i} ${this.index} out of stack range (stack has ${stack.values.length} values)`
+                `${i} ${this.index} out of stack range (stack has ${stack.values.length} values)${this.name ? `, '${this.name}'` : ""}`
             )
         }
 

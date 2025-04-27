@@ -4,33 +4,34 @@ import { mixStacks } from "./CekStack.js"
 
 /**
  * @import { Site } from "@helios-lang/compiler-utils"
- * @import { AssertExtends } from "@helios-lang/type-utils"
- * @import { CekContext, CekFrame, CekStack, CekStateChange, CekTerm, CekValue } from "../index.js"
+ * @import { 
+ *   CekContext,
+ *   CekFrame,
+ *   CekStack,
+ *   CekStateChange,
+ *   CekTerm,
+ *   CekValue
+ * } from "../index.js"
  */
 
 /**
- * @typedef {object} PreCallFrame
- * @prop {(value: CekValue, ctx: CekContext) => CekStateChange} reduce
- */
-
-/**
- * @typedef {AssertExtends<CekFrame, PreCallFrame>} _PreCallFrameExtendsCekFrame
- */
-
-/**
- * @param {CekTerm} arg
+ * @param {CekTerm} term
  * @param {CekStack} stack
- * @param {Site | undefined} callSite
- * @returns
+ * @param {Site | undefined} [callSite]
+ * @returns {CekFrame}
  */
-export function makePreCallFrame(arg, stack, callSite) {
-    return new PreCallFrameImpl(arg, stack, callSite)
+export function makeLeftApplicationToTermFrame(
+    term,
+    stack,
+    callSite = undefined
+) {
+    return new LeftApplicationToTerm(term, stack, callSite)
 }
 
 /**
- * @implements {PreCallFrame}
+ * @implements {CekFrame}
  */
-class PreCallFrameImpl {
+class LeftApplicationToTerm {
     /**
      * @private
      * @readonly
@@ -77,15 +78,17 @@ class PreCallFrameImpl {
                         stack: this._stack
                     }
                 },
-                frame: makeLambdaCallFrame(
-                    value.lambda.term,
-                    mixStacks(value.lambda.stack, this._stack),
-                    {
-                        callSite: this._callSite,
-                        name: value.name,
-                        argName: value.lambda.argName
-                    }
-                )
+                frames: [
+                    makeLambdaCallFrame(
+                        value.lambda.term,
+                        mixStacks(value.lambda.stack, this._stack),
+                        {
+                            callSite: this._callSite,
+                            name: value.name,
+                            argName: value.lambda.argName
+                        }
+                    )
+                ]
             }
         } else if ("builtin" in value) {
             const b = ctx.getBuiltin(value.builtin.id)
@@ -116,13 +119,15 @@ class PreCallFrameImpl {
                             stack: this._stack
                         }
                     },
-                    frame: makeBuiltinCallFrame(
-                        value.builtin.id,
-                        value.builtin.name,
-                        value.builtin.args,
-                        this._stack,
-                        this._callSite
-                    )
+                    frames: [
+                        makeBuiltinCallFrame(
+                            value.builtin.id,
+                            value.builtin.name,
+                            value.builtin.args,
+                            this._stack,
+                            this._callSite
+                        )
+                    ]
                 }
             }
         } else {

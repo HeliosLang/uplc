@@ -11,7 +11,6 @@ import { stringifyNonUplcValue } from "./CekValue.js"
  *   CekStack,
  *   CekState,
  *   CekTerm,
- *   Cost,
  *   CostModel,
  *   CostTracker,
  *   UplcLogger,
@@ -110,29 +109,33 @@ export class CekMachine {
             if ("computing" in this._state) {
                 const { term, stack } = this._state.computing
 
-                const { state: newState, frame: newFrame } = term.compute(
+                const { state: newState, frames: newFrames } = term.compute(
                     stack,
                     this
                 )
 
                 this._state = newState
 
-                if (newFrame) {
-                    this._frames.push(newFrame)
+                if (newFrames) {
+                    for (let newFrame of newFrames) {
+                        this._frames.push(newFrame)
+                    }
                 }
             } else if ("reducing" in this._state) {
                 const f = this._frames.pop()
 
                 if (f) {
-                    const { state: newState, frame: newFrame } = f.reduce(
+                    const { state: newState, frames: newFrames } = f.reduce(
                         this._state.reducing,
                         this
                     )
 
                     this._state = newState
 
-                    if (newFrame) {
-                        this._frames.push(newFrame)
+                    if (newFrames) {
+                        for (let newFrame of newFrames) {
+                            this._frames.push(newFrame)
+                        }
                     }
                 } else {
                     return this.returnValue(

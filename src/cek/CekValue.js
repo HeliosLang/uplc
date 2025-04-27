@@ -1,5 +1,5 @@
 /**
- * @import { Builtin, CekStack, CekTerm, CekValue, UplcValue } from "../index.js"
+ * @import { CekValue, UplcValue } from "../index.js"
  */
 
 /**
@@ -18,7 +18,7 @@ export function stringifyNonUplcValue(value, simplify = false) {
         }
     } else if ("builtin" in value) {
         return value.builtin.name
-    } else {
+    } else if ("lambda" in value) {
         const props = value.lambda
 
         if (simplify) {
@@ -28,6 +28,8 @@ export function stringifyNonUplcValue(value, simplify = false) {
                 props.argName ? `${props.argName} ` : ""
             }${props.term.toString()})`
         }
+    } else {
+        return "<constr>"
     }
 }
 

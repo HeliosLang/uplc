@@ -1,4 +1,4 @@
-import { makePreCallFrame } from "../cek/index.js"
+import { makeLeftApplicationToTermFrame } from "../cek/index.js"
 
 /**
  * @import { Site } from "@helios-lang/compiler-utils"
@@ -114,7 +114,7 @@ class UplcCallImpl {
                     stack: stack
                 }
             },
-            frame: makePreCallFrame(this.arg, stack, this.site)
+            frames: [makeLeftApplicationToTermFrame(this.arg, stack, this.site)]
         }
     }
 

@@ -112,6 +112,14 @@ export {
  */
 
 /**
+ * @typedef {{
+ *   name: string
+ *   cpuModel: ArgSizesCostClass
+ *   memModel: ArgSizesCostClass
+ * }} BuiltinCostModel
+ */
+
+/**
  * @typedef {BuiltinCostModel & {
  *   forceCount: number
  *   nArgs: number
@@ -123,14 +131,6 @@ export {
  * @typedef {{
  *   print: (message: string) => void
  * }} BuiltinContext
- */
-
-/**
- * @typedef {{
- *   name: string
- *   cpuModel: ArgSizesCostClass
- *   memModel: ArgSizesCostClass
- * }} BuiltinCostModel
  */
 
 /**
@@ -199,7 +199,7 @@ export {
 /**
  * @typedef {{
  *   state: CekState
- *   frame?: CekFrame
+ *   frames?: CekFrame[]
  * }} CekStateChange
  */
 
@@ -212,29 +212,64 @@ export {
  */
 
 /**
- * Generalized UplcValue
- * The optional name is used for debugging
- * @typedef {{name?: string} & ({
- *   value: UplcValue
- * } | {
+ * The optional `name` is used for debugging
+ * @typedef {{
+ *  name?: string
+ *  value: UplcValue
+ * }} CekPlainValue
+ */
+
+/**
+ * The optional `name` is used for debugging
+ * @typedef {{
+ *   name?: string
  *   delay: {
  *     term: CekTerm
  *     stack: CekStack
  *   }
- * } | {
+ * }} CekDelayedValue
+ */
+
+/**
+ * The optional `name` is used for debugging
+ * @typedef {{
+ *   name?: string
  *   lambda: {
  *     term: CekTerm
- *     argName?: string
  *     stack: CekStack
+ *     argName?: string
  *   }
- * } | {
+ * }} CekLambdaValue
+ */
+
+/**
+ * The optional `name` is used for debugging
+ * @typedef {{
+ *   name?: string
  *   builtin: {
  *     id: number
  *     name: string
  *     forceCount: number
  *     args: CekValue[]
  *   }
- * })} CekValue
+ * }} CekBuiltinValue
+ */
+
+/**
+ * The optional `name` is used for debugging
+ * @typedef {{
+ *   name?: string
+ *   constr: {
+ *     tag: number
+ *     args: CekValue[]
+ *   }
+ * }} CekConstrValue
+ */
+
+/**
+ * Generalized UplcValue
+ * The optional name is used for debugging
+ * @typedef {CekPlainValue | CekDelayedValue | CekLambdaValue | CekBuiltinValue | CekConstrValue} CekValue
  */
 
 /**
@@ -278,7 +313,9 @@ export {
  *   breakdown: CostBreakdown
  *   incrBuiltinCost(): void
  *   incrCallCost(): void
+ *   incrCaseCost(): void
  *   incrConstCost(): void
+ *   incrConstrCost(): void
  *   incrDelayCost(): void
  *   incrForceCost(): void
  *   incrLambdaCost(): void
@@ -513,7 +550,9 @@ export {
  * @typedef {(
  *   UplcBuiltin
  *   | UplcCall
+ *   | UplcCase
  *   | UplcConst
+ *   | UplcConstr
  *   | UplcDelay
  *   | UplcError
  *   | UplcForce
@@ -580,6 +619,22 @@ export {
  *   index: number
  *   name?: string
  * }} UplcVar
+ */
+
+/**
+ * @typedef {CommonUplcTermProps & {
+ *   kind: "constr"
+ *   tag:  number
+ *   args: UplcTerm[]
+ * }} UplcConstr
+ */
+
+/**
+ * @typedef {CommonUplcTermProps & {
+ *   kind: "case"
+ *   arg: UplcTerm
+ *   cases: UplcTerm[]
+ * }} UplcCase
  */
 
 /**

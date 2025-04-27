@@ -1,47 +1,37 @@
-import { makeForceFrame } from "../cek/index.js"
+import { makeCaseScrutineeFrame } from "../cek/CaseScrutineeFrame.js"
 
 /**
  * @import { Site } from "@helios-lang/compiler-utils"
- * @import {
- *   CekContext,
- *   CekStack,
- *   CekStateChange,
- *   FlatReader,
- *   FlatWriter,
- *   UplcForce,
- *   UplcTerm
- * } from "../index.js"
+ * @import { CekContext, CekStack, CekStateChange, FlatWriter, UplcCase, UplcTerm } from "../index.js"
  */
 
-export const UPLC_FORCE_TAG = 5
+export const UPLC_CASE_TAG = 9
 
 /**
- * @param {{arg: UplcTerm, site?: Site}} props
- * @returns {UplcForce}
+ * @param {UplcTerm} arg
+ * @param {UplcTerm[]} cases
+ * @param {Site | undefined} site
+ * @returns {UplcCase}
  */
-export function makeUplcForce(props) {
-    return new UplcForceImpl(props.arg, props.site)
+export function makeUplcCase(arg, cases, site = undefined) {
+    return new UplcCaseImpl(arg, cases, site)
 }
 
 /**
- * @param {FlatReader} r
- * @returns {UplcForce}
+ * @implements {UplcCase}
  */
-export function decodeUplcForceFromFlat(r) {
-    const arg = r.readExpr()
-    return makeUplcForce({ arg })
-}
-
-/**
- * Plutus-core force term
- * @implements {UplcForce}
- */
-class UplcForceImpl {
+class UplcCaseImpl {
     /**
      * @readonly
      * @type {UplcTerm}
      */
     arg
+
+    /**
+     * @readonly
+     * @type {UplcTerm[]}
+     */
+    cases
 
     /**
      * Optional source-map site
@@ -51,11 +41,14 @@ class UplcForceImpl {
     site
 
     /**
+     *
      * @param {UplcTerm} arg
+     * @param {UplcTerm[]} cases
      * @param {Site | undefined} site
      */
-    constructor(arg, site = undefined) {
+    constructor(arg, cases, site = undefined) {
         this.arg = arg
+        this.cases = cases
         this.site = site
     }
 
@@ -63,24 +56,23 @@ class UplcForceImpl {
      * @type {UplcTerm[]}
      */
     get children() {
-        return [this.arg]
+        return [this.arg].concat(this.cases)
     }
 
     /**
-     * @type {"force"}
+     * @type {"case"}
      */
     get kind() {
-        return "force"
+        return "case"
     }
 
     /**
-     *
      * @param {CekStack} stack
      * @param {CekContext} ctx
      * @returns {CekStateChange}
      */
     compute(stack, ctx) {
-        ctx.cost.incrForceCost()
+        ctx.cost.incrCaseCost()
 
         return {
             state: {
@@ -89,7 +81,7 @@ class UplcForceImpl {
                     stack: stack
                 }
             },
-            frames: [makeForceFrame(stack, this.site)]
+            frames: [makeCaseScrutineeFrame(this.cases, stack)]
         }
     }
 
@@ -97,14 +89,15 @@ class UplcForceImpl {
      * @param {FlatWriter} w
      */
     toFlat(w) {
-        w.writeTermTag(UPLC_FORCE_TAG)
+        w.writeTermTag(UPLC_CASE_TAG)
         this.arg.toFlat(w)
+        w.writeList(this.cases)
     }
 
     /**
      * @returns {string}
      */
     toString() {
-        return `(force ${this.arg.toString()})`
+        return `(case (${this.arg.toString()}) ${this.cases.map((c) => `(${c.toString()})`).join(" ")})`
     }
 }

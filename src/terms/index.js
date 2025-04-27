@@ -1,6 +1,8 @@
 export { makeUplcBuiltin } from "./UplcBuiltin.js"
 export { makeUplcCall } from "./UplcCall.js"
+export { makeUplcCase } from "./UplcCase.js"
 export { makeUplcConst } from "./UplcConst.js"
+export { makeUplcConstr } from "./UplcConstr.js"
 export { makeUplcDelay } from "./UplcDelay.js"
 export { makeUplcError } from "./UplcError.js"
 export { makeUplcForce } from "./UplcForce.js"
