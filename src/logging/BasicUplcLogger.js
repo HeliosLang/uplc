@@ -3,7 +3,7 @@
  */
 
 /**
- * @param {{}} _args
+ * @param {{}} [_args]
  * @returns {BasicUplcLogger}
  */
 export function makeBasicUplcLogger(_args = {}) {
@@ -24,7 +24,7 @@ class BasicUplcLoggerImpl {
     }
 
     /**
-     * emits a message from a Helios program
+     * Emits a message from a Helios program
      * @param {string} msg
      * @returns {void}
      */

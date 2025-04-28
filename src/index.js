@@ -109,9 +109,8 @@ export {
  */
 
 /**
- * @typedef {{
- *   calcCost: (argSizes: bigint[]) => bigint
- * }} ArgSizesCost
+ * @typedef {object} ArgSizesCost
+ * @prop {(argSizes: bigint[]) => bigint} calcCost
  */
 
 /**
@@ -131,18 +130,13 @@ export {
  */
 
 /**
- * @typedef {BuiltinCostModel & {
- *   forceCount: number
- *   nArgs: number
- *   call: BuiltinCallback
- * }} Builtin
- */
-
-/**
- * @typedef {object} BuiltinContext
- * The context that the builting functions need to operate.
- *
- * @prop {(message: string) => void} print
+ * @typedef {object} Builtin
+ * @prop {string} name
+ * @prop {ArgSizesCostClass} cpuModel
+ * @prop {ArgSizesCostClass} memModel
+ * @prop {number} forceCount
+ * @prop {number} nArgs
+ * @prop {BuiltinCallback} call
  */
 
 /**
@@ -155,6 +149,14 @@ export {
  */
 
 /**
+ * @typedef {object} BuiltinContext
+ * The context that the builting functions need to operate.
+ *
+ * @prop {(message: string) => void} print
+ */
+
+/**
+ * TODO: rename to CEKContext
  * @typedef {object} CekContext
  * The context that CEK terms and frames need to operate.
  *
@@ -165,6 +167,7 @@ export {
  */
 
 /**
+ * TODO: rename to CEKMachine
  * @typedef {object} CekMachine
  * The `CekMachine` extends the `CekContext` interface.
  *
@@ -202,6 +205,7 @@ export {
  */
 
 /**
+ * TODO: rename to CEKForceFrame
  * @typedef {object} CekForceFrame
  * Equivalent to the $(\text{force}~_)$ frame in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
@@ -211,18 +215,21 @@ export {
  * Equivalent to the following transitions in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  * $$
- * (\text{force}~_)\cdot s\triangleleft~\langle\text{delay}~M~\rho\rangle~\mapsto~s;\rho\triangleright~M
- * (\text{force}~_)\cdot s\triangleleft~\langle\text{builtin}~b~\overline{V}~(\iota\cdot\eta)\rangle~\mapsto~s\triangleleft~\langle\text{builtin}~b~\overline{V}~\eta\rangle
- * (\text{force}~_)\cdot s\triangleleft~\langle\text{builtin}~b~\overline{V}~[\iota]\rangle~\mapsto~\text{Eval}_\text{CEK}(s,b,\overline{V})
+ * \begin{aligned}
+ * (\texttt{force}~\_)\cdot s&\triangleleft\langle\texttt{delay}~M~\rho\rangle~&&\mapsto~s;\rho\triangleright~M\\
+ * (\texttt{force}~\_)\cdot s&\triangleleft\langle\texttt{builtin}~b~\overline{V}~(\iota\cdot\eta)\rangle~&&\mapsto~s\triangleleft\langle\texttt{builtin}~b~\overline{V}~\eta\rangle\\
+ * (\texttt{force}~\_)\cdot s&\triangleleft\langle\texttt{builtin}~b~\overline{V}~[\iota]\rangle~&&\mapsto~\textsf{Eval}_\textsf{CEK}(s,b,\overline{V})
+ * \end{aligned}
  * $$
  */
 
 /**
+ * TODO: rename to CEKLeftApplyToTermFrame
  * @typedef {object} CekLeftApplyToTermFrame
- * Equivalent to the $[_~(M,\rho)]$ frame in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ * Equivalent to the $[\_~(M,\rho)]$ frame in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
- *    - `arg` is equivalent to `M`
- *    - `env` is equivalent to `\rho`
+ *    - `arg` is equivalent to $M$
+ *    - `env` is equivalent to $\rho$
  *
  * @prop {CekTerm} arg
  * @prop {CekEnv} env
@@ -231,12 +238,17 @@ export {
  * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  * $$
- * [_~(M,\rho)]\cdot~\triangleleft~V~\mapsto~[V~_]\cdot s;\rho~\triangleright~M
+ * [\_~(M,\rho)]\cdot s\triangleleft V~\mapsto~[V~\_]\cdot s;\rho\triangleright M
  * $$
  */
 
 /**
+ * TODO: rename to CEKLeftApplyToValueFrame
  * @typedef {object} CekLeftApplyToValueFrame
+ *  * Equivalent to $[\_~V]$ in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `rhs` is equivalent to $V$
+ *
  * @prop {CekValue} rhs
  * @prop {CekEnv} env
  * @prop {Site | undefined} callSite
@@ -244,17 +256,20 @@ export {
  * Equivalent to the following transitions in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  * $$
- * [_~V]\cdot s\triangleleft~\langle\text{lam}~x~M~\rho\rangle~\mapsto~s;\rho[x\mapstoV]\triangleright~M
- * [_~V]\cdot s\triangleleft~\langle\text{builtin}~b~\overline{V}~(\iota\cdot\eta)\rangle~\triangleleft~V~\mapsto~s\triangleleft~\langle\text{builtin}~b~(\overline{V}\cdot V)~\eta\rangle
- * [_~V]\cdot s\triangleleft~\langle\text{builtin}~b~\overline{V}~[\iota]\rangle~\mapsto~\text{Eval}_\text{CEK}(s,b,\overline{V}\cdot V)
+ * \begin{aligned}
+ * [\_~V]\cdot s &\triangleleft\langle\texttt{lam}~x~M~\rho\rangle~&&\mapsto~s;\rho[x\mapsto V]\triangleright M\\
+ * [\_~V]\cdot s &\triangleleft\langle\texttt{builtin}~b~\overline{V}~(\iota\cdot\eta)\rangle\triangleleft V~&&\mapsto~s\triangleleft\langle\texttt{builtin}~b~(\overline{V}\cdot V)~\eta\rangle\\
+ * [\_~V]\cdot s &\triangleleft\langle\texttt{builtin}~b~\overline{V}~[\iota]\rangle~&&\mapsto~\textsf{Eval}_\textsf{CEK}(s,b,\overline{V}\cdot V)
+ * \end{aligned}
  * $$
  */
 
 /**
+ * TODO: CEKRightApplyFrame
  * @typedef {object} CekRightApplyFrame
- * Equivalent to $[V~_]$ in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ * Equivalent to $[V~\_]$ in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
- *    - `fn` is equivalent to `V`
+ *    - `fn` is equivalent to $V$
  *
  * @prop {CekValue} fn
  * @prop {CekEnv} env
@@ -263,20 +278,23 @@ export {
  * Equivalent to the following transitions in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  * $$
- * [\langle\text{lam}~x~M~\rho\rangle~_]\cdot s~\triangleleft~V~\mapsto~s;\rho[x\mapsto V]~\triangleright~M
- * [\langle\text{builtin}~b~\overline{V}~(\iota\cdot\eta)\rangle~_]\cdot s~\triangleleft~V~\mapsto~s\triangleleft~\langle\text{builtin}~b~(\overline{V}\cdot V)~\eta\rangle
- * [\langle\text{builtin}~b~\overline{V}~[\iota]\rangle~_]\cdot s~\triangleleft~V~\mapsto~\text{Eval}_\text{CEK}(s,b,\overline{V}\cdot V)
+ * \begin{aligned}
+ * [\langle\texttt{lam}~x~M~\rho\rangle~\_]\cdot s &\triangleleft V~&&\mapsto~s;\rho[x\mapsto V]\triangleright M\\
+ * [\langle\texttt{builtin}~b~\overline{V}~(\iota\cdot\eta)\rangle~\_]\cdot s &\triangleleft V~&&\mapsto~s\triangleleft\langle\texttt{builtin}~b~(\overline{V}\cdot V)~\eta\rangle\\
+ * [\langle\texttt{builtin}~b~\overline{V}~[\iota]\rangle~\_]\cdot s &\triangleleft V~&&\mapsto~\textsf{Eval}_\textsf{CEK}(s,b,\overline{V}\cdot V)
+ * \end{aligned}
  * $$
  */
 
 /**
+ * TODO: rename to CEKConstrArgFrame
  * @typedef {object} CekConstrArgFrame
- * Equivalent to the $(\text{constr}~i~\overline{V}~_~(\overline{M},\rho))$ frame in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ * Equivalent to the $(\texttt{constr}~i~\overline{V}~\_~(\overline{M},\rho))$ frame in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  *    - `tag` is equivalent to $i$
  *    - `evaluatedArgs` is equivalent to $\overline{V}$
  *    - `pendingArgs` is equivalent to $\overline{M}$
- *    - `env` is equivalent to `\rho`
+ *    - `env` is equivalent to $\rho$
  *
  * @prop {number} tag
  * @prop {CekValue[]} evaluatedArgs
@@ -286,17 +304,20 @@ export {
  * Equivalent to the following transitions in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  * $$
- * (\text{constr}~i~\overline{V}~_~(M\cdot\overline{M},\rho))\cdot s \triangleleft V~\mapsto~(\text{constr}~i~\overline{V}\cdot V~_~(\overline{M},\rho))\cdot s;\rho\triangleright~M
- * (\text{constr}~i~\overline{V}~_([],\rho))\cdot s\triangleleft~V~\mapsto~s\triangleleft\langle\text{constr}~i~\overline{V}\cdot V\rangle
+ * \begin{aligned}
+ * (\texttt{constr}~i~\overline{V}~\_~(M\cdot\overline{M},\rho))\cdot s &\triangleleft V~&&\mapsto~(\texttt{constr}~i~\overline{V}\cdot V~\_~(\overline{M},\rho))\cdot s;\rho\triangleright M\\
+ * (\texttt{constr}~i~\overline{V}~\_~([],\rho))\cdot s&\triangleleft V~&&\mapsto~s\triangleleft\langle\texttt{constr}~i~\overline{V}\cdot V\rangle
+ * \end{aligned}
  * $$
  */
 
 /**
+ * TODO: rename to CEKCaseScrutineeFrame
  * @typedef {object}  CekCaseScrutineeFrame
- * Equivalent to the $(\text{case}~_~(\overline{M},\rho)) frame in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ * Equivalent to the $(\texttt{case}~\_~(\overline{M},\rho))$ frame in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  *    - `cases` is equivalent to $\overline{M}$
- *    - `env` is equivalent to $\rho`
+ *    - `env` is equivalent to $\rho$
  *
  * @prop {CekTerm[]} cases
  * @prop {CekEnv} env
@@ -304,12 +325,12 @@ export {
  * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  * $$
- * (\text{case}~_~(M_0...M_n,\rho))\cdot s\triangleleft\langle\text{constr}~i~V_1...V_m\rangle~\mapsto~[_~V_m]...[_~V_1]\cdot s;\rho \triangleright M_i
+ * (\texttt{case}~\_~(M_0\ldots M_n,\rho))\cdot s\triangleleft\langle\texttt{constr}~i~V_1 \ldots V_m\rangle~\mapsto~[\_~V_m]\ldots[\_~V_1]\cdot s;\rho \triangleright M_i
  * $$
  */
 
 /**
- * Return value is optional and can be omitted if the UplcValue doesn't suffice to contain it (eg. lambda functions)
+ * TODO: rename to CEKResult
  * @typedef {{
  *   result: Either<
  *     {
@@ -322,89 +343,92 @@ export {
  *   logs: {message: string, site?: Site}[]
  *   breakdown: CostBreakdown
  * }} CekResult
+ * Return value is optional and can be omitted if the UplcValue doesn't suffice to contain it (eg. lambda functions).
  */
 
 /**
- * `CekEnv` contains a stack of variable values, and a stack for call sites (useful for debugging)
+ * TODO: rename to CEKEnv
  * @typedef {{
  *   values: CekValue[]
  *   callSites: CallSiteInfo[]
  * }} CekEnv
+ * `CekEnv` contains a stack of variable values, and a stack for call sites (useful for debugging).
  */
 
 /**
- * `CekComputingState` is equivalent to $s; \rho \triangleright M$ in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
- *
- *    - `term` is equivalent to $M$
- *    - `env` is equivalent to $\rho$
- *    - `frames` is equivalent to $s$
- *
+ * TODO: rename to CEKComputingState
  * @typedef {{
  *   kind: "computing"
  *   term: CekTerm
  *   env: CekEnv
  *   frames: CekFrame[]
  * }} CekComputingState
+ * `CekComputingState` is equivalent to $s; \rho \triangleright M$ in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `term` is equivalent to $M$
+ *    - `env` is equivalent to $\rho$
+ *    - `frames` is equivalent to $s$
  */
 
 /**
- * `CekReducingState` is equivalent to $s \triangleleft V$ in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
- *
- *    - `value` is equivalent to $V$
- *    - `frames` is equivalent to $s$
- *
+ * TODO: rename to CEKReducingState
  * @typedef {{
  *   kind: "reducing"
  *   value: CekValue
  *   frames: CekFrame[]
  * }} CekReducingState
+ * `CekReducingState` is equivalent to $s \triangleleft V$ in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `value` is equivalent to $V$
+ *    - `frames` is equivalent to $s$
  */
 
 /**
- * `CekErrorState` is equivalent to $\text{⬥}$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
- *
- * The `message` and `env` fields aren't required by the spec, but are useful for debugging.
- *
+ * TODO: rename to CEKErrorState
  * @typedef {{
  *   kind: "error"
  *   message: string
  *   env: CekEnv
  * }} CekErrorState
+ * `CekErrorState` is equivalent to $\text{\diamond}$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * The `message` and `env` fields aren't required by the spec, but are useful for debugging.
  */
 
 /**
- * `CekSuccessState` is equivalent to $\square V$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
- *
- *    - `value` is equivalent to $V$
- *
+ * TODO: rename to CEKSuccessState
  * @typedef {{
  *   kind: "success"
  *   value: CekValue
  * }} CekSuccessState
+ * `CekSuccessState` is equivalent to $\square V$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `value` is equivalent to $V$
  */
 
 /**
- * `CekState` is equivalent to $\Sigma$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf).
- *
+ * TODO: rename to CEKState
  * @typedef {(
  *   CekComputingState
  *   | CekReducingState
  *   | CekErrorState
  *   | CekSuccessState
  * )} CekState
+ * `CekState` is equivalent to $\Sigma$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf).
  */
 
 /**
+ * TODO: rename to CEKTerm
  * @typedef {object} CekTerm
  * The `CekTerm` interface is extended by more specific Uplc terms.
+ *
  * @prop {Site | undefined} site
  * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
  * @prop {() => string} toString
  */
 
 /**
- * `CekValue` is a generalized UplcValue, which is equivalent to $V$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf).
- *
+ * TODO: rename to CEKValue
  * @typedef {(
  *   CekConstValue
  *   | CekDelayedValue
@@ -412,47 +436,41 @@ export {
  *   | CekBuiltinValue
  *   | CekConstrValue
  * )} CekValue
+ * `CekValue` is a generalized UplcValue, which is equivalent to $V$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf).
  */
 
 /**
- * `CekConstValue` is equivalent to $\langle \text{con}~T~c\rangle$ in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf).
- *
- *    - `value` contains information related to both $T$ and $c$
- *
- * The optional `name` field is used for debugging.
- *
+ * TODO: rename to CEKConstValue
  * @typedef {{
  *   kind: "const"
  *   value: UplcValue
  *   name?: string
  * }} CekConstValue
+ * `CekConstValue` is equivalent to $\langle \texttt{con}~T~c\rangle$ in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf).
+ *
+ *    - `value` contains information related to both $T$ and $c$
+ *
+ * The optional `name` field is used for debugging.
  */
 
 /**
- * `CekDelayedValue` is equivalent to $\langle \text{delay}~M~\rho\rangle$ in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
- *
- *    - `term` is equivalent to $M$
- *    - `env` is equivalent to $\rho$
- *
- * The optional `name` field is used for debugging.
- *
+ * TODO: rename to CEKDelayedValue
  * @typedef {{
  *   kind: "delay"
  *   term: CekTerm
  *   env: CekEnv
  *   name?: string
  * }} CekDelayedValue
+ * `CekDelayedValue` is equivalent to $\langle \texttt{delay}~M~\rho\rangle$ in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `term` is equivalent to $M$
+ *    - `env` is equivalent to $\rho$
+ *
+ * The optional `name` field is used for debugging.
  */
 
 /**
- * `CekLambdaValue` is equivalent to $\langle \text{lam}~x~M~\rho\rangle$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
- *
- *    - `body` is equivalent to $M$
- *    - `env` is equivalent to $\rho$
- *    - `argName` is an optional alternative name for $x$, which is useful during debugging
- *
- * The optional `name` field is used for debugging.
- *
+ * TODO: rename to CEKLambdaValue
  * @typedef {{
  *   kind: "lambda"
  *   body: CekTerm
@@ -460,29 +478,33 @@ export {
  *   argName?: string
  *   name?: string
  * }} CekLambdaValue
+ * `CekLambdaValue` is equivalent to $\langle \texttt{lam}~x~M~\rho\rangle$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `body` is equivalent to $M$
+ *    - `env` is equivalent to $\rho$
+ *    - `argName` is an optional alternative name for $x$, which is useful during debugging
+ *
+ * The optional `name` field is used for debugging.
  */
 
 /**
- * `CekConstrValue` is equivalent to $\langle \text{constr}~i~\overline{V}\rangle$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
- *
- *    - `tag` is equivalent to $i$
- *    - `args` is equivalent to $\overline{V}$
- *
- * The optional `name` is used for debugging.
- *
+ * TODO: rename to CEKConstrValue
  * @typedef {{
  *   kind: "constr"
  *   tag: number
  *   args: CekValue[]
  *   name?: string
  * }} CekConstrValue
+ * `CekConstrValue` is equivalent to $\langle \texttt{constr}~i~\overline{V}\rangle$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `tag` is equivalent to $i$
+ *    - `args` is equivalent to $\overline{V}$
+ *
+ * The optional `name` is used for debugging.
  */
 
 /**
- * `CekBuiltinValue` is equivalent to $\langle \text{builtin}~b~\overline{V}~\eta\rangle$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
- *
- *    - `id` is equivalent to $b$
- *
+ * TODO: rename to CEKBuiltinValue
  * @typedef {{
  *   kind: "builtin"
  *   id: number
@@ -490,6 +512,9 @@ export {
  *   args: CekValue[]
  *   name: string
  * }} CekBuiltinValue
+ * `CekBuiltinValue` is equivalent to $\langle \texttt{builtin}~b~\overline{V}~\eta\rangle$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `id` is equivalent to $b$
  */
 
 /**
@@ -506,43 +531,42 @@ export {
  */
 
 /**
- * @typedef {{
- *   builtinTerm: Cost
- *   callTerm: Cost
- *   constTerm: Cost
- *   delayTerm: Cost
- *   forceTerm: Cost
- *   lambdaTerm: Cost
- *   startupTerm: Cost
- *   varTerm: Cost
- *   constrTerm: Cost
- *   caseTerm: Cost
- *   builtins: Record<string, (argSizes: bigint[]) => Cost>
- * }} CostModel
+ * @typedef {object} CostModel
+ * @prop {Cost} applyTerm
+ * @prop {Cost} builtinTerm
+ * @prop {Cost} caseTerm
+ * @prop {Cost} constTerm
+ * @prop {Cost} constrTerm
+ * @prop {Cost} delayTerm
+ * @prop {Cost} forceTerm
+ * @prop {Cost} lambdaTerm
+ * @prop {Cost} startupTerm
+ * @prop {Cost} varTerm
+ * @prop {Record<string, (argSizes: bigint[]) => Cost>} builtins
  */
 
 /**
- * @typedef {{
- *   get: (key: number, def?: bigint | undefined) => bigint
- * }} CostModelParamsProxy
+ * @typedef {object} CostModelParamsProxy
+ * @prop {(key: number, def?: bigint | undefined) => bigint} get
  */
 
 /**
- * @typedef {Cost & {
- *   costModel: CostModel
- *   breakdown: CostBreakdown
- *   incrBuiltinCost(): void
- *   incrCallCost(): void
- *   incrCaseCost(): void
- *   incrConstCost(): void
- *   incrConstrCost(): void
- *   incrDelayCost(): void
- *   incrForceCost(): void
- *   incrLambdaCost(): void
- *   incrStartupCost(): void
- *   incrVarCost(): void
- *   incrArgSizesCost(name: string, argSizes: bigint[]): void
- * }} CostTracker
+ * @typedef {object} CostTracker
+ * @prop {bigint} cpu
+ * @prop {bigint} mem
+ * @prop {CostModel} costModel
+ * @prop {CostBreakdown} breakdown
+ * @prop {() => void} incrApplyCost
+ * @prop {() => void} incrBuiltinCost
+ * @prop {() => void} incrCaseCost
+ * @prop {() => void} incrConstCost
+ * @prop {() => void} incrConstrCost
+ * @prop {() => void} incrDelayCost
+ * @prop {() => void} incrForceCost
+ * @prop {() => void} incrLambdaCost
+ * @prop {() => void} incrStartupCost
+ * @prop {() => void} incrVarCost
+ * @prop {(name: string, argSizes: bigint[]) => void} incrArgSizesCost
  */
 
 /**
@@ -648,22 +672,24 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCLogger
+ * @typedef {object} UplcLogger
  * Gathers log messages produced by a Helios program
- * Note: logError is intended for messages that are passed to console.error() or equivalent, not for the Error messages that are simply part of thrown errors
- * @typedef {{
- *   logPrint: (message: string, site?: Site | undefined) => void
- *   logError?: (message: string, site?: Site | undefined) => void
- *   lastMessage: string
- *   logTrace?: (message: string, site?: Site | undefined) => void
- *   flush?: () => void
- *   reset? : (reason: "build" | "validate") => void
- * }} UplcLogger
+ * Note: `logError` is intended for messages that are passed to console.error() or equivalent, not for the Error messages that are simply part of thrown errors
+ *
+ * @prop {string} lastMessage
+ * @prop {(message: string, site?: Site | undefined) => void} logPrint
+ * @prop {(message: string, site?: Site | undefined) => void} [logError]
+ * @prop {(message: string, site?: Site | undefined) => void} [logTrace]
+ * @prop {() => void} [flush]
+ * @prop {(reason: "build" | "validate") => void} [reset]
  */
 
 /**
- * @typedef {UplcLogger & {
- *   lastMessage: string
- * }} BasicUplcLogger
+ * TODO: rename to BasicUPLCLogger
+ * @typedef {object} BasicUplcLogger
+ * @prop {string} lastMessage
+ * @prop {(message: string, site?: Site | undefined) => void} logPrint
  */
 
 /**
@@ -677,33 +703,37 @@ export {
  */
 
 /**
- * The optional ir property can be lazy because it is only used for debugging and might require an expensive formatting operation
+ * TODO: rename to UPLCProgramV1Options
  * @typedef {{
  *   alt?: UplcProgramV1
  *   ir?: (() => string) | string
  *   sourceMap?: UplcSourceMapJsonSafe
  * }} UplcProgramV1Options
+ * The optional `ir` property can be lazy because it is only used for debugging and might require an expensive formatting operation
  */
 
 /**
- * The optional ir property can be lazy because it is only used for debugging and might require an expensive formatting operation
+ * TODO: rename to UPLCProgramV2Options
  * @typedef {{
  *   alt?: UplcProgramV2
  *   ir?: (() => string) | string
  *   sourceMap?: UplcSourceMapJsonSafe
  * }} UplcProgramV2Options
+ * The optional `ir` property can be lazy because it is only used for debugging and might require an expensive formatting operation
  */
 
 /**
- * The optional ir property can be lazy because it is only used for debugging and might require an expensive formatting operation
+ * TODO: rename to UPLCProgramV3Options
  * @typedef {{
  *   alt?: UplcProgramV3
  *   ir?: (() => string) | string
  *   sourceMap?: UplcSourceMapJsonSafe
  * }} UplcProgramV3Options
+ * The optional `ir` property can be lazy because it is only used for debugging and might require an expensive formatting operation
  */
 
 /**
+ * TODO: rename to UPLCProgramV1
  * @typedef {object} UplcProgramV1
  * @prop {"PlutusScriptV1"} plutusVersion
  * @prop {1} plutusVersionTag
@@ -727,6 +757,7 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCProgramV2
  * @typedef {object} UplcProgramV2
  * @prop {"PlutusScriptV2"} plutusVersion
  * @prop {2} plutusVersionTag
@@ -750,6 +781,7 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCProgramV3
  * @typedef {object} UplcProgramV3
  * @prop {"PlutusScriptV3"} plutusVersion
  * @prop {3} plutusVersionTag
@@ -773,6 +805,7 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCSourceMapJSONSafe
  * @typedef {{
  *   sourceNames: string[]
  *   indices: string // cbor encoded
@@ -782,6 +815,7 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCSourceMapProps
  * @typedef {{
  *   sourceNames: string[]
  *   indices: number[]
@@ -791,6 +825,7 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCSourceMap
  * @typedef {{
  *   apply(root: UplcTerm): void
  *   toJsonSafe(): UplcSourceMapJsonSafe
@@ -798,9 +833,10 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCTerm
  * @typedef {(
- *   UplcBuiltin
- *   | UplcApply
+ *   UplcApply
+ *   | UplcBuiltin
  *   | UplcCase
  *   | UplcConst
  *   | UplcConstr
@@ -813,33 +849,17 @@ export {
  */
 
 /**
- * @typedef {object} UplcBuiltin
- * @prop {UplcTerm[]} children
- * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
- * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
- *
- * $$
- * s;\rho~\triangleright~(\text{builtin}~b)~\mapsto~s\triangleleft~\langle \text{builtin}~b~[]~\alpha(b)\rangle
- * $$
- *
- * @prop {number} id
- * @prop {"builtin"} kind
- * @prop {Site | undefined} site
- * @prop {(writer: FlatWriter) => void} toFlat
- * @prop {() => string} toString
- */
-
-/**
+ * TODO: rename to UPLCApplyTerm
  * @typedef {object} UplcApply
  * @prop {Site | undefined} site
  * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
  * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  * $$
- * s; \rho \triangleright [M~N]~\mapsto~[_ (N,\rhot)]\cdot s; \rho \triangleright M
+ * s; \rho \triangleright [M~N]~\mapsto~[\_~(N,\rho)]\cdot s; \rho \triangleright M
  * $$
  *
- * This means a `LeftApplicationToTermFrame` is added to `frames`, and `fn` is computed next.
+ * This means a `LeftApplyToTermFrame` is added to `frames`, and `fn` is computed next.
  *
  * @prop {() => string} toString
  * @prop {(writer: FlatWriter) => void} toFlat
@@ -850,18 +870,37 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCBuiltinTerm
+ * @typedef {object} UplcBuiltin
+ * @prop {UplcTerm[]} children
+ * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
+ * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * s;\rho\triangleright(\texttt{builtin}~b)~\mapsto~s\triangleleft\langle \texttt{builtin}~b~[]~\alpha(b)\rangle
+ * $$
+ *
+ * @prop {number} id
+ * @prop {"builtin"} kind
+ * @prop {Site | undefined} site
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * @prop {() => string} toString
+ */
+
+/**
  * @deprecated
  * @typedef {UplcApply} UplcCall
  */
 
 /**
+ * TODO: rename to UPLCConstTerm
  * @typedef {object} UplcConst
  * @prop {Site | undefined} site
  * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
  * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  * $$
- * s; \rho \triangleright (\text{con}~T~c)~\mapsto~s \triangleleft~\langle\text{con}~T~c\rangle
+ * s; \rho \triangleright (\texttt{con}~T~c)~\mapsto~s\triangleleft\langle\texttt{con}~T~c\rangle
  * $$
  *
  * @prop {() => string} toString
@@ -874,13 +913,14 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCDelayTerm
  * @typedef {object} UplcDelay
  * @prop {Site | undefined} site
  * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
  * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  * $$
- * s;\rho\triangleright (\text{delay}~M)~\mapsto~s \triangleleft~\langle \text{delay}~M~\rho\rangle
+ * s;\rho\triangleright (\texttt{delay}~M)~\mapsto~s\triangleleft\langle\texttt{delay}~M~\rho\rangle
  * $$
  *
  * @prop {() => string} toString
@@ -891,13 +931,14 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCErrorTerm
  * @typedef {object} UplcError
  * @prop {Site | undefined} site
  * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
  * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  * $$
- * s;\rho \triangleright~(\text{error})~\mapsto~\text{⬥}
+ * s;\rho\triangleright(\texttt{error})~\mapsto~\diamond
  * $$
  *
  * @prop {() => string} toString
@@ -907,13 +948,14 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCForceTerm
  * @typedef {object} UplcForce
  * @prop {Site | undefined} site
  * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
  * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  * $$
- * s;\rho\triangleright`(\text{force}~M)~\mapsto~(\text{force}~_)\cdot s;\rho~\triangleright~M
+ * s;\rho\triangleright(\texttt{force}~M)~\mapsto~(\texttt{force}~\_)\cdot s;\rho\triangleright M
  * $$
  *
  * @prop {() => string} toString
@@ -924,13 +966,14 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCLambdaTerm
  * @typedef {object} UplcLambda
  * @prop {Site | undefined} site
  * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
  * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  * $$
- * s;\rho~\triangleright~(\text{lam}~x~M)~\mapsto~s\triangleleft~\langle \text{lam}~x~M~\rho \rangle
+ * s;\rho\triangleright(\texttt{lam}~x~M)~\mapsto~s\triangleleft\langle \texttt{lam}~x~M~\rho \rangle
  * $$
  *
  * @prop {() => string} toString
@@ -942,13 +985,14 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCVarTerm
  * @typedef {object} UplcVar
  * @prop {Site | undefined} site
  * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
  * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  * $$
- * s;\rho~\triangleright~x~\mapsto~s\triangleleft\rho[x]
+ * s;\rho\triangleright x~\mapsto~s\triangleleft\rho[x] \text{if}x\in\rho
  * $$
  *
  * @prop {() => string} toString
@@ -960,14 +1004,17 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCConstrTerm
  * @typedef {object} UplcConstr
  * @prop {Site | undefined} site
  * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
  * Equivalent to the following transitions in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  * $$
- * s;\rho~\triangleright~(\text{constr}~i~M\cdot\overline{M})~\mapsto~(\text{constr}~i~_~(\overline{M},\rho))\cdot s;\rho~\triangleright~M
- * s;\rho~\triangleright~(\text{constr}~i~[])~\mapsto~s~\triangleleft~\langle\text{constr}~i~[]\rangle
+ * \begin{aligned}
+ * s;\rho&\triangleright(\texttt{constr}~i~M\cdot\overline{M})~&&\mapsto~(\texttt{constr}~i~\_~(\overline{M},\rho))\cdot s;\rho\triangleright M\\
+ * s;\rho&\triangleright(\texttt{constr}~i~[])~&&\mapsto~s\triangleleft\langle\texttt{constr}~i~[]\rangle
+ * \end{aligned}
  * $$
  *
  * @prop {() => string} toString
@@ -979,13 +1026,14 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCCaseTerm
  * @typedef {object} UplcCase
  * @prop {Site | undefined} site
  * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
  * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
  *
  * $$
- * s;\rho~\triangleright~(\text{case}~N~\overline{M})~\mapsto~(\text{case}~_~(\overline{M},\rho))\cdot s;\rho~\triangleright~N
+ * s;\rho\triangleright(\texttt{case}~N~\overline{M})~\mapsto~(\texttt{case}~\_~(\overline{M},\rho))\cdot s;\rho\triangleright N
  * $$
  *
  * @prop {() => string} toString
@@ -997,6 +1045,7 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCType
  * @typedef {{
  *   typeBits: string
  *   isData(): boolean
@@ -1007,7 +1056,7 @@ export {
  */
 
 /**
- * UplcValue instances are passed around by Uplc terms.
+ * TODO: rename to UPLCValue
  * @typedef {(
  *   UplcInt
  *   | UplcByteArray
@@ -1021,9 +1070,11 @@ export {
  *   | Bls12_381_G2_element
  *   | Bls12_381_MlResult
  * )} UplcValue
+ * UplcValue instances are passed around by UPLC terms.
  */
 
 /**
+ * TODO: rename to UPLCInt
  * @typedef {object} UplcInt
  * @prop {"int"} kind
  * @prop {bigint} value
@@ -1046,6 +1097,7 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCByteArray
  * @typedef {object} UplcByteArray
  * @prop {"bytes"} kind
  * @prop {number[]} bytes
@@ -1064,6 +1116,7 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCString
  * @typedef {object} UplcString
  * @prop {"string"} kind
  * @prop {string} value
@@ -1082,6 +1135,7 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCUnit
  * @typedef {object} UplcUnit
  * @prop {"unit"} kind
  * @prop {number} memSize
@@ -1099,6 +1153,7 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCBool
  * @typedef {object} UplcBool
  * @prop {"bool"} kind
  * @prop {boolean} value
@@ -1118,6 +1173,7 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCList
  * @typedef {object} UplcList
  * @prop {"list"} kind
  * @prop {UplcType} type
@@ -1140,6 +1196,7 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCPair
  * @typedef {object} UplcPair
  * @prop {"pair"} kind
  * @prop {UplcValue} first
@@ -1159,7 +1216,10 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCDataValue
  * @typedef {object} UplcDataValue
+ * Instantiate a `UplcDataValue` with {@link makeUplcDataValue}.
+ *
  * @prop {"data"} kind
  * @prop {UplcData} value
  * @prop {number} memSize
@@ -1178,6 +1238,8 @@ export {
 
 /**
  * @typedef {object} Bls12_381_G1_element
+ * Instantiate a `Bls12_381_G1_element` value with {@link makeBls12_381_G1_element}.
+ *
  * @prop {"bls12_381_G1_element"} kind
  * @prop {Point3<bigint>} point
  * @prop {() => number[]} compress
@@ -1197,6 +1259,8 @@ export {
 
 /**
  * @typedef {object} Bls12_381_G2_element
+ * Instantiate a `Bls12_381_G2_element` value with {@link makeBls12_381_G2_element}.
+ *
  * @prop {"bls12_381_G2_element"}  kind
  * @prop {Point3<[bigint, bigint]>} point
  * @prop {() => number[]} compress
@@ -1233,8 +1297,9 @@ export {
  */
 
 /**
+ * TODO: rename to UPLCRuntimeError
  * @typedef {object} UplcRuntimeError
- * A `UplcRuntimeError` instance can be created with `makeUplcRuntimeError()`
+ * Instantiate a `UplcRuntimeError` with {@link makeUplcRuntimeError}.
  *
  * @prop {"UplcRuntimeError"} name
  * @prop {string} name

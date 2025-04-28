@@ -1,10 +1,13 @@
 /**
  * @import { AssertExtends } from "@helios-lang/type-utils"
  * @import {
+ *   BasicUplcLogger,
  *   Bls12_381_G1_element,
  *   Bls12_381_G2_element,
  *   Bls12_381_MlResult,
+ *   Builtin,
  *   BuiltinContext,
+ *   BuiltinCostModel,
  *   ByteArrayData,
  *   CekCaseScrutineeFrame,
  *   CekConstrArgFrame,
@@ -20,6 +23,8 @@
  *   CekTerm,
  *   CekValue,
  *   ConstrData,
+ *   Cost,
+ *   CostTracker,
  *   FlatWriter,
  *   IntData,
  *   ListData,
@@ -55,6 +60,23 @@
  *   UplcVar,
  *   UplcVersion
  * } from "./index.js"
+ */
+
+/**
+ * Builtin
+ * @typedef {AssertExtends<BuiltinCostModel, Builtin>} BuiltinExtendsBuiltinCostModel
+ */
+
+/**
+ * Cost
+ *
+ * @typedef {AssertExtends<Cost, CostTracker>} CostTrackerExtendsCost
+ */
+
+/**
+ * Loggers
+ *
+ * @typedef {AssertExtends<UplcLogger, BasicUplcLogger>} BasicUplcLoggerExtendsUplcLogger
  */
 
 /**

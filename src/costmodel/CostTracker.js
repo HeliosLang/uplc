@@ -1,5 +1,10 @@
 /**
- * @import { Cost, CostBreakdown, CostModel, CostTracker } from "../index.js"
+ * @import {
+ *   Cost,
+ *   CostBreakdown,
+ *   CostModel,
+ *   CostTracker
+ * } from "../index.js"
  */
 
 /**
@@ -65,12 +70,12 @@ class CostTrackerImpl {
         }
     }
 
-    incrBuiltinCost() {
-        this.incrCost("builtinTerm", this.costModel.builtinTerm)
+    incrApplyCost() {
+        this.incrCost("applyTerm", this.costModel.applyTerm)
     }
 
-    incrCallCost() {
-        this.incrCost("callTerm", this.costModel.callTerm)
+    incrBuiltinCost() {
+        this.incrCost("builtinTerm", this.costModel.builtinTerm)
     }
 
     incrCaseCost() {

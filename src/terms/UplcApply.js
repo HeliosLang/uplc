@@ -107,7 +107,7 @@ class UplcApplyImpl {
      * @returns {CekState}
      */
     compute(frames, env, ctx) {
-        ctx.cost.incrCallCost()
+        ctx.cost.incrApplyCost()
 
         return {
             kind: "computing",

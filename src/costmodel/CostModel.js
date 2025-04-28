@@ -19,13 +19,13 @@ class CostModelImpl {
      * @readonly
      * @type {Cost}
      */
-    builtinTerm
+    applyTerm
 
     /**
      * @readonly
      * @type {Cost}
      */
-    callTerm
+    builtinTerm
 
     /**
      * @readonly
@@ -86,7 +86,7 @@ class CostModelImpl {
      * @param {BuiltinCostModel[]} builtins
      */
     constructor(params, builtins) {
-        this.callTerm = {
+        this.applyTerm = {
             cpu: params.get(17),
             mem: params.get(18)
         }
