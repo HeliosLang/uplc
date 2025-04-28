@@ -1,32 +1,37 @@
-/**
- * @import { Site } from "@helios-lang/compiler-utils"
- * @import { CallSiteInfo, CekContext, CekStack, CekStateChange, CekValue } from "../index.js"
- */
-
 import {
     getLastSelfValue,
     pushStackCallSites,
     pushStackValueAndCallSite
-} from "./CekStack.js"
+} from "./CekEnv.js"
 
 /**
- * Information which is helpful when debugging
- * @typedef {{
- *   callSite?: Site
- *   name?: string
- *   argName?: string
- * }} ApplicationInfo
+ * @import {
+ *   CekApplyInfo,
+ *   CallSiteInfo,
+ *   CekContext,
+ *   CekFrame,
+ *   CekEnv,
+ *   CekState,
+ *   CekValue
+ * } from "../index.js"
  */
 
 /**
+ * If the `leftValue` is a lambda function, perform the following transition:
+ *
+ * $$
+ * [\langle\text{lam}~x~M~\rho\rangle~V]
+ * $$
+ * @param {CekFrame[]} frames
  * @param {CekValue} leftValue
  * @param {CekValue} rightValue
- * @param {CekStack} frameStack
+ * @param {CekEnv} frameStack
  * @param {CekContext} ctx
- * @param {ApplicationInfo} info
- * @returns {CekStateChange}
+ * @param {CekApplyInfo} info
+ * @returns {CekState}
  */
 export function applyCekValues(
+    frames,
     leftValue,
     rightValue,
     frameStack,
@@ -40,7 +45,7 @@ export function applyCekValues(
         }
     }
 
-    if ("lambda" in leftValue) {
+    if (leftValue.kind == "lambda") {
         /**
          * TODO: cleaner way of getting `self` and other variables that are in the stacks of callbacks
          * @type {CekValue | undefined}
@@ -59,43 +64,30 @@ export function applyCekValues(
         }
 
         return {
-            state: {
-                computing: {
-                    term: leftValue.lambda.term,
-                    stack: pushStackValueAndCallSite(
-                        leftValue.lambda.stack,
-                        rightValue,
-                        callSite
-                    )
-                }
-            }
+            kind: "computing",
+            term: leftValue.body,
+            env: pushStackValueAndCallSite(leftValue.env, rightValue, callSite),
+            frames
         }
-    } else if ("builtin" in leftValue) {
-        const b = ctx.getBuiltin(leftValue.builtin.id)
+    } else if (leftValue.kind == "builtin") {
+        const b = ctx.getBuiltin(leftValue.id)
 
         if (!b) {
             return {
-                state: {
-                    error: {
-                        message: `builtin ${leftValue.builtin.id} not found`,
-                        stack: frameStack
-                    }
-                }
+                kind: "error",
+                message: `builtin ${leftValue.id} not found`,
+                env: frameStack
             }
-        } else if (b.forceCount > leftValue.builtin.forceCount) {
+        } else if (b.forceCount > leftValue.forceCount) {
             return {
-                state: {
-                    error: {
-                        message: `insufficient forces applied to ${b.name}, ${leftValue.builtin.forceCount} < ${b.forceCount}`,
-                        stack: frameStack
-                    }
-                }
+                kind: "error",
+                message: `insufficient forces applied to ${b.name}, ${leftValue.forceCount} < ${b.forceCount}`,
+                env: frameStack
             }
         } else {
-            const args = leftValue.builtin.args.concat([rightValue])
+            const args = leftValue.args.concat([rightValue])
 
             if (args.length == b.nArgs) {
-                // TODO: reuse from BuiltinCallFrame
                 ctx.cost.incrArgSizesCost(
                     b.name,
                     args.map((a) => {
@@ -126,53 +118,40 @@ export function applyCekValues(
 
                 try {
                     return {
-                        state: {
-                            reducing: b.call(args, {
-                                print: (message) => {
-                                    ctx.print(
-                                        message,
-                                        info.callSite ?? undefined
-                                    )
-                                }
-                            })
-                        }
+                        kind: "reducing",
+                        value: b.call(args, {
+                            print: (message) => {
+                                ctx.print(message, info.callSite ?? undefined)
+                            }
+                        }),
+                        frames
                     }
                 } catch (e) {
                     return {
-                        state: {
-                            error: {
-                                message: e.message,
-                                stack: pushStackCallSites(
-                                    frameStack,
-                                    ...callSites
-                                )
-                            }
-                        }
+                        kind: "error",
+                        message: e.message,
+                        env: pushStackCallSites(frameStack, ...callSites)
                     }
                 }
             } else {
                 return {
-                    state: {
-                        reducing: {
-                            builtin: {
-                                id: leftValue.builtin.id,
-                                name: leftValue.builtin.name,
-                                forceCount: b.forceCount,
-                                args: args
-                            }
-                        }
-                    }
+                    kind: "reducing",
+                    value: {
+                        kind: "builtin",
+                        id: leftValue.id,
+                        name: leftValue.name,
+                        forceCount: b.forceCount,
+                        args: args
+                    },
+                    frames
                 }
             }
         }
     } else {
         return {
-            state: {
-                error: {
-                    message: `can only call lambda or builtin terms`,
-                    stack: frameStack
-                }
-            }
+            kind: "error",
+            message: `can only call lambda or builtin terms`,
+            env: frameStack
         }
     }
 }

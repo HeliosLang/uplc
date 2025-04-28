@@ -1,6 +1,8 @@
 import { UPLC_BUILTIN_TAG, decodeUplcBuiltinFromFlat } from "./UplcBuiltin.js"
-import { UPLC_CALL_TAG, decodeUplcCallFromFlat } from "./UplcCall.js"
+import { UPLC_APPLY_TAG, decodeUplcApplyFromFlat } from "./UplcApply.js"
+import { decodeUplcCaseFromFlat, UPLC_CASE_TAG } from "./UplcCase.js"
 import { UPLC_CONST_TAG, decodeUplcConstFromFlat } from "./UplcConst.js"
+import { decodeUplcConstrFromFlat, UPLC_CONSTR_TAG } from "./UplcConstr.js"
 import { UPLC_DELAY_TAG, decodeUplcDelayFromFlat } from "./UplcDelay.js"
 import { UPLC_ERROR_TAG, makeUplcError } from "./UplcError.js"
 import { UPLC_FORCE_TAG, decodeUplcForceFromFlat } from "./UplcForce.js"
@@ -27,8 +29,8 @@ export function decodeTerm(r, builtins) {
             return decodeUplcDelayFromFlat(r)
         case UPLC_LAMBDA_TAG:
             return decodeUplcLambdaFromFlat(r)
-        case UPLC_CALL_TAG:
-            return decodeUplcCallFromFlat(r) // aka function application
+        case UPLC_APPLY_TAG:
+            return decodeUplcApplyFromFlat(r) // aka function application
         case UPLC_CONST_TAG:
             return decodeUplcConstFromFlat(r)
         case UPLC_FORCE_TAG:
@@ -37,6 +39,10 @@ export function decodeTerm(r, builtins) {
             return makeUplcError()
         case UPLC_BUILTIN_TAG:
             return decodeUplcBuiltinFromFlat(r, builtins)
+        case UPLC_CONSTR_TAG:
+            return decodeUplcConstrFromFlat(r)
+        case UPLC_CASE_TAG:
+            return decodeUplcCaseFromFlat(r)
         default:
             throw new Error("term tag " + tag.toString() + " unhandled")
     }

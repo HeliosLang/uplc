@@ -1,7 +1,7 @@
 import { strictEqual, throws } from "node:assert"
 import { describe, it } from "node:test"
 import { makeUplcInt } from "../../values/index.js"
-import { asUplcValue } from "../cast.js"
+import { asCekValue, asUplcValue } from "../cast.js"
 import { evalQuotientInteger } from "./quotientInteger.js"
 import { evalRemainderInteger } from "./remainderInteger.js"
 
@@ -70,7 +70,7 @@ const testVector = [
 function remainderIntegerWithQuotient(a, b) {
     const ab = asUplcValue(
         evalQuotientInteger(
-            [{ value: makeUplcInt(a) }, { value: makeUplcInt(b) }],
+            [asCekValue(makeUplcInt(a)), asCekValue(makeUplcInt(b))],
             ctx
         )
     )
@@ -86,7 +86,7 @@ describe("remainderInteger", () => {
     it("throws an error when second arg is 0", () => {
         throws(() => {
             evalRemainderInteger(
-                [{ value: makeUplcInt(1n) }, { value: makeUplcInt(0n) }],
+                [asCekValue(makeUplcInt(1n)), asCekValue(makeUplcInt(0n))],
                 ctx
             )
         })
@@ -97,7 +97,7 @@ describe("remainderInteger", () => {
         it(`${a} quot ${b} == ${expected}`, () => {
             const actual = asUplcValue(
                 evalRemainderInteger(
-                    [{ value: makeUplcInt(a) }, { value: makeUplcInt(b) }],
+                    [asCekValue(makeUplcInt(a)), asCekValue(makeUplcInt(b))],
                     ctx
                 )
             )

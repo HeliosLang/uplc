@@ -2,8 +2,9 @@
  * @import { Site } from "@helios-lang/compiler-utils"
  * @import {
  *   CekContext,
- *   CekStack,
- *   CekStateChange,
+ *   CekFrame,
+ *   CekEnv,
+ *   CekState,
  *   FlatWriter,
  *   UplcError,
  *   UplcTerm
@@ -54,18 +55,16 @@ class UplcErrorImpl {
     }
 
     /**
-     * @param {CekStack} stack
+     * @param {CekFrame[]} frames
+     * @param {CekEnv} env
      * @param {CekContext} ctx
-     * @returns {CekStateChange}
+     * @returns {CekState}
      */
-    compute(stack, ctx) {
+    compute(frames, env, ctx) {
         return {
-            state: {
-                error: {
-                    message: ctx.popLastMessage() ?? "",
-                    stack: stack
-                }
-            }
+            kind: "error",
+            message: ctx.popLastMessage() ?? "",
+            env: env
         }
     }
 

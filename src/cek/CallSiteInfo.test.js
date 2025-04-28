@@ -1,6 +1,7 @@
 import { strictEqual } from "node:assert"
 import { describe, it } from "node:test"
 import { makeDummySite } from "@helios-lang/compiler-utils"
+import { asCekValue } from "../builtins/cast.js"
 import { makeUplcInt } from "../values/index.js"
 import { isEmptyCallSiteInfo, isNonEmptyCallSiteInfo } from "./CallSiteInfo.js"
 
@@ -27,7 +28,7 @@ describe(isEmptyCallSiteInfo.name, () => {
 
     it("returns false if arguments is a non-empty list", () => {
         strictEqual(
-            isEmptyCallSiteInfo({ arguments: [{ value: makeUplcInt(0) }] }),
+            isEmptyCallSiteInfo({ arguments: [asCekValue(makeUplcInt(0))] }),
             false
         )
     })
@@ -56,7 +57,7 @@ describe(isNonEmptyCallSiteInfo.name, () => {
 
     it("returns true if arguments is a non-empty list", () => {
         strictEqual(
-            isNonEmptyCallSiteInfo({ arguments: [{ value: makeUplcInt(0) }] }),
+            isNonEmptyCallSiteInfo({ arguments: [asCekValue(makeUplcInt(0))] }),
             true
         )
     })

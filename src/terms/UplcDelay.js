@@ -2,8 +2,9 @@
  * @import { Site } from "@helios-lang/compiler-utils"
  * @import {
  *   CekContext,
- *   CekStack,
- *   CekStateChange,
+ *   CekFrame,
+ *   CekEnv,
+ *   CekState,
  *   FlatReader,
  *   FlatWriter,
  *   UplcDelay,
@@ -75,23 +76,23 @@ class UplcDelayImpl {
     }
 
     /**
-     * @param {CekStack} stack
+     * @param {CekFrame[]} frames
+     * @param {CekEnv} env
      * @param {CekContext} ctx
-     * @returns {CekStateChange}
+     * @returns {CekState}
      */
-    compute(stack, ctx) {
+    compute(frames, env, ctx) {
         ctx.cost.incrDelayCost()
 
         return {
-            state: {
-                reducing: {
-                    name: this.site?.description,
-                    delay: {
-                        term: this.arg,
-                        stack: stack
-                    }
-                }
-            }
+            kind: "reducing",
+            value: {
+                kind: "delay",
+                term: this.arg,
+                env: env,
+                name: this.site?.description
+            },
+            frames
         }
     }
 

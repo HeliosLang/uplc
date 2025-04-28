@@ -2,12 +2,12 @@
  * @import { Site } from "@helios-lang/compiler-utils"
  * @import {
  *   CekContext,
- *   CekStack,
- *   CekStateChange,
+ *   CekFrame,
+ *   CekEnv,
+ *   CekState,
  *   FlatReader,
  *   FlatWriter,
  *   UplcTerm,
- *   UplcValue,
  *   UplcVar
  * } from "../index.js"
  */
@@ -85,25 +85,28 @@ class UplcVarImpl {
     }
 
     /**
-     * @param {CekStack} stack
+     * @param {CekFrame[]} frames
+     * @param {CekEnv} env
      * @param {CekContext} ctx
-     * @returns {CekStateChange}
+     * @returns {CekState}
      */
-    compute(stack, ctx) {
+    compute(frames, env, ctx) {
         ctx.cost.incrVarCost()
 
-        const i = stack.values.length - this.index
-        const v = stack.values[i]
+        const i = env.values.length - this.index
+        const v = env.values[i]
 
         if (!v) {
-            throw new Error(
-                `${i} ${this.index} out of stack range (stack has ${stack.values.length} values)${this.name ? `, '${this.name}'` : ""}`
-            )
-        }
-
-        return {
-            state: {
-                reducing: v
+            return {
+                kind: "error",
+                message: `var ${this.index} out of stack range (stack has ${env.values.length} values)${this.name ? `, '${this.name}'` : ""}`,
+                env: env
+            }
+        } else {
+            return {
+                kind: "reducing",
+                value: v,
+                frames
             }
         }
     }

@@ -1,8 +1,17 @@
-import { makeCaseScrutineeFrame } from "../cek/CaseScrutineeFrame.js"
+import { makeCekCaseScrutineeFrame } from "../cek/index.js"
 
 /**
  * @import { Site } from "@helios-lang/compiler-utils"
- * @import { CekContext, CekStack, CekStateChange, FlatWriter, UplcCase, UplcTerm } from "../index.js"
+ * @import {
+ *   CekContext,
+ *   CekFrame,
+ *   CekEnv,
+ *   CekState,
+ *   FlatReader,
+ *   FlatWriter,
+ *   UplcCase,
+ *   UplcTerm
+ * } from "../index.js"
  */
 
 export const UPLC_CASE_TAG = 9
@@ -15,6 +24,17 @@ export const UPLC_CASE_TAG = 9
  */
 export function makeUplcCase(arg, cases, site = undefined) {
     return new UplcCaseImpl(arg, cases, site)
+}
+
+/**
+ * @param {FlatReader} r
+ * @returns {UplcCase}
+ */
+export function decodeUplcCaseFromFlat(r) {
+    const arg = r.readExpr()
+    const cases = r.readList((r) => r.readExpr())
+
+    return makeUplcCase(arg, cases)
 }
 
 /**
@@ -67,21 +87,19 @@ class UplcCaseImpl {
     }
 
     /**
-     * @param {CekStack} stack
+     * @param {CekFrame[]} frames
+     * @param {CekEnv} env
      * @param {CekContext} ctx
-     * @returns {CekStateChange}
+     * @returns {CekState}
      */
-    compute(stack, ctx) {
+    compute(frames, env, ctx) {
         ctx.cost.incrCaseCost()
 
         return {
-            state: {
-                computing: {
-                    term: this.arg,
-                    stack: stack
-                }
-            },
-            frames: [makeCaseScrutineeFrame(this.cases, stack)]
+            kind: "computing",
+            term: this.arg,
+            env: env,
+            frames: frames.concat([makeCekCaseScrutineeFrame(this.cases, env)])
         }
     }
 

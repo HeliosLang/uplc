@@ -59,17 +59,25 @@ class FlatReaderImpl {
     }
 
     /**
+     * @param {number} n
+     * @returns {number}
+     */
+    readBits(n) {
+        return this._bitReader.readBits(n)
+    }
+
+    /**
      * @returns {boolean}
      */
     readBool() {
-        return this._bitReader.readBits(1) == 1
+        return this.readBits(1) == 1
     }
 
     /**
      * @returns {number}
      */
     readBuiltinId() {
-        return this._bitReader.readBits(7)
+        return this.readBits(7)
     }
 
     /**
@@ -90,27 +98,26 @@ class FlatReaderImpl {
      * @returns {number}
      */
     readTag() {
-        return this._bitReader.readBits(4)
+        return this.readBits(4)
     }
 
     /**
      * Reads a Plutus-core list with a specified size per element
      * Calls itself recursively until the end of the list is reached
-     * @param {number} elemSize
-     * @returns {number[]}
+     * @template T
+     * @param {(r: FlatReader) => T} readItem
+     * @returns {T[]}
      */
-    readLinkedList(elemSize) {
+    readList(readItem) {
         // Cons and Nil constructors come from Lisp/Haskell
         //  cons 'a' creates a linked list node,
         //  nil      creates an empty linked list
-        let nilOrCons = this._bitReader.readBits(1)
+        const nilOrCons = this.readBits(1)
 
         if (nilOrCons == 0) {
             return []
         } else {
-            return [this._bitReader.readBits(elemSize)].concat(
-                this.readLinkedList(elemSize)
-            )
+            return [readItem(this)].concat(this.readList(readItem))
         }
     }
 
@@ -118,7 +125,9 @@ class FlatReaderImpl {
      * @returns {UplcValue}
      */
     readValue() {
-        let typeList = this.readLinkedList(4)
+        const typeList = this.readList((r) => {
+            return r.readBits(4)
+        })
 
         const valueReader = this._dispatchValueReader(this, typeList)
 

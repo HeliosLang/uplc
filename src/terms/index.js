@@ -1,3 +1,4 @@
+export { makeUplcApply } from "./UplcApply.js"
 export { makeUplcBuiltin } from "./UplcBuiltin.js"
 export { makeUplcCall } from "./UplcCall.js"
 export { makeUplcCase } from "./UplcCase.js"

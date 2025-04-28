@@ -1,10 +1,19 @@
 import { toInt } from "@helios-lang/codec-utils"
-import { makeConstrArgFrame } from "../cek/ConstrArgFrame.js"
+import { makeCekConstrArgFrame } from "../cek/index.js"
 
 /**
  * @import { IntLike } from "@helios-lang/codec-utils"
  * @import { Site } from "@helios-lang/compiler-utils"
- * @import { CekContext, CekStack, CekStateChange, FlatWriter, UplcConst, UplcConstr, UplcTerm } from "../index.js"
+ * @import {
+ *   CekContext,
+ *   CekFrame,
+ *   CekEnv,
+ *   CekState,
+ *   FlatReader,
+ *   FlatWriter,
+ *   UplcConstr,
+ *   UplcTerm
+ * } from "../index.js"
  */
 
 export const UPLC_CONSTR_TAG = 8
@@ -17,6 +26,16 @@ export const UPLC_CONSTR_TAG = 8
  */
 export function makeUplcConstr(tag, args, site) {
     return new UplcConstrImpl(Number(toInt(tag)), args, site)
+}
+
+/**
+ * @param {FlatReader} r
+ * @returns {UplcConstr}
+ */
+export function decodeUplcConstrFromFlat(r) {
+    const tag = r.readInt()
+    const args = r.readList((r) => r.readExpr())
+    return makeUplcConstr(tag, args)
 }
 
 /**
@@ -68,35 +87,32 @@ class UplcConstrImpl {
     }
 
     /**
-     * @param {CekStack} stack
+     * @param {CekFrame[]} frames
+     * @param {CekEnv} env
      * @param {CekContext} ctx
-     * @returns {CekStateChange}
+     * @returns {CekState}
      */
-    compute(stack, ctx) {
+    compute(frames, env, ctx) {
         ctx.cost.incrConstrCost()
 
         if (this.args.length == 0) {
             return {
-                state: {
-                    reducing: {
-                        constr: {
-                            tag: this.tag,
-                            args: []
-                        }
-                    }
-                }
+                kind: "reducing",
+                value: {
+                    kind: "constr",
+                    tag: this.tag,
+                    args: []
+                },
+                frames: frames
             }
         } else {
             return {
-                state: {
-                    computing: {
-                        term: this.args[0],
-                        stack: stack
-                    }
-                },
-                frames: [
-                    makeConstrArgFrame(this.tag, [], this.args.slice(1), stack)
-                ] // TODO create this frame type
+                kind: "computing",
+                term: this.args[0],
+                env: env,
+                frames: frames.concat([
+                    makeCekConstrArgFrame(this.tag, [], this.args.slice(1), env)
+                ])
             }
         }
     }

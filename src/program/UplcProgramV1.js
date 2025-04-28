@@ -98,7 +98,7 @@ export function decodeUplcProgramV1FromFlat(bytes, options = {}) {
 /**
  * @param {string} src
  * @param {UplcProgramV1Options} options
- * @returns {UplcProgramV1Impl}
+ * @returns {UplcProgramV1}
  */
 export function parseUplcProgramV1(src, options = {}) {
     return new UplcProgramV1Impl(
@@ -200,7 +200,7 @@ class UplcProgramV1Impl {
     }
 
     /**
-     * Wrap the top-level term with consecutive UplcCall (not exported) terms.
+     * Wrap the top-level term with consecutive UplcApply (not exported) terms.
      *
      * Returns a new UplcProgramV1 instance, leaving the original untouched.
      * @param {UplcValue[]} args

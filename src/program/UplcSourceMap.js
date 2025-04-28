@@ -26,7 +26,7 @@ import { traverse } from "../terms/index.js"
 /**
  * @import { Site } from "@helios-lang/compiler-utils"
  * @import { JsonSafe } from "@helios-lang/type-utils"
- * @import { UplcBuiltin, UplcCall, UplcSourceMap, UplcSourceMapJsonSafe, UplcSourceMapProps, UplcTerm } from "../index.js"
+ * @import { UplcSourceMap, UplcSourceMapJsonSafe, UplcSourceMapProps, UplcTerm } from "../index.js"
  */
 
 /**

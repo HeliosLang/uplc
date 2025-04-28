@@ -1,10 +1,44 @@
 import { stringifyCekValue } from "./CekValue.js"
 
 /**
- * @import { CallSiteInfo, CekValue, UplcData } from "../index.js"
+ * @import { CallSiteInfo, CekValue, UplcData, UplcRuntimeError } from "../index.js"
  */
 
-export class UplcRuntimeError extends Error {
+/**
+ *
+ * @param {string} message
+ * @param {CallSiteInfo[]} callSites
+ * @param {UplcData | undefined} [scriptContext]
+ * @returns {UplcRuntimeError}
+ */
+export function makeUplcRuntimeError(
+    message,
+    callSites,
+    scriptContext = undefined
+) {
+    return new UplcRuntimeErrorImpl(message, callSites, scriptContext)
+}
+
+/**
+ * @param {unknown} x
+ * @returns {x is UplcRuntimeError}
+ */
+export function isUplcRuntimeError(x) {
+    if (x instanceof Error) {
+        if (x instanceof UplcRuntimeErrorImpl) {
+            return true
+        }
+
+        return "frames" in x && Array.isArray(x.frames)
+    } else {
+        return false
+    }
+}
+
+/**
+ * @implements {UplcRuntimeError}
+ */
+class UplcRuntimeErrorImpl extends Error {
     /**
      * Optional field indicating a ScriptContext (UPLC) in which the error occurred
      * @readonly
@@ -43,6 +77,13 @@ export class UplcRuntimeError extends Error {
 
         prepareHeliosStackTrace(this, callSites)
     }
+
+    /**
+     * @type {"UplcRuntimeError"}
+     */
+    get name() {
+        return "UplcRuntimeError"
+    }
 }
 
 /**
@@ -55,11 +96,14 @@ function prepareHeliosStackTrace(err, callSites) {
         return
     }
 
-    const jsStackLines = err.stack?.split("\n") ?? []
+    const jsStackLines = (err.stack?.split("\n") ?? []).filter(
+        (l) => !l.includes("at makeUplcRuntimeError")
+    )
 
     // firefox is sadly different from chrome/node and requires each stack trace line to be formatted in a special way
     const isFirefox = jsStackLines?.[0]?.includes("@") // TODO: better regexp
-    const stackIncludesMessage = jsStackLines?.[0] == `Error: ${err.message}` // TODO: better regexp
+    const stackIncludesMessage =
+        jsStackLines?.[0] == `UplcRuntimeError: ${err.message}` // TODO: better regexp
     const indent = isFirefox
         ? ""
         : stackIncludesMessage
@@ -127,7 +171,6 @@ function prepareHeliosStackTrace(err, callSites) {
 
     lines.reverse()
 
-    // the advantage of using a class instead of a function to generate this instance is that there is no stack frame included for constructor call, so we can include all the js stack frames
     if (stackIncludesMessage) {
         err.stack = [jsStackLines[0]]
             .concat(lines)

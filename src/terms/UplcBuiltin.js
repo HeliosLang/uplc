@@ -7,8 +7,9 @@ import { expectDefined } from "@helios-lang/type-utils"
  * @import {
  *   Builtin,
  *   CekContext,
- *   CekStack,
- *   CekStateChange,
+ *   CekFrame,
+ *   CekEnv,
+ *   CekState,
  *   FlatReader,
  *   FlatWriter,
  *   UplcBuiltin,
@@ -105,24 +106,24 @@ class UplcBuiltinImpl {
     }
 
     /**
-     * @param {CekStack} stack
+     * @param {CekFrame[]} frames
+     * @param {CekEnv} env
      * @param {CekContext} ctx
-     * @returns {CekStateChange}
+     * @returns {CekState}
      */
-    compute(stack, ctx) {
+    compute(frames, env, ctx) {
         ctx.cost.incrBuiltinCost()
 
         return {
-            state: {
-                reducing: {
-                    builtin: {
-                        id: this.id,
-                        name: this.name,
-                        forceCount: 0,
-                        args: []
-                    }
-                }
-            }
+            kind: "reducing",
+            value: {
+                kind: "builtin",
+                id: this.id,
+                name: this.name,
+                args: [],
+                forceCount: 0 // TODO: count down instead of up
+            },
+            frames
         }
     }
 }

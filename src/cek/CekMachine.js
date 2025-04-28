@@ -5,10 +5,9 @@ import { stringifyNonUplcValue } from "./CekValue.js"
  * @import { Site } from "@helios-lang/compiler-utils"
  * @import {
  *   Builtin,
- *   CekContext,
- *   CekFrame,
+ *   CekMachine,
  *   CekResult,
- *   CekStack,
+ *   CekEnv,
  *   CekState,
  *   CekTerm,
  *   CostModel,
@@ -19,9 +18,21 @@ import { stringifyNonUplcValue } from "./CekValue.js"
  */
 
 /**
- * @implements {CekContext}
+ * Initialize a `CekMachine` in a CekComputingState with the given term
+ * @param {CekTerm} term
+ * @param {Builtin[]} builtins
+ * @param {CostModel} costModel
+ * @param {UplcLogger | undefined} [diagnostics]
+ * @returns {CekMachine}
  */
-export class CekMachine {
+export function makeCekMachine(term, builtins, costModel, diagnostics) {
+    return new CekMachineImpl(term, builtins, costModel, diagnostics)
+}
+
+/**
+ * @implements {CekMachine}
+ */
+class CekMachineImpl {
     /**
      * @readonly
      * @type {Builtin[]}
@@ -35,23 +46,14 @@ export class CekMachine {
     cost
 
     /**
-     * @private
-     * @readonly
-     * @type {CekFrame[]}
-     */
-    _frames
-
-    /**
-     * @private
      * @type {CekState}
      */
-    _state
+    state
 
     /**
-     * @private
      * @type {{message: string, site?: Site}[]}     *
      */
-    _logs
+    logs
 
     /**
      * @type {UplcLogger | undefined}
@@ -63,24 +65,23 @@ export class CekMachine {
      * @param {CekTerm} term
      * @param {Builtin[]} builtins
      * @param {CostModel} costModel
-     * @param {UplcLogger} [diagnostics]
+     * @param {UplcLogger | undefined} [diagnostics]
      */
-    constructor(term, builtins, costModel, diagnostics) {
+    constructor(term, builtins, costModel, diagnostics = undefined) {
         this.builtins = builtins
         this.cost = makeCostTracker(costModel)
-        this._frames = []
-        this._logs = []
+        this.logs = []
 
         this.diagnostics = diagnostics
 
-        this._state = {
-            computing: {
-                term,
-                stack: {
-                    values: [],
-                    callSites: []
-                }
-            }
+        this.state = {
+            kind: "computing",
+            term,
+            env: {
+                values: [],
+                callSites: []
+            },
+            frames: []
         }
     }
 
@@ -88,7 +89,7 @@ export class CekMachine {
      * @returns {string | undefined}
      */
     popLastMessage() {
-        return this._logs.pop()?.message
+        return this.logs.pop()?.message
     }
 
     /**
@@ -100,72 +101,75 @@ export class CekMachine {
     }
 
     /**
+     * @param {string} message
+     * @param {Site | undefined} site
+     */
+    print(message, site = undefined) {
+        this.logs.push({ message, site: site ?? undefined })
+        this.diagnostics?.logPrint(message, site)
+    }
+
+    /**
      * @returns {CekResult}
      */
     eval() {
         this.cost.incrStartupCost()
 
-        while (true) {
-            if ("computing" in this._state) {
-                const { term, stack } = this._state.computing
+        while (!["error", "success"].includes(this.state.kind)) {
+            if (this.state.kind == "computing") {
+                const { term, env, frames } = this.state
 
-                const { state: newState, frames: newFrames } = term.compute(
-                    stack,
-                    this
-                )
-
-                this._state = newState
-
-                if (newFrames) {
-                    for (let newFrame of newFrames) {
-                        this._frames.push(newFrame)
-                    }
-                }
-            } else if ("reducing" in this._state) {
-                const f = this._frames.pop()
+                this.state = term.compute(frames, env, this)
+            } else if (this.state.kind == "reducing") {
+                const f = this.state.frames.pop()
 
                 if (f) {
-                    const { state: newState, frames: newFrames } = f.reduce(
-                        this._state.reducing,
+                    const newState = f.reduce(
+                        this.state.frames,
+                        this.state.value,
                         this
                     )
 
-                    this._state = newState
-
-                    if (newFrames) {
-                        for (let newFrame of newFrames) {
-                            this._frames.push(newFrame)
-                        }
-                    }
+                    this.state = newState
                 } else {
-                    return this.returnValue(
-                        stringifyNonUplcValue(this._state.reducing)
-                    )
+                    this.state = {
+                        kind: "success",
+                        value: this.state.value
+                    }
                 }
-            } else if ("error" in this._state) {
-                return this.returnError(this._state.error)
             }
+        }
+
+        if (this.state.kind == "success") {
+            return this.returnValue(stringifyNonUplcValue(this.state.value))
+        } else if (this.state.kind == "error") {
+            return this.returnError(this.state.message, this.state.env)
+        } else {
+            throw new Error(
+                `Internal error: unexpected final state ${this.state.kind}`
+            )
         }
     }
 
     /**
      * @private
-     * @param {{message: string, stack: CekStack}} err
+     * @param {string} message
+     * @param {CekEnv} env
      * @returns {CekResult}
      */
-    returnError(err) {
+    returnError(message, env) {
         return {
             result: {
                 left: {
-                    error: err.message,
-                    callSites: err.stack.callSites
+                    error: message,
+                    callSites: env.callSites
                 }
             },
             cost: {
                 mem: this.cost.mem,
                 cpu: this.cost.cpu
             },
-            logs: this._logs,
+            logs: this.logs,
             breakdown: this.cost.breakdown
         }
     }
@@ -184,17 +188,8 @@ export class CekMachine {
                 mem: this.cost.mem,
                 cpu: this.cost.cpu
             },
-            logs: this._logs,
+            logs: this.logs,
             breakdown: this.cost.breakdown
         }
-    }
-
-    /**
-     * @param {string} message
-     * @param {Site | undefined} site
-     */
-    print(message, site = undefined) {
-        this._logs.push({ message, site: site ?? undefined })
-        this.diagnostics?.logPrint(message, site)
     }
 }

@@ -3,8 +3,8 @@ import { describe, it } from "node:test"
 import { makeTokenSite } from "@helios-lang/compiler-utils"
 import { expectDefined } from "@helios-lang/type-utils"
 import {
+    makeUplcApply,
     makeUplcBuiltin,
-    makeUplcCall,
     makeUplcConst,
     makeUplcDelay,
     makeUplcError,
@@ -12,13 +12,13 @@ import {
     makeUplcVar
 } from "../terms/index.js"
 import { makeUplcString } from "../values/index.js"
-import { UplcRuntimeError } from "./UplcRuntimeError.js"
+import { isUplcRuntimeError, makeUplcRuntimeError } from "./UplcRuntimeError.js"
 
 /**
  * @import { CallSiteInfo } from "../index.js"
  */
 
-describe(UplcRuntimeError.name, () => {
+describe("UplcRuntimeError", () => {
     /**
      * @type {CallSiteInfo[]}
      */
@@ -35,28 +35,27 @@ describe(UplcRuntimeError.name, () => {
             arguments: [
                 {
                     name: "fn3",
-                    delay: {
-                        term: makeUplcForce({
-                            arg: makeUplcCall({
-                                fn: makeUplcCall({
-                                    fn: makeUplcForce({
-                                        arg: makeUplcBuiltin({
-                                            id: 28,
-                                            name: "trace"
-                                        })
-                                    }),
-                                    arg: makeUplcConst({
-                                        value: makeUplcString("my error")
+                    kind: "delay",
+                    term: makeUplcForce({
+                        arg: makeUplcApply({
+                            fn: makeUplcApply({
+                                fn: makeUplcForce({
+                                    arg: makeUplcBuiltin({
+                                        id: 28,
+                                        name: "trace"
                                     })
                                 }),
-                                arg: makeUplcDelay({ arg: makeUplcError() })
-                            })
-                        }),
-                        stack: {
-                            // not used by UplcRuntimeError
-                            values: [],
-                            callSites: []
-                        }
+                                arg: makeUplcConst({
+                                    value: makeUplcString("my error")
+                                })
+                            }),
+                            arg: makeUplcDelay({ arg: makeUplcError() })
+                        })
+                    }),
+                    env: {
+                        // not used by UplcRuntimeError
+                        values: [],
+                        callSites: []
                     }
                 }
             ]
@@ -73,15 +72,14 @@ describe(UplcRuntimeError.name, () => {
             arguments: [
                 {
                     name: "fn2",
-                    delay: {
-                        term: makeUplcForce({
-                            arg: makeUplcVar({ index: 1, name: "fn3" })
-                        }),
-                        stack: {
-                            // not used by UplcRuntimeError
-                            values: [],
-                            callSites: []
-                        }
+                    kind: "delay",
+                    term: makeUplcForce({
+                        arg: makeUplcVar({ index: 1, name: "fn3" })
+                    }),
+                    env: {
+                        // not used by UplcRuntimeError
+                        values: [],
+                        callSites: []
                     }
                 }
             ]
@@ -98,15 +96,14 @@ describe(UplcRuntimeError.name, () => {
             arguments: [
                 {
                     name: "fn1",
-                    delay: {
-                        term: makeUplcForce({
-                            arg: makeUplcVar({ index: 1, name: "fn2" })
-                        }),
-                        stack: {
-                            // not used by UplcRuntimeError
-                            values: [],
-                            callSites: []
-                        }
+                    kind: "delay",
+                    term: makeUplcForce({
+                        arg: makeUplcVar({ index: 1, name: "fn2" })
+                    }),
+                    env: {
+                        // not used by UplcRuntimeError
+                        values: [],
+                        callSites: []
                     }
                 }
             ]
@@ -154,9 +151,9 @@ describe(UplcRuntimeError.name, () => {
     ]
 
     try {
-        throw new UplcRuntimeError("my error", callSites)
+        throw makeUplcRuntimeError("my error", callSites)
     } catch (err) {
-        if (err instanceof UplcRuntimeError) {
+        if (isUplcRuntimeError(err)) {
             const stack = expectDefined(err.stack)
 
             // in Node the error message is part of the stack itself, so we ignore it for the sake of the test (checking the err.message field directly instead)

@@ -6,7 +6,17 @@ export {
     builtinsV3,
     builtinsV3Map
 } from "./builtins/index.js"
-export { UplcRuntimeError } from "./cek/index.js"
+export {
+    isUplcRuntimeError,
+    makeCekCaseScrutineeFrame,
+    makeCekConstrArgFrame,
+    makeCekForceFrame,
+    makeCekLeftApplyToTermFrame,
+    makeCekLeftApplyToValueFrame,
+    makeCekMachine,
+    makeCekRightApplyFrame,
+    makeUplcRuntimeError
+} from "./cek/index.js"
 export {
     decodeCost,
     encodeCost,
@@ -55,6 +65,7 @@ export {
     restoreUplcProgram
 } from "./program/index.js"
 export {
+    makeUplcApply,
     makeUplcBuiltin,
     makeUplcCall,
     makeUplcConst,
@@ -128,9 +139,10 @@ export {
  */
 
 /**
- * @typedef {{
- *   print: (message: string) => void
- * }} BuiltinContext
+ * @typedef {object} BuiltinContext
+ * The context that the builting functions need to operate.
+ *
+ * @prop {(message: string) => void} print
  */
 
 /**
@@ -143,18 +155,157 @@ export {
  */
 
 /**
- * @typedef {BuiltinContext & {
- *   cost: CostTracker
- *   getBuiltin: (id: number) => (undefined | Builtin)
- *   popLastMessage: () => string | undefined
- *   print: (message: string, site?: Site | undefined) => void
- * }} CekContext
+ * @typedef {object} CekContext
+ * The context that CEK terms and frames need to operate.
+ *
+ * @prop {(message: string, site?: Site | undefined) => void} print
+ * @prop {CostTracker} cost
+ * @prop {(id: number) => (undefined | Builtin)} getBuiltin
+ * @prop {() => string | undefined} popLastMessage
  */
 
 /**
+ * @typedef {object} CekMachine
+ * The `CekMachine` extends the `CekContext` interface.
+ *
+ * Use `makeCekMachine` to create a initialize a new CekMachine
+ *
+ * @prop {(message: string, site?: Site | undefined) => void} print
+ * @prop {CostTracker} cost
+ * @prop {(id: number) => (undefined | Builtin)} getBuiltin
+ * @prop {Builtin[]} builtins
+ * @prop {() => string | undefined} popLastMessage
+ * @prop {() => CekResult} eval
+ * @prop {CekState} state
+ * @prop {{message: string, site?: Site}[]} logs
+ * @prop {UplcLogger | undefined} diagnostics
+ */
+
+/**
+ * Information which is helpful when debugging
  * @typedef {{
- *   reduce: (value: CekValue, ctx: CekContext) => CekStateChange
- * }} CekFrame
+ *   callSite?: Site
+ *   name?: string
+ *   argName?: string
+ * }} CekApplyInfo
+ */
+
+/**
+ * @typedef {(
+ *   CekForceFrame
+ *   | CekLeftApplyToTermFrame
+ *   | CekLeftApplyToValueFrame
+ *   | CekRightApplyFrame
+ *   | CekConstrArgFrame
+ *   | CekCaseScrutineeFrame
+ * )} CekFrame
+ */
+
+/**
+ * @typedef {object} CekForceFrame
+ * Equivalent to the $(\text{force}~_)$ frame in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * @prop {CekEnv} env
+ * @prop {Site | undefined} callSite
+ * @prop {(frames: CekFrame[], value: CekValue, ctx: CekContext) => CekState} reduce
+ * Equivalent to the following transitions in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * (\text{force}~_)\cdot s\triangleleft~\langle\text{delay}~M~\rho\rangle~\mapsto~s;\rho\triangleright~M
+ * (\text{force}~_)\cdot s\triangleleft~\langle\text{builtin}~b~\overline{V}~(\iota\cdot\eta)\rangle~\mapsto~s\triangleleft~\langle\text{builtin}~b~\overline{V}~\eta\rangle
+ * (\text{force}~_)\cdot s\triangleleft~\langle\text{builtin}~b~\overline{V}~[\iota]\rangle~\mapsto~\text{Eval}_\text{CEK}(s,b,\overline{V})
+ * $$
+ */
+
+/**
+ * @typedef {object} CekLeftApplyToTermFrame
+ * Equivalent to the $[_~(M,\rho)]$ frame in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `arg` is equivalent to `M`
+ *    - `env` is equivalent to `\rho`
+ *
+ * @prop {CekTerm} arg
+ * @prop {CekEnv} env
+ * @prop {Site | undefined} callSite
+ * @prop {(frames: CekFrame[], value: CekValue, ctx: CekContext) => CekState} reduce
+ * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * [_~(M,\rho)]\cdot~\triangleleft~V~\mapsto~[V~_]\cdot s;\rho~\triangleright~M
+ * $$
+ */
+
+/**
+ * @typedef {object} CekLeftApplyToValueFrame
+ * @prop {CekValue} rhs
+ * @prop {CekEnv} env
+ * @prop {Site | undefined} callSite
+ * @prop {(frames: CekFrame[], value: CekValue, ctx: CekContext) => CekState} reduce
+ * Equivalent to the following transitions in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * [_~V]\cdot s\triangleleft~\langle\text{lam}~x~M~\rho\rangle~\mapsto~s;\rho[x\mapstoV]\triangleright~M
+ * [_~V]\cdot s\triangleleft~\langle\text{builtin}~b~\overline{V}~(\iota\cdot\eta)\rangle~\triangleleft~V~\mapsto~s\triangleleft~\langle\text{builtin}~b~(\overline{V}\cdot V)~\eta\rangle
+ * [_~V]\cdot s\triangleleft~\langle\text{builtin}~b~\overline{V}~[\iota]\rangle~\mapsto~\text{Eval}_\text{CEK}(s,b,\overline{V}\cdot V)
+ * $$
+ */
+
+/**
+ * @typedef {object} CekRightApplyFrame
+ * Equivalent to $[V~_]$ in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `fn` is equivalent to `V`
+ *
+ * @prop {CekValue} fn
+ * @prop {CekEnv} env
+ * @prop {CekApplyInfo} info
+ * @prop {(frames: CekFrame[], value: CekValue, ctx: CekContext) => CekState} reduce
+ * Equivalent to the following transitions in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * [\langle\text{lam}~x~M~\rho\rangle~_]\cdot s~\triangleleft~V~\mapsto~s;\rho[x\mapsto V]~\triangleright~M
+ * [\langle\text{builtin}~b~\overline{V}~(\iota\cdot\eta)\rangle~_]\cdot s~\triangleleft~V~\mapsto~s\triangleleft~\langle\text{builtin}~b~(\overline{V}\cdot V)~\eta\rangle
+ * [\langle\text{builtin}~b~\overline{V}~[\iota]\rangle~_]\cdot s~\triangleleft~V~\mapsto~\text{Eval}_\text{CEK}(s,b,\overline{V}\cdot V)
+ * $$
+ */
+
+/**
+ * @typedef {object} CekConstrArgFrame
+ * Equivalent to the $(\text{constr}~i~\overline{V}~_~(\overline{M},\rho))$ frame in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `tag` is equivalent to $i$
+ *    - `evaluatedArgs` is equivalent to $\overline{V}$
+ *    - `pendingArgs` is equivalent to $\overline{M}$
+ *    - `env` is equivalent to `\rho`
+ *
+ * @prop {number} tag
+ * @prop {CekValue[]} evaluatedArgs
+ * @prop {CekTerm[]} pendingArgs
+ * @prop {CekEnv} env
+ * @prop {(frams: CekFrame[], value: CekValue, ctx: CekContext) => CekState} reduce
+ * Equivalent to the following transitions in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * (\text{constr}~i~\overline{V}~_~(M\cdot\overline{M},\rho))\cdot s \triangleleft V~\mapsto~(\text{constr}~i~\overline{V}\cdot V~_~(\overline{M},\rho))\cdot s;\rho\triangleright~M
+ * (\text{constr}~i~\overline{V}~_([],\rho))\cdot s\triangleleft~V~\mapsto~s\triangleleft\langle\text{constr}~i~\overline{V}\cdot V\rangle
+ * $$
+ */
+
+/**
+ * @typedef {object}  CekCaseScrutineeFrame
+ * Equivalent to the $(\text{case}~_~(\overline{M},\rho)) frame in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `cases` is equivalent to $\overline{M}$
+ *    - `env` is equivalent to $\rho`
+ *
+ * @prop {CekTerm[]} cases
+ * @prop {CekEnv} env
+ * @prop {(frames: CekFrame[], value: CekValue, ctx: CekContext) => CekState} reduce
+ * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * (\text{case}~_~(M_0...M_n,\rho))\cdot s\triangleleft\langle\text{constr}~i~V_1...V_m\rangle~\mapsto~[_~V_m]...[_~V_1]\cdot s;\rho \triangleright M_i
+ * $$
  */
 
 /**
@@ -174,102 +325,171 @@ export {
  */
 
 /**
+ * `CekEnv` contains a stack of variable values, and a stack for call sites (useful for debugging)
  * @typedef {{
  *   values: CekValue[]
  *   callSites: CallSiteInfo[]
- * }} CekStack
+ * }} CekEnv
  */
 
 /**
+ * `CekComputingState` is equivalent to $s; \rho \triangleright M$ in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `term` is equivalent to $M$
+ *    - `env` is equivalent to $\rho$
+ *    - `frames` is equivalent to $s$
+ *
  * @typedef {{
- *   computing: {
- *     term: CekTerm
- *     stack: CekStack
- *   }
- * } | {
- *   reducing: CekValue
- * } | {
- *   error: {
- *     message: string
- *     stack: CekStack
- *   }
- * }} CekState
+ *   kind: "computing"
+ *   term: CekTerm
+ *   env: CekEnv
+ *   frames: CekFrame[]
+ * }} CekComputingState
  */
 
 /**
+ * `CekReducingState` is equivalent to $s \triangleleft V$ in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `value` is equivalent to $V$
+ *    - `frames` is equivalent to $s$
+ *
  * @typedef {{
- *   state: CekState
- *   frames?: CekFrame[]
- * }} CekStateChange
+ *   kind: "reducing"
+ *   value: CekValue
+ *   frames: CekFrame[]
+ * }} CekReducingState
  */
 
 /**
+ * `CekErrorState` is equivalent to $\text{⬥}$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * The `message` and `env` fields aren't required by the spec, but are useful for debugging.
+ *
  * @typedef {{
- *   site: Site | undefined
- *   compute(stack: CekStack, ctx: CekContext): CekStateChange
- *   toString(): string
- * }} CekTerm
+ *   kind: "error"
+ *   message: string
+ *   env: CekEnv
+ * }} CekErrorState
  */
 
 /**
- * The optional `name` is used for debugging
+ * `CekSuccessState` is equivalent to $\square V$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `value` is equivalent to $V$
+ *
  * @typedef {{
- *  name?: string
- *  value: UplcValue
- * }} CekPlainValue
+ *   kind: "success"
+ *   value: CekValue
+ * }} CekSuccessState
  */
 
 /**
- * The optional `name` is used for debugging
+ * `CekState` is equivalent to $\Sigma$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf).
+ *
+ * @typedef {(
+ *   CekComputingState
+ *   | CekReducingState
+ *   | CekErrorState
+ *   | CekSuccessState
+ * )} CekState
+ */
+
+/**
+ * @typedef {object} CekTerm
+ * The `CekTerm` interface is extended by more specific Uplc terms.
+ * @prop {Site | undefined} site
+ * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
+ * @prop {() => string} toString
+ */
+
+/**
+ * `CekValue` is a generalized UplcValue, which is equivalent to $V$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf).
+ *
+ * @typedef {(
+ *   CekConstValue
+ *   | CekDelayedValue
+ *   | CekLambdaValue
+ *   | CekBuiltinValue
+ *   | CekConstrValue
+ * )} CekValue
+ */
+
+/**
+ * `CekConstValue` is equivalent to $\langle \text{con}~T~c\rangle$ in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf).
+ *
+ *    - `value` contains information related to both $T$ and $c$
+ *
+ * The optional `name` field is used for debugging.
+ *
  * @typedef {{
+ *   kind: "const"
+ *   value: UplcValue
  *   name?: string
- *   delay: {
- *     term: CekTerm
- *     stack: CekStack
- *   }
+ * }} CekConstValue
+ */
+
+/**
+ * `CekDelayedValue` is equivalent to $\langle \text{delay}~M~\rho\rangle$ in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `term` is equivalent to $M$
+ *    - `env` is equivalent to $\rho$
+ *
+ * The optional `name` field is used for debugging.
+ *
+ * @typedef {{
+ *   kind: "delay"
+ *   term: CekTerm
+ *   env: CekEnv
+ *   name?: string
  * }} CekDelayedValue
  */
 
 /**
- * The optional `name` is used for debugging
+ * `CekLambdaValue` is equivalent to $\langle \text{lam}~x~M~\rho\rangle$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `body` is equivalent to $M$
+ *    - `env` is equivalent to $\rho$
+ *    - `argName` is an optional alternative name for $x$, which is useful during debugging
+ *
+ * The optional `name` field is used for debugging.
+ *
  * @typedef {{
+ *   kind: "lambda"
+ *   body: CekTerm
+ *   env: CekEnv
+ *   argName?: string
  *   name?: string
- *   lambda: {
- *     term: CekTerm
- *     stack: CekStack
- *     argName?: string
- *   }
  * }} CekLambdaValue
  */
 
 /**
- * The optional `name` is used for debugging
+ * `CekConstrValue` is equivalent to $\langle \text{constr}~i~\overline{V}\rangle$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `tag` is equivalent to $i$
+ *    - `args` is equivalent to $\overline{V}$
+ *
+ * The optional `name` is used for debugging.
+ *
  * @typedef {{
+ *   kind: "constr"
+ *   tag: number
+ *   args: CekValue[]
  *   name?: string
- *   builtin: {
- *     id: number
- *     name: string
- *     forceCount: number
- *     args: CekValue[]
- *   }
- * }} CekBuiltinValue
- */
-
-/**
- * The optional `name` is used for debugging
- * @typedef {{
- *   name?: string
- *   constr: {
- *     tag: number
- *     args: CekValue[]
- *   }
  * }} CekConstrValue
  */
 
 /**
- * Generalized UplcValue
- * The optional name is used for debugging
- * @typedef {CekPlainValue | CekDelayedValue | CekLambdaValue | CekBuiltinValue | CekConstrValue} CekValue
+ * `CekBuiltinValue` is equivalent to $\langle \text{builtin}~b~\overline{V}~\eta\rangle$ in the *CEK Machine* section of the [plutus core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ *    - `id` is equivalent to $b$
+ *
+ * @typedef {{
+ *   kind: "builtin"
+ *   id: number
+ *   forceCount: number
+ *   args: CekValue[]
+ *   name: string
+ * }} CekBuiltinValue
  */
 
 /**
@@ -327,12 +547,13 @@ export {
 
 /**
  * @typedef {object} FlatReader
+ * @prop {(n: number) => number} readBits
  * @prop {() => boolean} readBool
  * @prop {() => number} readBuiltinId
  * @prop {() => number[]} readBytes
  * @prop {() => bigint} readInt
  * @prop {() => number} readTag
- * @prop {(elemSize: number) => number[]} readLinkedList
+ * @prop {<T>(readItem: (r: FlatReader) => T) => T[]} readList
  * @prop {() => UplcValue} readValue
  * @prop {() => UplcTerm} readExpr
  */
@@ -350,64 +571,80 @@ export {
  */
 
 /**
- * Interface for Plutus-core data classes (not the same as Plutus-core value classes!)
+ * Interfaces for Plutus-core data classes (not the same as Plutus-core value classes!)
  * @typedef {ByteArrayData | ConstrData | IntData | ListData | MapData} UplcData
  */
 
 /**
- * @typedef {{
- *   memSize: number
- *   isEqual: (other: UplcData) => boolean
- *   toCbor: () => number[]
- *   toSchemaJson: () => string
- *   toString: () => string
- *   rawData?: any
- *   dataPath?: string
- * }} CommonUplcDataProps
+ * @typedef {object} ByteArrayData
+ * @prop {"bytes"} kind
+ * @prop {number[]} bytes
+ * @prop {() => string} toHex
+ * @prop {number} memSize
+ * @prop {(other: UplcData) => boolean} isEqual
+ * @prop {() => number[]} toCbor
+ * @prop {() => string} toSchemaJson
+ * @prop {() => string} toString
+ * @prop {any} [rawData]
+ * @prop {string} [dataPath]
  */
 
 /**
- * @typedef {CommonUplcDataProps & {
- *   kind: "bytes"
- *   bytes: number[]
- *   toHex: () => string
- * }} ByteArrayData
+ * @typedef {object} ConstrData
+ * @prop {"constr"} kind
+ * @prop {number} tag
+ * @prop {UplcData[]} fields
+ * @prop {number} length
+ * @prop {(n: number) => ConstrData}  expectFields
+ * @prop {(tag: number, msg?: string) => ConstrData}  expectTag
+ * @prop {number} memSize
+ * @prop {(other: UplcData) => boolean} isEqual
+ * @prop {() => number[]} toCbor
+ * @prop {() => string} toSchemaJson
+ * @prop {() => string} toString
+ * @prop {any} [rawData]
+ * @prop {string} [dataPath]
  */
 
 /**
- * @typedef {CommonUplcDataProps & {
- *   kind: "constr"
- *   tag: number
- *   fields: UplcData[]
- *   length: number
- *   expectFields: (n: number) => ConstrData
- *   expectTag: (tag: number, msg?: string) => ConstrData
- * }} ConstrData
+ * @typedef {object} IntData
+ * @prop {"int"} kind
+ * @prop {bigint} value
+ * @prop {number} memSize
+ * @prop {(other: UplcData) => boolean} isEqual
+ * @prop {() => number[]} toCbor
+ * @prop {() => string} toSchemaJson
+ * @prop {() => string} toString
+ * @prop {any} [rawData]
+ * @prop {string} [dataPath]
  */
 
 /**
- * @typedef {CommonUplcDataProps & {
- *   kind: "int"
- *   value: bigint
- * }} IntData
+ * @typedef {object} ListData
+ * @prop {"list"} kind
+ * @prop {UplcData[]} items
+ * @prop {number} length
+ * @prop {number} memSize
+ * @prop {(other: UplcData) => boolean} isEqual
+ * @prop {() => number[]} toCbor
+ * @prop {() => string} toSchemaJson
+ * @prop {() => string} toString
+ * @prop {any} [rawData]
+ * @prop {string} [dataPath]
  */
 
 /**
- * @typedef {CommonUplcDataProps & {
- *   kind: "list"
- *   items: UplcData[]
- *   length: number
- *   list: UplcData[]
- * }} ListData
- */
-
-/**
- * @typedef {CommonUplcDataProps & {
- *   kind: "map"
- *   items: [UplcData, UplcData][]
- *   length: number
- *   list: [UplcData, UplcData][]
- * }} MapData
+ * @typedef {object} MapData
+ * @prop {"map"} kind
+ * @prop {[UplcData, UplcData][]} items
+ * @prop {number} length
+ * @prop {number} memSize
+ * @prop {(other: UplcData) => boolean} isEqual
+ * @prop {() => number[]} toCbor
+ * @prop {() => string} toSchemaJson
+ * @prop {() => string} toString
+ * @prop {any} [rawData]
+ * @prop {string} [dataPath]
  */
 
 /**
@@ -415,7 +652,7 @@ export {
  * Note: logError is intended for messages that are passed to console.error() or equivalent, not for the Error messages that are simply part of thrown errors
  * @typedef {{
  *   logPrint: (message: string, site?: Site | undefined) => void
- *   logError?: (message: string, stack?: Site | undefined) => void
+ *   logError?: (message: string, site?: Site | undefined) => void
  *   lastMessage: string
  *   logTrace?: (message: string, site?: Site | undefined) => void
  *   flush?: () => void
@@ -467,51 +704,72 @@ export {
  */
 
 /**
- * @typedef {{
- *   root: UplcTerm
- *   ir?: string
- *   eval(args: UplcValue[] | undefined, options?: {
- *      logOptions?: UplcLogger,
- *      costModelParams?: number[],
- *   }): CekResult
- *   hash(): number[]
- *   toCbor(): number[]
- *   toFlat(): number[]
- *   toString(): string
- * }} CommonUplcProgramProps
+ * @typedef {object} UplcProgramV1
+ * @prop {"PlutusScriptV1"} plutusVersion
+ * @prop {1} plutusVersionTag
+ * @prop {"1.0.0"} uplcVersion
+ * @prop {UplcProgramV1} [alt]
+ * @prop {(args: UplcValue[]) => UplcProgramV1} apply
+ * @prop {(alt: UplcProgramV1) => UplcProgramV1} withAlt
+ * @prop {UplcTerm} root
+ * @prop {string} [ir]
+ * @prop {(
+ *   args: UplcValue[] | undefined,
+ *   options?: {
+ *     logOptions?: UplcLogger,
+ *     costModelParams?: number[],
+ *   }
+ * ) => CekResult} eval
+ * @prop {() => number[]} hash
+ * @prop {() => number[]} toCbor
+ * @prop {() => number[]} toFlat
+ * @prop {() => string} toString
  */
 
 /**
- * @typedef {CommonUplcProgramProps & {
- *   plutusVersion: "PlutusScriptV1"
- *   plutusVersionTag: 1
- *   uplcVersion: "1.0.0"
- *   alt?: UplcProgramV1
- *   apply: (args: UplcValue[]) => UplcProgramV1
- *   withAlt: (alt: UplcProgramV1) => UplcProgramV1
- * }} UplcProgramV1
+ * @typedef {object} UplcProgramV2
+ * @prop {"PlutusScriptV2"} plutusVersion
+ * @prop {2} plutusVersionTag
+ * @prop {"1.0.0"} uplcVersion
+ * @prop {UplcProgramV2} [alt]
+ * @prop {(args: UplcValue[]) => UplcProgramV2} apply
+ * @prop {(alt: UplcProgramV2) => UplcProgramV2} withAlt
+ * @prop {UplcTerm} root
+ * @prop {string} [ir]
+ * @prop {(
+ *   args: UplcValue[] | undefined,
+ *   options?: {
+ *     logOptions?: UplcLogger,
+ *     costModelParams?: number[],
+ *   }
+ * ) => CekResult} eval
+ * @prop {() => number[]} hash
+ * @prop {() => number[]} toCbor
+ * @prop {() => number[]} toFlat
+ * @prop {() => string} toString
  */
 
 /**
- * @typedef {CommonUplcProgramProps & {
- *   plutusVersion: "PlutusScriptV2"
- *   plutusVersionTag: 2
- *   uplcVersion: "1.0.0"
- *   alt?: UplcProgramV2
- *   apply: (args: UplcValue[]) => UplcProgramV2
- *   withAlt: (alt: UplcProgramV2) => UplcProgramV2
- * }} UplcProgramV2
- */
-
-/**
- * @typedef {CommonUplcProgramProps & {
- *   plutusVersion: "PlutusScriptV3"
- *   plutusVersionTag: 3
- *   uplcVersion: "1.1.0"
- *   alt?: UplcProgramV3
- *   apply: (args: UplcValue[]) => UplcProgramV3
- *   withAlt: (alt: UplcProgramV3) => UplcProgramV3
- * }} UplcProgramV3
+ * @typedef {object} UplcProgramV3
+ * @prop {"PlutusScriptV3"} plutusVersion
+ * @prop {3} plutusVersionTag
+ * @prop {"1.1.0"} uplcVersion
+ * @prop {UplcProgramV3} [alt]
+ * @prop {(args: UplcValue[]) => UplcProgramV3} apply
+ * @prop {(alt: UplcProgramV3) => UplcProgramV3} withAlt
+ * @prop {UplcTerm} root
+ * @prop {string} [ir]
+ * @prop {(
+ *   args: UplcValue[] | undefined,
+ *   options?: {
+ *     logOptions?: UplcLogger,
+ *     costModelParams?: number[],
+ *   }
+ * ) => CekResult} eval
+ * @prop {() => number[]} hash
+ * @prop {() => number[]} toCbor
+ * @prop {() => number[]} toFlat
+ * @prop {() => string} toString
  */
 
 /**
@@ -540,16 +798,9 @@ export {
  */
 
 /**
- * @typedef {CekTerm & {
- *   toFlat: (writer: FlatWriter) => void
- *   children: UplcTerm[]
- * }} CommonUplcTermProps
- */
-
-/**
  * @typedef {(
  *   UplcBuiltin
- *   | UplcCall
+ *   | UplcApply
  *   | UplcCase
  *   | UplcConst
  *   | UplcConstr
@@ -562,79 +813,187 @@ export {
  */
 
 /**
- * @typedef {CommonUplcTermProps & {
- *   kind: "builtin"
- *   id: number
- * }} UplcBuiltin
+ * @typedef {object} UplcBuiltin
+ * @prop {UplcTerm[]} children
+ * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
+ * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * s;\rho~\triangleright~(\text{builtin}~b)~\mapsto~s\triangleleft~\langle \text{builtin}~b~[]~\alpha(b)\rangle
+ * $$
+ *
+ * @prop {number} id
+ * @prop {"builtin"} kind
+ * @prop {Site | undefined} site
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * @prop {() => string} toString
  */
 
 /**
- * @typedef {CommonUplcTermProps & {
- *   kind: "call"
- *   fn: UplcTerm
- *   arg: UplcTerm
- * }} UplcCall
+ * @typedef {object} UplcApply
+ * @prop {Site | undefined} site
+ * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
+ * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * s; \rho \triangleright [M~N]~\mapsto~[_ (N,\rhot)]\cdot s; \rho \triangleright M
+ * $$
+ *
+ * This means a `LeftApplicationToTermFrame` is added to `frames`, and `fn` is computed next.
+ *
+ * @prop {() => string} toString
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * @prop {UplcTerm[]} children
+ * @prop {"apply"} kind
+ * @prop {UplcTerm} fn
+ * @prop {UplcTerm} arg
  */
 
 /**
- * @typedef {CommonUplcTermProps & {
- *   kind: "const"
- *   flatSize: number
- *   serializableTerm: UplcTerm
- *   value: UplcValue
- * }} UplcConst
+ * @deprecated
+ * @typedef {UplcApply} UplcCall
  */
 
 /**
- * @typedef {CommonUplcTermProps & {
- *   kind: "delay"
- *   arg: UplcTerm
- * }} UplcDelay
+ * @typedef {object} UplcConst
+ * @prop {Site | undefined} site
+ * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
+ * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * s; \rho \triangleright (\text{con}~T~c)~\mapsto~s \triangleleft~\langle\text{con}~T~c\rangle
+ * $$
+ *
+ * @prop {() => string} toString
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * @prop {UplcTerm[]} children
+ * @prop {"const"} kind
+ * @prop {number} flatSize
+ * @prop {UplcTerm} serializableTerm
+ * @prop {UplcValue} value
  */
 
 /**
- * @typedef {CommonUplcTermProps & {
- *   kind: "error"
- * }} UplcError
+ * @typedef {object} UplcDelay
+ * @prop {Site | undefined} site
+ * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
+ * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * s;\rho\triangleright (\text{delay}~M)~\mapsto~s \triangleleft~\langle \text{delay}~M~\rho\rangle
+ * $$
+ *
+ * @prop {() => string} toString
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * @prop {UplcTerm[]} children
+ * @prop {"delay"} kind
+ * @prop {UplcTerm} arg
  */
 
 /**
- * @typedef {CommonUplcTermProps & {
- *   kind: "force"
- *   arg: UplcTerm
- * }} UplcForce
+ * @typedef {object} UplcError
+ * @prop {Site | undefined} site
+ * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
+ * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * s;\rho \triangleright~(\text{error})~\mapsto~\text{⬥}
+ * $$
+ *
+ * @prop {() => string} toString
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * @prop {UplcTerm[]} children
+ * @prop {"error"} kind
  */
 
 /**
- * @typedef {CommonUplcTermProps & {
- *   kind: "lambda"
- *   expr: UplcTerm
- *   argName?: string
- * }} UplcLambda
+ * @typedef {object} UplcForce
+ * @prop {Site | undefined} site
+ * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
+ * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * s;\rho\triangleright`(\text{force}~M)~\mapsto~(\text{force}~_)\cdot s;\rho~\triangleright~M
+ * $$
+ *
+ * @prop {() => string} toString
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * @prop {UplcTerm[]} children
+ * @prop {"force"} kind
+ * @prop {UplcTerm} arg
  */
 
 /**
- * @typedef {CommonUplcTermProps & {
- *   kind: "var"
- *   index: number
- *   name?: string
- * }} UplcVar
+ * @typedef {object} UplcLambda
+ * @prop {Site | undefined} site
+ * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
+ * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * s;\rho~\triangleright~(\text{lam}~x~M)~\mapsto~s\triangleleft~\langle \text{lam}~x~M~\rho \rangle
+ * $$
+ *
+ * @prop {() => string} toString
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * @prop {UplcTerm[]} children
+ * @prop {"lambda"} kind
+ * @prop {UplcTerm} expr
+ * @prop {string | undefined} [argName]
  */
 
 /**
- * @typedef {CommonUplcTermProps & {
- *   kind: "constr"
- *   tag:  number
- *   args: UplcTerm[]
- * }} UplcConstr
+ * @typedef {object} UplcVar
+ * @prop {Site | undefined} site
+ * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
+ * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * s;\rho~\triangleright~x~\mapsto~s\triangleleft\rho[x]
+ * $$
+ *
+ * @prop {() => string} toString
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * @prop {UplcTerm[]} children
+ * @prop {"var"} kind
+ * @prop {number} index
+ * @prop {string | undefined} [name]
  */
 
 /**
- * @typedef {CommonUplcTermProps & {
- *   kind: "case"
- *   arg: UplcTerm
- *   cases: UplcTerm[]
- * }} UplcCase
+ * @typedef {object} UplcConstr
+ * @prop {Site | undefined} site
+ * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
+ * Equivalent to the following transitions in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * s;\rho~\triangleright~(\text{constr}~i~M\cdot\overline{M})~\mapsto~(\text{constr}~i~_~(\overline{M},\rho))\cdot s;\rho~\triangleright~M
+ * s;\rho~\triangleright~(\text{constr}~i~[])~\mapsto~s~\triangleleft~\langle\text{constr}~i~[]\rangle
+ * $$
+ *
+ * @prop {() => string} toString
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * @prop {UplcTerm[]} children
+ * @prop {"constr"} kind
+ * @prop {number} tag
+ * @prop {UplcTerm[]} args
+ */
+
+/**
+ * @typedef {object} UplcCase
+ * @prop {Site | undefined} site
+ * @prop {(frames: CekFrame[], env: CekEnv, ctx: CekContext) => CekState} compute
+ * Equivalent to the following transition in the *CEK Machine* section of the [Plutus Core spec](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf):
+ *
+ * $$
+ * s;\rho~\triangleright~(\text{case}~N~\overline{M})~\mapsto~(\text{case}~_~(\overline{M},\rho))\cdot s;\rho~\triangleright~N
+ * $$
+ *
+ * @prop {() => string} toString
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * @prop {UplcTerm[]} children
+ * @prop {"case"} kind
+ * @prop {UplcTerm} arg
+ * @prop {UplcTerm[]} cases
  */
 
 /**
@@ -649,22 +1008,6 @@ export {
 
 /**
  * UplcValue instances are passed around by Uplc terms.
- *   - memSize: size in words (8 bytes, 64 bits) occupied during on-chain evaluation
- *   - flatSize: size taken up in serialized Uplc program (number of bits)
- *   - typeBits: each serialized value is preceded by some typeBits
- *   - toFlat: serialize as flat format bits (without typeBits)
- *
- * @typedef {{
- *   memSize: number
- *   flatSize: number
- *   type: UplcType
- *   isEqual: (other: UplcValue) => boolean
- *   toFlat: (writer: FlatWriter) => void
- *   toString: () => string
- * }} CommonUplcValueProps
- */
-
-/**
  * @typedef {(
  *   UplcInt
  *   | UplcByteArray
@@ -681,91 +1024,222 @@ export {
  */
 
 /**
- * @typedef {CommonUplcValueProps & {
- *   kind: "int"
- *   value: bigint
- *   signed: boolean
- *   toFlatUnsigned: (w: FlatWriter) => void
- *   toSigned: () => UplcInt
- *   toUnsigned: () => UplcInt
- * }} UplcInt
+ * @typedef {object} UplcInt
+ * @prop {"int"} kind
+ * @prop {bigint} value
+ * @prop {boolean} signed
+ * @prop {number} memSize
+ * Size in words (8 bytes, 64 bits) occupied during on-chain evaluation.
+ *
+ * @prop {number} flatSize
+ * Size taken up in serialized Uplc program (number of bits).
+ *
+ * @prop {UplcType} type
+ * @prop {(other: UplcValue) => boolean} isEqual
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * Serialize as flat format bits (without typeBits).
+ *
+ * @prop {(w: FlatWriter) => void} toFlatUnsigned
+ * @prop {() => string} toString
+ * @prop {() => UplcInt} toSigned
+ * @prop {() => UplcInt} toUnsigned
  */
 
 /**
- * @typedef {CommonUplcValueProps & {
- *   kind: "bytes"
- *   bytes: number[]
- * }} UplcByteArray
+ * @typedef {object} UplcByteArray
+ * @prop {"bytes"} kind
+ * @prop {number[]} bytes
+ * @prop {number} memSize
+ * Size in words (8 bytes, 64 bits) occupied during on-chain evaluation.
+ *
+ * @prop {number} flatSize
+ * Size taken up in serialized Uplc program (number of bits).
+ *
+ * @prop {UplcType} type
+ * @prop {(other: UplcValue) => boolean} isEqual
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * Serialize as flat format bits (without typeBits).
+ *
+ * @prop {() => string} toString
  */
 
 /**
- * @typedef {CommonUplcValueProps & {
- *   kind: "string"
- *   value: string
- *   string: string
- * }} UplcString
+ * @typedef {object} UplcString
+ * @prop {"string"} kind
+ * @prop {string} value
+ * @prop {number} memSize
+ * Size in words (8 bytes, 64 bits) occupied during on-chain evaluation.
+ *
+ * @prop {number} flatSize
+ * Size taken up in serialized Uplc program (number of bits).
+ *
+ * @prop {UplcType} type
+ * @prop {(other: UplcValue) => boolean} isEqual
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * Serialize as flat format bits (without typeBits).
+ *
+ * @prop {() => string} toString
  */
 
 /**
- * @typedef {CommonUplcValueProps & {
- *   kind: "unit"
- * }} UplcUnit
+ * @typedef {object} UplcUnit
+ * @prop {"unit"} kind
+ * @prop {number} memSize
+ * Size in words (8 bytes, 64 bits) occupied during on-chain evaluation.
+ *
+ * @prop {number} flatSize
+ * Size taken up in serialized Uplc program (number of bits).
+ *
+ * @prop {UplcType} type
+ * @prop {(other: UplcValue) => boolean} isEqual
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * Serialize as flat format bits (without typeBits).
+ *
+ * @prop {() => string} toString
  */
 
 /**
- * @typedef {CommonUplcValueProps & {
- *   kind: "bool"
- *   value: boolean
- *   bool: boolean
- *   toUplcData: () => ConstrData
- * }} UplcBool
+ * @typedef {object} UplcBool
+ * @prop {"bool"} kind
+ * @prop {boolean} value
+ * @prop {number} memSize
+ * Size in words (8 bytes, 64 bits) occupied during on-chain evaluation.
+ *
+ * @prop {number} flatSize
+ * Size taken up in serialized Uplc program (number of bits).
+ *
+ * @prop {UplcType} type
+ * @prop {(other: UplcValue) => boolean} isEqual
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * Serialize as flat format bits (without typeBits).
+ *
+ * @prop {() => string} toString
+ * @prop {() => ConstrData} toUplcData
  */
 
 /**
- * @typedef {CommonUplcValueProps & {
- *   kind: "list"
- *   itemType: UplcType
- *   items: UplcValue[]
- *   length: number
- *   isDataList: () => boolean
- *   isDataMap: () => boolean
- * }} UplcList
+ * @typedef {object} UplcList
+ * @prop {"list"} kind
+ * @prop {UplcType} type
+ * @prop {UplcType} itemType
+ * @prop {UplcValue[]} items
+ * @prop {number} length
+ * @prop {number} memSize
+ * Size in words (8 bytes, 64 bits) occupied during on-chain evaluation.
+ *
+ * @prop {number} flatSize
+ * Size taken up in serialized Uplc program (number of bits).
+ *
+ * @prop {() => boolean} isDataList
+ * @prop {() => boolean} isDataMap
+ * @prop {(other: UplcValue) => boolean} isEqual
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * Serialize as flat format bits (without typeBits).
+ *
+ * @prop {() => string} toString
  */
 
 /**
- * @typedef {CommonUplcValueProps & {
- *   kind: "pair"
- *   first: UplcValue
- *   second: UplcValue
- * }} UplcPair
+ * @typedef {object} UplcPair
+ * @prop {"pair"} kind
+ * @prop {UplcValue} first
+ * @prop {UplcValue} second
+ * @prop {number} memSize
+ * Size in words (8 bytes, 64 bits) occupied during on-chain evaluation.
+ *
+ * @prop {number} flatSize
+ * Size taken up in serialized Uplc program (number of bits).
+ *
+ * @prop {UplcType} type
+ * @prop {(other: UplcValue) => boolean} isEqual
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * Serialize as flat format bits (without typeBits).
+ *
+ * @prop {() => string} toString
  */
 
 /**
- * @typedef {CommonUplcValueProps & {
- *   kind: "data"
- *   value: UplcData
- * }} UplcDataValue
+ * @typedef {object} UplcDataValue
+ * @prop {"data"} kind
+ * @prop {UplcData} value
+ * @prop {number} memSize
+ * Size in words (8 bytes, 64 bits) occupied during on-chain evaluation.
+ *
+ * @prop {number} flatSize
+ * Size taken up in serialized Uplc program (number of bits).
+ *
+ * @prop {UplcType} type
+ * @prop {(other: UplcValue) => boolean} isEqual
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * Serialize as flat format bits (without typeBits).
+ *
+ * @prop {() => string} toString
  */
 
 /**
- * @typedef {CommonUplcValueProps & {
- *   kind: "bls12_381_G1_element"
- *   point: Point3<bigint>
- *   compress: () => number[]
- * }} Bls12_381_G1_element
+ * @typedef {object} Bls12_381_G1_element
+ * @prop {"bls12_381_G1_element"} kind
+ * @prop {Point3<bigint>} point
+ * @prop {() => number[]} compress
+ * @prop {number} memSize
+ * Size in words (8 bytes, 64 bits) occupied during on-chain evaluation.
+ *
+ * @prop {number} flatSize
+ * Size taken up in serialized Uplc program (number of bits).
+ *
+ * @prop {UplcType} type
+ * @prop {(other: UplcValue) => boolean} isEqual
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * Serialize as flat format bits (without typeBits).
+ *
+ * @prop {() => string} toString
  */
 
 /**
- * @typedef {CommonUplcValueProps & {
- *   kind: "bls12_381_G2_element"
- *   point: Point3<[bigint, bigint]>
- *   compress: () => number[]
- * }} Bls12_381_G2_element
+ * @typedef {object} Bls12_381_G2_element
+ * @prop {"bls12_381_G2_element"}  kind
+ * @prop {Point3<[bigint, bigint]>} point
+ * @prop {() => number[]} compress
+ * @prop {number} memSize
+ * Size in words (8 bytes, 64 bits) occupied during on-chain evaluation.
+ *
+ * @prop {number} flatSize
+ * Size taken up in serialized Uplc program (number of bits).
+ *
+ * @prop {UplcType} type
+ * @prop {(other: UplcValue) => boolean} isEqual
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * Serialize as flat format bits (without typeBits).
+ *
+ * @prop {() => string} toString
  */
 
 /**
- * @typedef {CommonUplcValueProps & {
- *   kind: "bls12_381_mlresult"
- *   element: FieldElement12
- * }} Bls12_381_MlResult
+ * @typedef {object} Bls12_381_MlResult
+ * @prop {"bls12_381_mlresult"} kind
+ * @prop {FieldElement12} element
+ * @prop {number} memSize
+ * Size in words (8 bytes, 64 bits) occupied during on-chain evaluation.
+ *
+ * @prop {number} flatSize
+ * Size taken up in serialized Uplc program (number of bits).
+ *
+ * @prop {UplcType} type
+ * @prop {(other: UplcValue) => boolean} isEqual
+ * @prop {(writer: FlatWriter) => void} toFlat
+ * Serialize as flat format bits (without typeBits).
+ *
+ * @prop {() => string} toString
+ */
+
+/**
+ * @typedef {object} UplcRuntimeError
+ * A `UplcRuntimeError` instance can be created with `makeUplcRuntimeError()`
+ *
+ * @prop {"UplcRuntimeError"} name
+ * @prop {string} name
+ * @prop {string} message
+ * @prop {string | undefined} [stack]
+ * @prop {UplcData | undefined} scriptContext
+ * @prop {CallSiteInfo[]} frames
  */

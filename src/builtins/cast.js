@@ -7,7 +7,7 @@
  * @returns {CekValue}
  */
 export function asCekValue(value) {
-    return { value: value }
+    return { kind: "const", value: value }
 }
 
 /**

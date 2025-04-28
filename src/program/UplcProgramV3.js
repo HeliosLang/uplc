@@ -192,7 +192,7 @@ class UplcProgramV3Impl {
     }
 
     /**
-     * Wrap the top-level term with consecutive UplcCall (not exported) terms.
+     * Wrap the top-level term with consecutive UplcApply (not exported) terms.
      *
      * Returns a new UplcProgramV1 instance, leaving the original untouched.
      * @param {UplcValue[]} args

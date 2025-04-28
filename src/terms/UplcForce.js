@@ -1,11 +1,12 @@
-import { makeForceFrame } from "../cek/index.js"
+import { makeCekForceFrame } from "../cek/index.js"
 
 /**
  * @import { Site } from "@helios-lang/compiler-utils"
  * @import {
  *   CekContext,
- *   CekStack,
- *   CekStateChange,
+ *   CekFrame,
+ *   CekEnv,
+ *   CekState,
  *   FlatReader,
  *   FlatWriter,
  *   UplcForce,
@@ -74,22 +75,19 @@ class UplcForceImpl {
     }
 
     /**
-     *
-     * @param {CekStack} stack
+     * @param {CekFrame[]} frames
+     * @param {CekEnv} env
      * @param {CekContext} ctx
-     * @returns {CekStateChange}
+     * @returns {CekState}
      */
-    compute(stack, ctx) {
+    compute(frames, env, ctx) {
         ctx.cost.incrForceCost()
 
         return {
-            state: {
-                computing: {
-                    term: this.arg,
-                    stack: stack
-                }
-            },
-            frames: [makeForceFrame(stack, this.site)]
+            kind: "computing",
+            term: this.arg,
+            env: env,
+            frames: frames.concat([makeCekForceFrame(env, this.site)])
         }
     }
 

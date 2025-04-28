@@ -1,10 +1,10 @@
 import { decodeBytes, encodeBytes, isBytes } from "@helios-lang/cbor"
 import { makeByteStream } from "@helios-lang/codec-utils"
 import { blake2b } from "@helios-lang/crypto"
-import { CekMachine } from "../cek/index.js"
+import { makeCekMachine } from "../cek/index.js"
 import { makeFlatWriter } from "../flat/index.js"
 import {
-    makeUplcCall,
+    makeUplcApply,
     makeUplcConst,
     makeUplcForce,
     makeUplcReader
@@ -99,7 +99,7 @@ export function evalProgram(builtins, expr, args, { costModel, logOptions }) {
             expr = makeUplcForce({ arg: expr })
         } else {
             for (let arg of args) {
-                expr = makeUplcCall({
+                expr = makeUplcApply({
                     fn: expr,
                     arg: makeUplcConst({ value: arg })
                 })
@@ -107,7 +107,7 @@ export function evalProgram(builtins, expr, args, { costModel, logOptions }) {
         }
     }
 
-    const machine = new CekMachine(expr, builtins, costModel, logOptions)
+    const machine = makeCekMachine(expr, builtins, costModel, logOptions)
 
     return machine.eval()
 }

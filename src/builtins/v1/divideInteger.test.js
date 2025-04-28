@@ -1,7 +1,7 @@
 import { strictEqual, throws } from "node:assert"
 import { describe, it } from "node:test"
 import { makeUplcInt } from "../../values/index.js"
-import { asUplcValue } from "../cast.js"
+import { asCekValue, asUplcValue } from "../cast.js"
 import { evalDivideInteger } from "./divideInteger.js"
 
 const ctx = {
@@ -53,7 +53,7 @@ describe("divideInteger", () => {
     it("throws an error when dividing by 0", () => {
         throws(() => {
             evalDivideInteger(
-                [{ value: makeUplcInt(1) }, { value: makeUplcInt(0) }],
+                [asCekValue(makeUplcInt(1)), asCekValue(makeUplcInt(0))],
                 ctx
             )
         })
@@ -63,7 +63,7 @@ describe("divideInteger", () => {
         it(`${a}/${b} == ${c}`, () => {
             const res = asUplcValue(
                 evalDivideInteger(
-                    [{ value: makeUplcInt(a) }, { value: makeUplcInt(b) }],
+                    [asCekValue(makeUplcInt(a)), asCekValue(makeUplcInt(b))],
                     ctx
                 )
             )

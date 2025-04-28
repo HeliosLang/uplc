@@ -1,14 +1,15 @@
 import { builtinsV3 } from "../builtins/index.js"
 import { makeUplcByteArray } from "../values/index.js"
+import { makeUplcApply } from "./UplcApply.js"
 import { makeUplcBuiltin } from "./UplcBuiltin.js"
-import { makeUplcCall } from "./UplcCall.js"
 
 /**
  * @import { Site } from "@helios-lang/compiler-utils"
  * @import {
  *   CekContext,
- *   CekStack,
- *   CekStateChange,
+ *   CekFrame,
+ *   CekEnv,
+ *   CekState,
  *   FlatReader,
  *   FlatWriter,
  *   UplcConst,
@@ -97,7 +98,7 @@ class UplcConstImpl {
 
         if (v.kind == "bls12_381_G1_element") {
             const builtinName = "bls12_381_G1_uncompress"
-            return makeUplcCall({
+            return makeUplcApply({
                 fn: makeUplcBuiltin({
                     id: builtinsV3.findIndex((bi) => bi.name == builtinName),
                     name: builtinName
@@ -107,7 +108,7 @@ class UplcConstImpl {
             })
         } else if (v.kind == "bls12_381_G2_element") {
             const builtinName = "bls12_381_G2_uncompress"
-            return makeUplcCall({
+            return makeUplcApply({
                 fn: makeUplcBuiltin({
                     id: builtinsV3.findIndex((bi) => bi.name == builtinName),
                     name: builtinName
@@ -121,20 +122,21 @@ class UplcConstImpl {
     }
 
     /**
-     *
-     * @param {CekStack} stack
+     * @param {CekFrame[]} frames
+     * @param {CekEnv} env
      * @param {CekContext} ctx
-     * @returns {CekStateChange}
+     * @returns {CekState}
      */
-    compute(stack, ctx) {
+    compute(frames, env, ctx) {
         ctx.cost.incrConstCost()
 
         return {
-            state: {
-                reducing: {
-                    value: this.value
-                }
-            }
+            kind: "reducing",
+            value: {
+                kind: "const",
+                value: this.value
+            },
+            frames: frames
         }
     }
 

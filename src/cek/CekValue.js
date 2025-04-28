@@ -8,25 +8,23 @@
  * @returns {string | UplcValue}
  */
 export function stringifyNonUplcValue(value, simplify = false) {
-    if ("value" in value) {
+    if (value.kind == "const") {
         return value.value
-    } else if ("delay" in value) {
+    } else if (value.kind == "delay") {
         if (simplify) {
             return "<fn>"
         } else {
-            return `(delay ${value.delay.term.toString()})`
+            return `(delay ${value.term.toString()})`
         }
-    } else if ("builtin" in value) {
-        return value.builtin.name
-    } else if ("lambda" in value) {
-        const props = value.lambda
-
+    } else if (value.kind == "builtin") {
+        return value.name
+    } else if (value.kind == "lambda") {
         if (simplify) {
             return "<fn>"
         } else {
             return `(lam ${
-                props.argName ? `${props.argName} ` : ""
-            }${props.term.toString()})`
+                value.argName ? `${value.argName} ` : ""
+            }${value.body.toString()})`
         }
     } else {
         return "<constr>"

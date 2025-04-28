@@ -65,6 +65,14 @@ class UplcReaderImpl {
     }
 
     /**
+     * @param {number} n
+     * @returns {number}
+     */
+    readBits(n) {
+        return this._reader.readBits(n)
+    }
+
+    /**
      * @returns {boolean}
      */
     readBool() {
@@ -109,11 +117,12 @@ class UplcReaderImpl {
     /**
      * Reads a Plutus-core list with a specified size per element
      * Calls itself recursively until the end of the list is reached
-     * @param {number} elemSize
-     * @returns {number[]}
+     * @template T
+     * @param {(r: FlatReader) => T} readItem
+     * @returns {T[]}
      */
-    readLinkedList(elemSize) {
-        return this._reader.readLinkedList(elemSize)
+    readList(readItem) {
+        return this._reader.readList(readItem)
     }
 
     /**
