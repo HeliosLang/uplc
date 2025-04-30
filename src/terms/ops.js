@@ -43,6 +43,18 @@ export function traverse(root, callbacks) {
     let index = 0
 
     while (term) {
+        // in <=v0.7.* of this library, `UplcApply` was called `UplcCall` instead, and its `kind` was `"call"` instead of `"apply"`
+        // here we convert "call" terms into "apply" terms before continuing
+        if (/** @type {any} */ (term.kind) == "call") {
+            // map the call term to apply, and call
+
+            term = makeUplcApply({
+                fn: /** @type {any} */ (term).fn,
+                arg: /** @type {any} */ (term).arg,
+                site: /** @type {any} */ (term).site
+            })
+        }
+
         if (callbacks.anyTerm) {
             callbacks.anyTerm(term, index)
         }
