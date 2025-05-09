@@ -97,15 +97,13 @@ export function evalProgram(builtins, expr, args, { costModel, logOptions }) {
     if (args) {
         if (args.length == 0) {
             expr = makeUplcForce({
-                arg: expr,
-                site: expr.site
+                arg: expr
             })
         } else {
             for (let arg of args) {
                 expr = makeUplcApply({
                     fn: expr,
-                    arg: makeUplcConst({ value: arg }),
-                    site: expr.site
+                    arg: makeUplcConst({ value: arg })
                 })
             }
         }
