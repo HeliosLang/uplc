@@ -96,7 +96,7 @@ export function decodeFlatProgram(bytes, expectedUplcVersion, builtins) {
 export function evalProgram(builtins, expr, args, { costModel, logOptions }) {
     if (args) {
         if (args.length == 0) {
-            expr = makeUplcForce({ 
+            expr = makeUplcForce({
                 arg: expr,
                 site: expr.site
             })

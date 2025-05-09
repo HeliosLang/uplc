@@ -24,7 +24,7 @@ import {
 
 const dummyArg = makeUplcInt(0)
 
-/*describe("UplcProgramV2", () => {
+describe("UplcProgramV2", () => {
     it("evaluates always_fails as error", () => {
         const { result } = decodeUplcProgramV2FromCbor(
             "581e581c01000033223232222350040071235002353003001498498480048005"
@@ -50,13 +50,13 @@ const dummyArg = makeUplcInt(0)
 
         strictEqual(expectRight(result).toString(), "false")
     })
-})*/
+})
 
 /**
  * Taken from: https://github.com/IntersectMBO/plutus/tree/master/plutus-conformance/test-cases/uplc/evaluation/
  * @type {{src: string, mem: bigint, cpu: bigint, result: string | UplcValue, model?: string}[]}
  */
-/*const conformanceTests = [
+const conformanceTests = [
     {
         src: "(program 1.0.0 [(builtin listData) (con (list data) [(I 0), (B #1234), (Map [(I 9, List [B #abcd]), (B #4321, I 1234)])])])",
         mem: 432n,
@@ -143,7 +143,7 @@ describe(`"UplcProgramV2 conformance`, () => {
             throws(() => expectRight(result))
         })
     })
-})*/
+})
 
 describe("stack traces", () => {
     /**
@@ -154,9 +154,7 @@ describe("stack traces", () => {
             src: `(
     program 1.0.0 (lam x (error))
 )`,
-            expectedStack: [
-                "at <anonymous> (helios:<na>:2:20)"
-            ]
+            expectedStack: ["at <anonymous> (helios:<na>:2:20)"]
         },
         {
             src: `(
@@ -168,17 +166,17 @@ describe("stack traces", () => {
             ]
         }
     ]
-    
+
     for (let t of testVector) {
         it(`${t.expectedStack.length} level stack trace`, () => {
-            const program = parseUplcProgramV2(
-                t.src
-            )
+            const program = parseUplcProgramV2(t.src)
 
             const result = program.eval([makeUplcInt(0)])
 
             if (isRight(result.result)) {
-                throw new Error("expected error, got " + result.result.right.toString())
+                throw new Error(
+                    "expected error, got " + result.result.right.toString()
+                )
             }
 
             const callSites = result.result.left.callSites
@@ -186,9 +184,11 @@ describe("stack traces", () => {
             strictEqual(callSites.length, t.expectedStack.length)
 
             try {
-                throw makeUplcRuntimeError(result.result.left.error, result.result.left.callSites)
+                throw makeUplcRuntimeError(
+                    result.result.left.error,
+                    result.result.left.callSites
+                )
             } catch (e) {
-                
                 if (e instanceof Error) {
                     let actualLines = e.stack?.split("\n") ?? []
 
@@ -197,7 +197,10 @@ describe("stack traces", () => {
                     }
 
                     for (let i = 0; i < t.expectedStack.length; i++) {
-                        strictEqual(actualLines[i].trim(), t.expectedStack[i].trim())
+                        strictEqual(
+                            actualLines[i].trim(),
+                            t.expectedStack[i].trim()
+                        )
                     }
                 } else {
                     throw new Error("expected an error")
