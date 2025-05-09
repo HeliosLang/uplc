@@ -1,5 +1,4 @@
 /**
- * @import { Site } from "@helios-lang/compiler-utils"
  * @import { CallSiteInfo } from "../index.js"
  */
 

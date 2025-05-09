@@ -65,14 +65,18 @@ class CekLeftApplyToTermFrameImpl {
      */
     reduce(frames, value, _ctx) {
         if (value.kind == "lambda") {
+            const mixedEnv = mixStacks(value.env, this.env)
             return {
                 kind: "computing",
                 term: this.arg,
                 env: this.env,
                 frames: frames.concat([
                     makeCekRightApplyFrame(
-                        value,
-                        mixStacks(value.env, this.env),
+                        {
+                            ...value,
+                            env: mixedEnv
+                        },
+                        mixedEnv,
                         {
                             callSite: this.callSite,
                             name: value.name,

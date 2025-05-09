@@ -56,8 +56,8 @@ export function applyCekValues(
          * @type {CallSiteInfo}
          */
         const callSite = {
-            site: info.callSite ?? undefined,
-            functionName: info.name ?? undefined,
+            site: info.callSite,
+            functionName: info.name,
             arguments: lastSelfValue
                 ? [lastSelfValue, rightValue]
                 : [rightValue]
@@ -105,7 +105,7 @@ export function applyCekValues(
                 const callSites = args.map((a, i) => {
                     if (i == args.length - 1) {
                         return {
-                            site: info.callSite ?? undefined,
+                            site: info.callSite,
                             functionName: b.name,
                             argument: a
                         }
@@ -121,7 +121,7 @@ export function applyCekValues(
                         kind: "reducing",
                         value: b.call(args, {
                             print: (message) => {
-                                ctx.print(message, info.callSite ?? undefined)
+                                ctx.print(message, info.callSite)
                             }
                         }),
                         frames

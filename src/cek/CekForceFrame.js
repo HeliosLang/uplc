@@ -67,7 +67,7 @@ class ForceFrameImpl {
                 env: mixStacks(
                     value.env,
                     pushStackCallSite(this.env, {
-                        site: this.callSite ?? undefined,
+                        site: this.callSite,
                         functionName: value.name,
                         arguments: lastSelfValue ? [lastSelfValue] : undefined
                     })

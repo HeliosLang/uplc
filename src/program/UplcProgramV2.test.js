@@ -164,6 +164,18 @@ describe("stack traces", () => {
                 "at <anonymous> (helios:<na>:2:26) [x=0]",
                 "at <anonymous> (helios:<na>:2:20)"
             ]
+        },
+        {
+            src: `(
+    program 1.0.0 [
+        (lam fn fn) 
+        (lam x [(lam x (error)) x])
+    ]
+)`,
+            expectedStack: [
+                "at fn (helios:<na>:4:16) [x=0]",
+                "at <anonymous> (helios:<na>:2:19)"
+            ]
         }
     ]
 
