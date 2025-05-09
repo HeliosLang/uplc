@@ -96,12 +96,16 @@ export function decodeFlatProgram(bytes, expectedUplcVersion, builtins) {
 export function evalProgram(builtins, expr, args, { costModel, logOptions }) {
     if (args) {
         if (args.length == 0) {
-            expr = makeUplcForce({ arg: expr })
+            expr = makeUplcForce({ 
+                arg: expr,
+                site: expr.site
+            })
         } else {
             for (let arg of args) {
                 expr = makeUplcApply({
                     fn: expr,
-                    arg: makeUplcConst({ value: arg })
+                    arg: makeUplcConst({ value: arg }),
+                    site: expr.site
                 })
             }
         }

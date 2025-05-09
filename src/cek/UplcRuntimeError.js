@@ -103,7 +103,8 @@ function prepareHeliosStackTrace(err, callSites) {
     // firefox is sadly different from chrome/node and requires each stack trace line to be formatted in a special way
     const isFirefox = jsStackLines?.[0]?.includes("@") // TODO: better regexp
     const stackIncludesMessage =
-        jsStackLines?.[0] == `UplcRuntimeError: ${err.message}` // TODO: better regexp
+        jsStackLines?.[0] == `UplcRuntimeError${err.message == "" ? "" : ": " + err.message}` // TODO: better regexp
+
     const indent = isFirefox
         ? ""
         : stackIncludesMessage
