@@ -32,7 +32,7 @@ export function makeUplcReader(args) {
 export function makeDefaultFlatReader(bytes, builtins) {
     return makeFlatReader({
         bytes,
-        readExpr: (r) => decodeTerm(r, builtins),
+        readExpr: (r) => decodeTerm(r, builtins), // TODO: get rid of this field
         dispatchValueReader
     })
 }
