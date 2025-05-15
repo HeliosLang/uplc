@@ -52,6 +52,9 @@ class FlatWriterImpl {
      * @param {bigint} x
      */
     writeInt(x) {
+        if (x < 0) {
+            throw new Error("x in writeInt isn't positive")
+        }
         encodeFlatInt(this._bitWriter, x)
     }
 
@@ -65,6 +68,14 @@ class FlatWriterImpl {
             item.toFlat(this)
         })
 
+        this._bitWriter.writeBits("0")
+    }
+
+    writeListCons() {
+        this._bitWriter.writeBits("1")
+    }
+
+    writeListNil() {
         this._bitWriter.writeBits("0")
     }
 

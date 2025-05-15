@@ -1,4 +1,4 @@
-import { strictEqual, throws } from "node:assert"
+import { deepEqual, strictEqual, throws } from "node:assert"
 import { join } from "node:path"
 import { expectLeft, expectRight } from "@helios-lang/type-utils"
 import { CONWAY_COST_MODEL_PARAMS_V2 } from "../../../src/costmodel/CostModelParamsV2.js"
@@ -8,6 +8,18 @@ import {
     parseBudget,
     parseUplcProgram
 } from "../conformance-utils.js"
+import { bytesToHex, equalsBytes } from "@helios-lang/codec-utils"
+import { makeFlatWriter } from "../../../src/flat/index.js"
+import {
+    decodeUplcProgramV2FromCbor,
+    decodeUplcProgramV3FromCbor
+} from "../../../src/program/index.js"
+import { traverse } from "../../../src/terms/ops.js"
+import { encodeTerm } from "../../../src/terms/codec.js"
+
+/**
+ * @import { UplcProgramV2, UplcProgramV3 } from "../../../src/index.js"
+ */
 
 const root = join(import.meta.dirname, "uplc", "evaluation")
 
@@ -32,11 +44,12 @@ await loopTests(root, async (testPath, uplcStr, budgetStr, resultStr) => {
             case "evaluation failure":
                 const program = parseUplc()
 
+                // ignore other versions
                 if (
                     program.plutusVersion == "PlutusScriptV2" ||
                     program.plutusVersion == "PlutusScriptV3"
                 ) {
-                    // ignore other versions
+                    testCodecRoundTrip(program)
 
                     throws(() => {
                         const { result } = program.eval(undefined, {
@@ -57,6 +70,7 @@ await loopTests(root, async (testPath, uplcStr, budgetStr, resultStr) => {
         }
     } else {
         const program = parseUplc()
+
         const budget = parseBudget(budgetStr)
         const expectedProgram = parseUplcProgram(resultStr, {
             allowUnresolvedNames: true,
@@ -67,6 +81,8 @@ await loopTests(root, async (testPath, uplcStr, budgetStr, resultStr) => {
             program.plutusVersion == "PlutusScriptV2" ||
             program.plutusVersion == "PlutusScriptV3"
         ) {
+            testCodecRoundTrip(program)
+
             const { result, cost } = program.eval(undefined, {
                 costModelParams:
                     program.plutusVersion == "PlutusScriptV2"
@@ -107,3 +123,44 @@ await loopTests(root, async (testPath, uplcStr, budgetStr, resultStr) => {
         } // ignore other versions for now
     }
 })
+
+/**
+ * @param {UplcProgramV2 | UplcProgramV3} uplc
+ */
+function testCodecRoundTrip(uplc) {
+    // only if all vars are resolved
+    let allResolved = true
+    traverse(uplc.root, {
+        varTerm: (term) => {
+            if (term.index < 0) {
+                allResolved = false
+            }
+        }
+    })
+
+    if (allResolved) {
+        const w0 = makeFlatWriter()
+        uplc.root.toFlat(w0)
+        const w1 = makeFlatWriter()
+        encodeTerm(uplc.root, w1)
+
+        deepEqual(
+            w0.finalize(),
+            w1.finalize(),
+            "recursive encoding algo differs from stack encoding algo"
+        )
+
+        const cborHex = bytesToHex(uplc.toCbor())
+        const uplcCheck =
+            uplc.plutusVersion == "PlutusScriptV2"
+                ? decodeUplcProgramV2FromCbor(cborHex)
+                : decodeUplcProgramV3FromCbor(cborHex)
+        const cborHexCheck = bytesToHex(uplcCheck.toCbor())
+
+        strictEqual(
+            cborHex,
+            cborHexCheck,
+            "round-trip encoding/decoding/encoding failed"
+        )
+    }
+}

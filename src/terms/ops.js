@@ -2,7 +2,7 @@ import { makeUplcApply } from "./UplcApply.js"
 import { makeUplcConst } from "./UplcConst.js"
 
 /**
- * @import { UplcApply, UplcBuiltin, UplcConst, UplcDelay, UplcError, UplcForce, UplcLambda, UplcVar, UplcTerm, UplcValue } from "../index.js"
+ * @import { UplcApply, UplcBuiltin, UplcConst, UplcDelay, UplcError, UplcForce, UplcLambda, UplcVar, UplcTerm, UplcValue, UplcConstr, UplcCase } from "../index.js"
  */
 
 /**
@@ -24,7 +24,9 @@ export function apply(expr, args) {
  *   anyTerm?: (term: UplcTerm, index: number) => void
  *   builtinTerm?: (term: UplcBuiltin, index: number) => void
  *   applyTerm?: (term: UplcApply, index: number) => void
+ *   caseTerm?: (term: UplcCase, index: number) => void
  *   constTerm?: (term: UplcConst, index: number) => void
+ *   constrTerm?: (term: UplcConstr, index: number) => void
  *   delayTerm?: (term: UplcDelay, index: number) => void
  *   errorTerm?: (term: UplcError, index: number) => void
  *   forceTerm?: (term: UplcForce, index: number) => void
@@ -70,9 +72,19 @@ export function traverse(root, callbacks) {
                     callbacks.builtinTerm(term, index)
                 }
                 break
+            case "case":
+                if (callbacks.caseTerm) {
+                    callbacks.caseTerm(term, index)
+                }
+                break
             case "const":
                 if (callbacks.constTerm) {
                     callbacks.constTerm(term, index)
+                }
+                break
+            case "constr":
+                if (callbacks.constrTerm) {
+                    callbacks.constrTerm(term, index)
                 }
                 break
             case "delay":

@@ -623,8 +623,10 @@ export {
  *
  * @prop {(b: boolean) => void} writeBool
  * @prop {(bytes: number[]) => void} writeBytes
- * @prop {(x: bigint) => void} writeInt
+ * @prop {(x: bigint | number) => void} writeInt
  * @prop {(items: {toFlat: (w: FlatWriter) => void}[]) => void} writeList
+ * @prop {() => void} writeListCons
+ * @prop {() => void} writeListNil
  * @prop {(tag: number) => void} writeTermTag
  * @prop {(typeBits: string) => void} writeTypeBits
  * @prop {(id: number) => void} writeBuiltinId

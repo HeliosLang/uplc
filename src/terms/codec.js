@@ -11,18 +11,11 @@ import { UPLC_LAMBDA_TAG, makeUplcLambda } from "./UplcLambda.js"
 import { UPLC_VAR_TAG, decodeUplcVarFromFlat } from "./UplcVar.js"
 
 /**
- * @import { Builtin, FlatReader, FlatWriter, UplcTerm, UplcValue } from "../index.js"
+ * @import { Builtin, FlatReader, FlatWriter, UplcTerm } from "../index.js"
  */
 
 /**
  * Reads a single UplcTerm using a stack-based algorithm
- * @param {FlatReader} r
- * @param {Builtin[]} builtins
- * @returns {UplcTerm}
- */
-/**
- * Reads a single UplcTerm
- * TODO: this leads to stack overflows, use a stack-based approach instead
  * @param {FlatReader} r
  * @param {Builtin[]} builtins
  * @returns {UplcTerm}
@@ -91,7 +84,19 @@ export function decodeTerm(r, builtins) {
                     term = decodeUplcBuiltinFromFlat(r, builtins)
                     break
                 case UPLC_CONSTR_TAG:
-                    collect.push({ kind: "constr", tag: r.readInt(), args: [] })
+                    {
+                        const constrTag = r.readInt()
+                        const nilOrCons = r.readBits(1)
+                        if (nilOrCons == 0) {
+                            term = makeUplcConstr(constrTag, [])
+                        } else {
+                            collect.push({
+                                kind: "constr",
+                                tag: constrTag,
+                                args: []
+                            })
+                        }
+                    }
                     break
                 case UPLC_CASE_TAG:
                     collect.push({ kind: "casearg" })
@@ -106,6 +111,10 @@ export function decodeTerm(r, builtins) {
                 case "apply":
                     term = makeUplcApply({ fn: c.fn, arg: term })
                     break
+                case "applyfn":
+                    collect.push({ kind: "apply", fn: term })
+                    term = undefined
+                    break
                 case "case":
                     {
                         const cases = c.cases.concat([term])
@@ -119,12 +128,15 @@ export function decodeTerm(r, builtins) {
                     }
                     break
                 case "casearg":
-                    collect.push({ kind: "case", arg: term, cases: [] })
-                    term = undefined
-                    break
-                case "applyfn":
-                    collect.push({ kind: "apply", fn: term })
-                    term = undefined
+                    {
+                        const nilOrCons = r.readBits(1)
+                        if (nilOrCons == 0) {
+                            term = makeUplcCase(term, [])
+                        } else {
+                            collect.push({ kind: "case", arg: term, cases: [] })
+                            term = undefined
+                        }
+                    }
                     break
                 case "constr":
                     {
@@ -160,43 +172,86 @@ export function decodeTerm(r, builtins) {
  * @param {FlatWriter} w
  */
 export function encodeTerm(term, w) {
-    const terms = [term]
+    //term.toFlat(w)
+    //return
+    /**
+     * @type {({
+     *   kind: "notInList"
+     *   term: UplcTerm
+     * } | {
+     *   kind: "listItem"
+     *   term: UplcTerm
+     * } | {
+     *   kind: "listEnd"
+     * })[]}
+     */
+    const pending = [
+        {
+            kind: "notInList",
+            term
+        }
+    ]
 
-    let t = terms.pop()
+    let action = pending.pop()
 
-    while (t) {
-        switch (t.kind) {
-            case "builtin":
-                t.toFlat(w)
-                break
-            case "apply":
-                w.writeTermTag(UPLC_APPLY_TAG)
-                terms.push(t.arg)
-                terms.push(t.fn)
-                break
-            case "const":
-                t.toFlat(w)
-                break
-            case "delay":
-                w.writeTermTag(UPLC_DELAY_TAG)
-                terms.push(t.arg)
-                break
-            case "error":
-                t.toFlat(w)
-                break
-            case "force":
-                w.writeTermTag(UPLC_FORCE_TAG)
-                terms.push(t.arg)
-                break
-            case "lambda":
-                w.writeTermTag(UPLC_LAMBDA_TAG)
-                terms.push(t.expr)
-                break
-            case "var":
-                t.toFlat(w)
-                break
+    while (action) {
+        if (action.kind == "listItem" || action.kind == "notInList") {
+            if (action.kind == "listItem") {
+                w.writeListCons()
+            }
+
+            const t = action.term
+            switch (t.kind) {
+                case "builtin":
+                    t.toFlat(w)
+                    break
+                case "apply":
+                    w.writeTermTag(UPLC_APPLY_TAG)
+                    pending.push({ kind: "notInList", term: t.arg })
+                    pending.push({ kind: "notInList", term: t.fn })
+                    break
+                case "case":
+                    w.writeTermTag(UPLC_CASE_TAG)
+                    pending.push({ kind: "listEnd" })
+                    for (let i = t.cases.length - 1; i >= 0; i--) {
+                        pending.push({ kind: "listItem", term: t.cases[i] })
+                    }
+                    pending.push({ kind: "notInList", term: t.arg })
+                    break
+                case "const":
+                    t.toFlat(w)
+                    break
+                case "constr":
+                    w.writeTermTag(UPLC_CONSTR_TAG)
+                    w.writeInt(t.tag)
+                    pending.push({ kind: "listEnd" })
+                    for (let i = t.args.length - 1; i >= 0; i--) {
+                        pending.push({ kind: "listItem", term: t.args[i] })
+                    }
+                    break
+                case "delay":
+                    w.writeTermTag(UPLC_DELAY_TAG)
+                    pending.push({ kind: "notInList", term: t.arg })
+                    break
+                case "error":
+                    t.toFlat(w)
+                    break
+                case "force":
+                    w.writeTermTag(UPLC_FORCE_TAG)
+                    pending.push({ kind: "notInList", term: t.arg })
+                    break
+                case "lambda":
+                    w.writeTermTag(UPLC_LAMBDA_TAG)
+                    pending.push({ kind: "notInList", term: t.expr })
+                    break
+                case "var":
+                    t.toFlat(w)
+                    break
+            }
+        } else {
+            w.writeListNil()
         }
 
-        t = terms.pop()
+        action = pending.pop()
     }
 }
