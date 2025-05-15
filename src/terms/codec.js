@@ -1,79 +1,25 @@
 import { expectDefined } from "@helios-lang/type-utils"
 import { UPLC_BUILTIN_TAG, decodeUplcBuiltinFromFlat } from "./UplcBuiltin.js"
-import {
-    UPLC_APPLY_TAG,
-    decodeUplcApplyFromFlat,
-    makeUplcApply
-} from "./UplcApply.js"
-import {
-    decodeUplcCaseFromFlat,
-    makeUplcCase,
-    UPLC_CASE_TAG
-} from "./UplcCase.js"
+import { UPLC_APPLY_TAG, makeUplcApply } from "./UplcApply.js"
+import { UPLC_CASE_TAG, makeUplcCase } from "./UplcCase.js"
 import { UPLC_CONST_TAG, decodeUplcConstFromFlat } from "./UplcConst.js"
-import {
-    decodeUplcConstrFromFlat,
-    makeUplcConstr,
-    UPLC_CONSTR_TAG
-} from "./UplcConstr.js"
-import {
-    UPLC_DELAY_TAG,
-    decodeUplcDelayFromFlat,
-    makeUplcDelay
-} from "./UplcDelay.js"
+import { UPLC_CONSTR_TAG, makeUplcConstr } from "./UplcConstr.js"
+import { UPLC_DELAY_TAG, makeUplcDelay } from "./UplcDelay.js"
 import { UPLC_ERROR_TAG, makeUplcError } from "./UplcError.js"
-import {
-    UPLC_FORCE_TAG,
-    decodeUplcForceFromFlat,
-    makeUplcForce
-} from "./UplcForce.js"
-import {
-    UPLC_LAMBDA_TAG,
-    decodeUplcLambdaFromFlat,
-    makeUplcLambda
-} from "./UplcLambda.js"
+import { UPLC_FORCE_TAG, makeUplcForce } from "./UplcForce.js"
+import { UPLC_LAMBDA_TAG, makeUplcLambda } from "./UplcLambda.js"
 import { UPLC_VAR_TAG, decodeUplcVarFromFlat } from "./UplcVar.js"
 
 /**
- * @import { Builtin, FlatReader, UplcTerm, UplcValue } from "../index.js"
+ * @import { Builtin, FlatReader, FlatWriter, UplcTerm, UplcValue } from "../index.js"
  */
 
 /**
- * Reads a single UplcTerm
- * TODO: this leads to stack overflows, use a stack-based approach instead
+ * Reads a single UplcTerm using a stack-based algorithm
  * @param {FlatReader} r
  * @param {Builtin[]} builtins
  * @returns {UplcTerm}
  */
-export function decodeTerm_(r, builtins) {
-    const tag = r.readTag()
-
-    switch (tag) {
-        case UPLC_VAR_TAG:
-            return decodeUplcVarFromFlat(r)
-        case UPLC_DELAY_TAG:
-            return decodeUplcDelayFromFlat(r)
-        case UPLC_LAMBDA_TAG:
-            return decodeUplcLambdaFromFlat(r)
-        case UPLC_APPLY_TAG:
-            return decodeUplcApplyFromFlat(r) // aka function application
-        case UPLC_CONST_TAG:
-            return decodeUplcConstFromFlat(r)
-        case UPLC_FORCE_TAG:
-            return decodeUplcForceFromFlat(r)
-        case UPLC_ERROR_TAG:
-            return makeUplcError()
-        case UPLC_BUILTIN_TAG:
-            return decodeUplcBuiltinFromFlat(r, builtins)
-        case UPLC_CONSTR_TAG:
-            return decodeUplcConstrFromFlat(r)
-        case UPLC_CASE_TAG:
-            return decodeUplcCaseFromFlat(r)
-        default:
-            throw new Error("term tag " + tag.toString() + " unhandled")
-    }
-}
-
 /**
  * Reads a single UplcTerm
  * TODO: this leads to stack overflows, use a stack-based approach instead
@@ -206,4 +152,51 @@ export function decodeTerm(r, builtins) {
     }
 
     return expectDefined(term, "term decoding failed")
+}
+
+/**
+ * Non-recursive algorithm
+ * @param {UplcTerm} term
+ * @param {FlatWriter} w
+ */
+export function encodeTerm(term, w) {
+    const terms = [term]
+
+    let t = terms.pop()
+
+    while (t) {
+        switch (t.kind) {
+            case "builtin":
+                t.toFlat(w)
+                break
+            case "apply":
+                w.writeTermTag(UPLC_APPLY_TAG)
+                terms.push(t.arg)
+                terms.push(t.fn)
+                break
+            case "const":
+                t.toFlat(w)
+                break
+            case "delay":
+                w.writeTermTag(UPLC_DELAY_TAG)
+                terms.push(t.arg)
+                break
+            case "error":
+                t.toFlat(w)
+                break
+            case "force":
+                w.writeTermTag(UPLC_FORCE_TAG)
+                terms.push(t.arg)
+                break
+            case "lambda":
+                w.writeTermTag(UPLC_LAMBDA_TAG)
+                terms.push(t.expr)
+                break
+            case "var":
+                t.toFlat(w)
+                break
+        }
+
+        t = terms.pop()
+    }
 }

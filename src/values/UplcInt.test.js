@@ -1,7 +1,7 @@
 import { strictEqual, throws } from "node:assert"
 import { describe, it } from "node:test"
-import { makeFlatWriter } from "../flat/index.js"
-import { makeDefaultFlatReader } from "../terms/UplcReader.js"
+import { makeFlatReader, makeFlatWriter } from "../flat/index.js"
+import { dispatchValueReader } from "./reader.js"
 import { decodeUplcIntFromFlat, makeUplcInt } from "./UplcInt.js"
 import { makeUplcString } from "./UplcString.js"
 
@@ -62,7 +62,13 @@ describe("UplcInt", () => {
 
             makeUplcInt(x, true).toFlat(w)
 
-            const r = makeDefaultFlatReader(w.finalize(), [])
+            const r = makeFlatReader({
+                bytes: w.finalize(),
+                readExpr: (_r) => {
+                    throw new Error("deprecated")
+                },
+                dispatchValueReader
+            })
 
             strictEqual(decodeUplcIntFromFlat(r, true).value, x)
         })
@@ -74,7 +80,13 @@ describe("UplcInt", () => {
 
             makeUplcInt(x, false).toFlatUnsigned(w)
 
-            const r = makeDefaultFlatReader(w.finalize(), [])
+            const r = makeFlatReader({
+                bytes: w.finalize(),
+                readExpr: (_r) => {
+                    throw new Error("deprecated")
+                },
+                dispatchValueReader
+            })
 
             strictEqual(decodeUplcIntFromFlat(r, false).value, x)
         })

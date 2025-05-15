@@ -2,18 +2,45 @@ import { decodeBytes, encodeBytes, isBytes } from "@helios-lang/cbor"
 import { makeByteStream } from "@helios-lang/codec-utils"
 import { blake2b } from "@helios-lang/crypto"
 import { makeCekMachine } from "../cek/index.js"
-import { makeFlatWriter } from "../flat/index.js"
+import { makeFlatReader, makeFlatWriter } from "../flat/index.js"
 import {
+    decodeTerm,
+    encodeTerm,
     makeUplcApply,
     makeUplcConst,
-    makeUplcForce,
-    makeUplcReader
+    makeUplcForce
 } from "../terms/index.js"
+import { dispatchValueReader } from "../values/index.js"
 
 /**
  * @import { BytesLike } from "@helios-lang/codec-utils"
- * @import { Builtin, CekResult, CostModel, UplcLogger, UplcProgram, UplcTerm, UplcValue, UplcVersion } from "../index.js"
+ * @import {
+ *   Builtin,
+ *   CekResult,
+ *   CostModel,
+ *   FlatReader,
+ *   UplcLogger,
+ *   UplcProgram,
+ *   UplcTerm,
+ *   UplcValue,
+ *   UplcVersion
+ * } from "../index.js"
  */
+
+/**
+ * Reused by some Uplc unit tests
+ * @param {number[] | Uint8Array} bytes
+ * @returns {FlatReader}
+ */
+function makeDefaultFlatReader(bytes) {
+    return makeFlatReader({
+        bytes,
+        readExpr: (_r) => {
+            throw new Error("deprecated")
+        }, // This field will be removed upon the next major release
+        dispatchValueReader
+    })
+}
 
 /**
  * @param {BytesLike} bytes
@@ -57,7 +84,7 @@ export function encodeFlatProgram(expr, uplcVersion) {
 
     uplcVersion.split(".").forEach((v) => w.writeInt(BigInt(v)))
 
-    expr.toFlat(w)
+    encodeTerm(expr, w)
 
     return w.finalize()
 }
@@ -69,7 +96,7 @@ export function encodeFlatProgram(expr, uplcVersion) {
  * @returns {UplcTerm}
  */
 export function decodeFlatProgram(bytes, expectedUplcVersion, builtins) {
-    const r = makeUplcReader({ bytes, builtins })
+    const r = makeDefaultFlatReader(bytes)
 
     const version = `${r.readInt()}.${r.readInt()}.${r.readInt()}`
 
@@ -79,7 +106,7 @@ export function decodeFlatProgram(bytes, expectedUplcVersion, builtins) {
         )
     }
 
-    const root = r.readExpr()
+    const root = decodeTerm(r, builtins)
 
     return root
 }
