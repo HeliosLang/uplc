@@ -7,10 +7,5 @@ export { makeUplcForce } from "./UplcForce.js"
 export { makeUplcLambda } from "./UplcLambda.js"
 export { makeUplcVar } from "./UplcVar.js"
 
-export { makeUplcReader } from "./UplcReader.js"
-export { encodeTerm } from "./codec.js"
+export { decodeTerm, encodeTerm } from "./codec.js"
 export { apply, traverse } from "./ops.js"
-
-/**
- * @typedef {import("./UplcReader.js").UplcReader} UplcReader
- */
