@@ -1,6 +1,6 @@
 import { makeFlatReader } from "../flat/index.js"
 import { dispatchValueReader } from "../values/index.js"
-import { decodeTerm } from "./decode.js"
+import { decodeTerm } from "./codec.js"
 
 /**
  * @import { Builtin, FlatReader, UplcTerm, UplcValue } from "../index.js"

@@ -9,7 +9,7 @@ import { UPLC_LAMBDA_TAG, makeUplcLambda } from "./UplcLambda.js"
 import { UPLC_VAR_TAG, decodeUplcVarFromFlat } from "./UplcVar.js"
 
 /**
- * @import { Builtin, FlatReader, UplcTerm, UplcValue } from "../index.js"
+ * @import { Builtin, FlatReader, FlatWriter, UplcTerm, UplcValue } from "../index.js"
  */
 
 /**
@@ -99,4 +99,51 @@ export function decodeTerm(r, builtins) {
     }
 
     return expectDefined(term, "term decoding failed")
+}
+
+/**
+ * Non-recursive algorithm
+ * @param {UplcTerm} term
+ * @param {FlatWriter} w
+ */
+export function encodeTerm(term, w) {
+    const terms = [term]
+
+    let t = terms.pop()
+
+    while (t) {
+        switch (t.kind) {
+            case "builtin":
+                t.toFlat(w)
+                break
+            case "call":
+                w.writeTermTag(UPLC_CALL_TAG)
+                terms.push(t.arg)
+                terms.push(t.fn)
+                break
+            case "const":
+                t.toFlat(w)
+                break
+            case "delay":
+                w.writeTermTag(UPLC_DELAY_TAG)
+                terms.push(t.arg)
+                break
+            case "error":
+                t.toFlat(w)
+                break
+            case "force":
+                w.writeTermTag(UPLC_FORCE_TAG)
+                terms.push(t.arg)
+                break
+            case "lambda":
+                w.writeTermTag(UPLC_LAMBDA_TAG)
+                terms.push(t.expr)
+                break
+            case "var":
+                t.toFlat(w)
+                break
+        }
+
+        t = terms.pop()
+    }
 }

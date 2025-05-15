@@ -1,0 +1,10 @@
+{
+    "type": "module",
+    "scripts": {
+        "test": "pnpm install && node --stack-size=80 src/index.js"
+    },
+    "dependencies": {
+        "@helios-lang/uplc": "file:../../"
+    },
+    "devDependencies": {}
+}

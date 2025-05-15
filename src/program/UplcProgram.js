@@ -4,6 +4,7 @@ import { blake2b } from "@helios-lang/crypto"
 import { CekMachine } from "../cek/index.js"
 import { makeFlatWriter } from "../flat/index.js"
 import {
+    encodeTerm,
     makeUplcCall,
     makeUplcConst,
     makeUplcForce,
@@ -57,7 +58,7 @@ export function encodeFlatProgram(expr, uplcVersion) {
 
     uplcVersion.split(".").forEach((v) => w.writeInt(BigInt(v)))
 
-    expr.toFlat(w)
+    encodeTerm(expr, w)
 
     return w.finalize()
 }

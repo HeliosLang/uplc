@@ -8,6 +8,7 @@ export { makeUplcLambda } from "./UplcLambda.js"
 export { makeUplcVar } from "./UplcVar.js"
 
 export { makeUplcReader } from "./UplcReader.js"
+export { encodeTerm } from "./codec.js"
 export { apply, traverse } from "./ops.js"
 
 /**
