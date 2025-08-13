@@ -112,6 +112,50 @@ export function decodeFlatProgram(bytes, expectedUplcVersion, builtins) {
 }
 
 /**
+ * @param {unknown} v
+ * @returns {v is UplcVersion}
+ */
+export function isUplcVersion(v) {
+    return v == "1.0.0" || v == "1.1.0"
+}
+
+/**
+ * @param {BytesLike} bytes
+ * @returns {UplcVersion}
+ */
+export function decodeCborVersion(bytes) {
+    const stream = makeByteStream(bytes).copy()
+
+    if (!isBytes(stream)) {
+        throw new Error("unexpected")
+    }
+
+    let scriptBytes = decodeBytes(stream)
+
+    if (isBytes(scriptBytes)) {
+        scriptBytes = decodeBytes(scriptBytes)
+    }
+
+    return decodeFlatVersion(scriptBytes)
+}
+
+/**
+ * @param {number[]} bytes
+ * @returns {UplcVersion}
+ */
+export function decodeFlatVersion(bytes) {
+    const r = makeDefaultFlatReader(bytes)
+
+    const version = `${r.readInt()}.${r.readInt()}.${r.readInt()}`
+
+    if (!isUplcVersion(version)) {
+        throw new Error(`unhandled UplcVersion ${version}`)
+    }
+
+    return version
+}
+
+/**
  * @param {Builtin[]} builtins
  * @param {UplcTerm} expr
  * @param {UplcValue[] | undefined} args

@@ -8,17 +8,19 @@ import { apply } from "../terms/index.js"
 import { parseProgram } from "./parse.js"
 import {
     decodeCborProgram,
+    decodeCborVersion,
     decodeFlatProgram,
     encodeCborProgram,
     encodeFlatProgram,
     evalProgram,
     hashProgram
 } from "./UplcProgram.js"
+import { decodeUplcProgramV2FromCbor } from "./UplcProgramV2.js"
 import { deserializeUplcSourceMap } from "./UplcSourceMap.js"
 
 /**
  * @import { BytesLike } from "@helios-lang/codec-utils"
- * @import { CekResult, UplcLogger, UplcProgramV3, UplcProgramV3Options, UplcSourceMapJsonSafe, UplcTerm, UplcValue } from "../index.js"
+ * @import { CekResult, UplcLogger, UplcProgramV2, UplcProgramV3, UplcProgramV3Options, UplcSourceMapJsonSafe, UplcTerm, UplcValue } from "../index.js"
  */
 
 const PLUTUS_VERSION = "PlutusScriptV3"
@@ -81,6 +83,21 @@ export function decodeUplcProgramV3FromCbor(bytes, options = {}) {
         decodeCborProgram(bytes, UPLC_VERSION, builtinsV3),
         options
     )
+}
+
+/**
+ * @param {BytesLike} bytes
+ * @returns {UplcProgramV2 | UplcProgramV3}
+ */
+export function decodeUplcProgramV2OrV3FromCbor(bytes) {
+    const version = decodeCborVersion(bytes)
+
+    switch (version) {
+        case "1.0.0":
+            return decodeUplcProgramV2FromCbor(bytes)
+        case "1.1.0":
+            return decodeUplcProgramV3FromCbor(bytes)
+    }
 }
 
 /**

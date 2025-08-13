@@ -1,3 +1,4 @@
+export { isUplcVersion } from "./UplcProgram.js"
 export {
     decodeUplcProgramV1FromCbor,
     decodeUplcProgramV1FromFlat,
@@ -11,6 +12,7 @@ export {
 export {
     decodeUplcProgramV3FromCbor,
     decodeUplcProgramV3FromFlat,
+    decodeUplcProgramV2OrV3FromCbor,
     makeUplcProgramV3
 } from "./UplcProgramV3.js"
 export { deserializeUplcSourceMap, makeUplcSourceMap } from "./UplcSourceMap.js"
