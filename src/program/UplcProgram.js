@@ -1,4 +1,13 @@
-import { decodeBytes, encodeBytes, isBytes } from "@helios-lang/cbor"
+import {
+    decodeBytes,
+    decodeObjectIKey,
+    decodeTuple,
+    encodeBytes,
+    encodeObjectIKey,
+    encodeTuple,
+    isBytes,
+    isTuple
+} from "@helios-lang/cbor"
 import { makeByteStream } from "@helios-lang/codec-utils"
 import { blake2b } from "@helios-lang/crypto"
 import { CekMachine } from "../cek/index.js"
@@ -11,9 +20,14 @@ import {
     makeUplcForce
 } from "../terms/index.js"
 import { dispatchValueReader } from "../values/index.js"
+import {
+    decodeUplcSourceMap,
+    encodeUplcSourceMap,
+    makeUplcSourceMap
+} from "./UplcSourceMap.js"
 
 /**
- * @import { BytesLike } from "@helios-lang/codec-utils"
+ * @import { BytesLike, ByteStream } from "@helios-lang/codec-utils"
  * @import {
  *   Builtin,
  *   CekResult,
@@ -21,6 +35,7 @@ import { dispatchValueReader } from "../values/index.js"
  *   FlatReader,
  *   UplcLogger,
  *   UplcProgram,
+ *   UplcSourceMapJsonSafe,
  *   UplcTerm,
  *   UplcValue,
  *   UplcVersion
@@ -153,6 +168,80 @@ export function decodeFlatVersion(bytes) {
     }
 
     return version
+}
+
+/**
+ * @param {UplcProgram} program
+ * @returns {number[]}
+ */
+export function encodeFullUplcProgram(program) {
+    const sourceMap = makeUplcSourceMap({ term: program.root })
+
+    if (program.alt) {
+        const altSourceMap = makeUplcSourceMap({ term: program.alt.root })
+
+        // use a map format for optional entries
+        if (altSourceMap.indices.length > 0) {
+            return encodeTuple([
+                program.toCbor(),
+                encodeObjectIKey({
+                    0: encodeUplcSourceMap(sourceMap),
+                    1: program.alt.toCbor(),
+                    2: encodeUplcSourceMap(altSourceMap)
+                })
+            ])
+        } else {
+            return encodeTuple([
+                program.toCbor(),
+                encodeObjectIKey({
+                    0: encodeUplcSourceMap(sourceMap),
+                    1: program.alt.toCbor()
+                })
+            ])
+        }
+    } else if (sourceMap.indices.length > 0) {
+        return encodeTuple([
+            program.toCbor(),
+            encodeObjectIKey({
+                0: encodeUplcSourceMap(sourceMap)
+            })
+        ])
+    } else {
+        return program.toCbor()
+    }
+}
+
+/**
+ * @param {BytesLike} bytes
+ * @param {(s: ByteStream) => UplcTerm} decodeRoot
+ * @returns {[UplcTerm, UplcSourceMapJsonSafe | undefined, UplcTerm | undefined, UplcSourceMapJsonSafe | undefined]}
+ */
+export function decodeFullUplcProgram(bytes, decodeRoot) {
+    const stream = makeByteStream(bytes)
+
+    if (isBytes(stream)) {
+        return [decodeRoot(stream), undefined, undefined, undefined]
+    } else if (isTuple(stream)) {
+        const [root, { 0: sourceMap, 1: altRoot, 2: altSourceMap }] =
+            decodeTuple(stream, [
+                decodeRoot,
+                (s) =>
+                    decodeObjectIKey(s, {
+                        0: (s) => decodeUplcSourceMap(s),
+                        1: decodeRoot,
+                        2: (s) => decodeUplcSourceMap(s)
+                    })
+            ])
+
+        return [
+            root,
+            sourceMap?.toJsonSafe(),
+            altRoot,
+            altSourceMap?.toJsonSafe()
+        ]
+    } else {
+        throw new Error("unexpected")
+    }
 }
 
 /**

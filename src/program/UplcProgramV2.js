@@ -1,5 +1,3 @@
-import { decodeTuple, encodeTuple, isBytes, isTuple } from "@helios-lang/cbor"
-import { makeByteStream } from "@helios-lang/codec-utils"
 import { builtinsV2 } from "../builtins/index.js"
 import {
     DEFAULT_COST_MODEL_PARAMS_V2,
@@ -11,17 +9,13 @@ import { parseProgram } from "./parse.js"
 import {
     decodeCborProgram,
     decodeFlatProgram,
+    decodeFullUplcProgram,
     encodeCborProgram,
     encodeFlatProgram,
     evalProgram,
     hashProgram
 } from "./UplcProgram.js"
-import {
-    decodeUplcSourceMap,
-    deserializeUplcSourceMap,
-    encodeUplcSourceMap,
-    makeUplcSourceMap
-} from "./UplcSourceMap.js"
+import { deserializeUplcSourceMap } from "./UplcSourceMap.js"
 
 /**
  * @import { BytesLike } from "@helios-lang/codec-utils"
@@ -84,32 +78,21 @@ export function makeUplcProgramV2(...args) {
  * @returns {UplcProgramV2}
  */
 export function decodeUplcProgramV2FromCbor(bytes, options = {}) {
-    const stream = makeByteStream(bytes)
+    const [root, sourceMap, altRoot, altSourceMap] = decodeFullUplcProgram(
+        bytes,
+        (s) => decodeCborProgram(s, UPLC_VERSION, builtinsV2)
+    )
 
-    if (isBytes(stream)) {
-        return new UplcProgramV2Impl(
-            decodeCborProgram(stream, UPLC_VERSION, builtinsV2),
-            options
-        )
-    } else if (isTuple(stream)) {
-        // the tuple contains the program, the alt program, and the alt program source map
-        const [program, altProgram, altSourceMap] = decodeTuple(stream, [
-            (s) => decodeCborProgram(s, UPLC_VERSION, builtinsV2),
-            (s) => decodeCborProgram(s, UPLC_VERSION, builtinsV2),
-            (s) => decodeUplcSourceMap(s)
-        ])
-
-        return new UplcProgramV2Impl(program, {
-            alt: new UplcProgramV2Impl(altProgram, {
-                sourceMap: altSourceMap.toJsonSafe(),
-                ir: options.alt?.ir
-            }),
-            ir: options.ir,
-            sourceMap: options.sourceMap
-        })
-    } else {
-        throw new Error("unexpected")
-    }
+    return new UplcProgramV2Impl(root, {
+        alt: altRoot
+            ? new UplcProgramV2Impl(altRoot, {
+                  sourceMap: altSourceMap,
+                  ir: options.alt?.ir
+              })
+            : undefined,
+        ir: options.ir,
+        sourceMap: options.sourceMap ?? sourceMap
+    })
 }
 
 /**
@@ -122,25 +105,6 @@ export function decodeUplcProgramV2FromFlat(bytes, options = {}) {
         decodeFlatProgram(bytes, UPLC_VERSION, builtinsV2),
         options
     )
-}
-
-/**
- * Includes alt program and alt source map if available
- * @param {UplcProgramV2} program
- * @returns {number[]}
- */
-export function encodeFullUplcProgramV2(program) {
-    if (program.alt) {
-        const altSourceMap = makeUplcSourceMap({ term: program.alt.root })
-
-        return encodeTuple([
-            program.toCbor(),
-            program.alt.toCbor(),
-            encodeUplcSourceMap(altSourceMap)
-        ])
-    } else {
-        return program.toCbor()
-    }
 }
 
 /**
