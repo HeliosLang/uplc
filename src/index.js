@@ -49,6 +49,9 @@ export {
     decodeUplcProgramV3FromFlat,
     decodeUplcProgramV2OrV3FromCbor,
     deserializeUplcSourceMap,
+    encodeFullUplcProgramV1,
+    encodeFullUplcProgramV2,
+    encodeFullUplcProgramV3,
     isUplcVersion,
     makeUplcProgramV1,
     makeUplcProgramV2,
@@ -498,10 +501,26 @@ export {
  */
 
 /**
- * @typedef {{
- *   apply(root: UplcTerm): void
- *   toJsonSafe(): UplcSourceMapJsonSafe
- * }} UplcSourceMap
+ * @typedef {object} UplcSourceMap
+ * @prop {string[]} sourceNames
+ * Eg. file names or helios header names
+ *
+ * @prop {number[]} indices
+ * Tuples of 4 indices
+ *   - First index in each tuple is the uplc term 'preorder' index
+ *   - Second index in each tuple is the source index (i.e. index in `this.sourceNames`)
+ *   - Third index in each tuple is the line number (0-based)
+ *   - Fourth index in each tuple is the column number (0-based)
+ *
+ * @prop {[number, string][]} variableNames
+ * Tuple of uplc lambda term index and variable name
+ *
+ * @prop {[number, string][]} termDescriptions
+ * Tuple of uplc term index and description string
+ *
+ * @prop {(root: UplcTerm) => void} apply
+ *
+ * @prop {() => UplcSourceMapJsonSafe} toJsonSafe
  */
 
 /**

@@ -1,3 +1,11 @@
+import {
+    decodeTuple,
+    decodeTupleLazy,
+    encodeTuple,
+    isBytes,
+    isTuple
+} from "@helios-lang/cbor"
+import { makeByteStream } from "@helios-lang/codec-utils"
 import { builtinsV3 } from "../builtins/index.js"
 import {
     makeCostModel,
@@ -16,11 +24,16 @@ import {
     hashProgram
 } from "./UplcProgram.js"
 import { decodeUplcProgramV2FromCbor } from "./UplcProgramV2.js"
-import { deserializeUplcSourceMap } from "./UplcSourceMap.js"
+import {
+    decodeUplcSourceMap,
+    deserializeUplcSourceMap,
+    encodeUplcSourceMap,
+    makeUplcSourceMap
+} from "./UplcSourceMap.js"
 
 /**
  * @import { BytesLike } from "@helios-lang/codec-utils"
- * @import { CekResult, UplcLogger, UplcProgramV2, UplcProgramV3, UplcProgramV3Options, UplcSourceMapJsonSafe, UplcTerm, UplcValue } from "../index.js"
+ * @import { CekResult, UplcLogger, UplcProgramV2, UplcProgramV3, UplcProgramV3Options, UplcSourceMapJsonSafe, UplcTerm, UplcValue, UplcVersion } from "../index.js"
  */
 
 const PLUTUS_VERSION = "PlutusScriptV3"
@@ -79,10 +92,32 @@ export function makeUplcProgramV3(...args) {
  * @returns {UplcProgramV3}
  */
 export function decodeUplcProgramV3FromCbor(bytes, options = {}) {
-    return new UplcProgramV3Impl(
-        decodeCborProgram(bytes, UPLC_VERSION, builtinsV3),
-        options
-    )
+    const stream = makeByteStream(bytes)
+
+    if (isBytes(stream)) {
+        return new UplcProgramV3Impl(
+            decodeCborProgram(stream, UPLC_VERSION, builtinsV3),
+            options
+        )
+    } else if (isTuple(stream)) {
+        // the tuple contains the program, the alt program, and the alt program source map
+        const [program, altProgram, altSourceMap] = decodeTuple(stream, [
+            (s) => decodeCborProgram(s, UPLC_VERSION, builtinsV3),
+            (s) => decodeCborProgram(s, UPLC_VERSION, builtinsV3),
+            (s) => decodeUplcSourceMap(s)
+        ])
+
+        return new UplcProgramV3Impl(program, {
+            alt: new UplcProgramV3Impl(altProgram, {
+                sourceMap: altSourceMap.toJsonSafe(),
+                ir: options.alt?.ir
+            }),
+            ir: options.ir,
+            sourceMap: options.sourceMap
+        })
+    } else {
+        throw new Error("unexpected")
+    }
 }
 
 /**
@@ -90,7 +125,19 @@ export function decodeUplcProgramV3FromCbor(bytes, options = {}) {
  * @returns {UplcProgramV2 | UplcProgramV3}
  */
 export function decodeUplcProgramV2OrV3FromCbor(bytes) {
-    const version = decodeCborVersion(bytes)
+    const stream = makeByteStream(bytes)
+
+    /**
+     * @type {UplcVersion}
+     */
+    let version = "1.0.0"
+
+    if (isBytes(stream)) {
+        version = decodeCborVersion(bytes)
+    } else if (isTuple(stream)) {
+        const tupleDecoder = decodeTupleLazy(stream.copy())
+        version = tupleDecoder((s) => decodeCborVersion(s))
+    }
 
     switch (version) {
         case "1.0.0":
@@ -110,6 +157,24 @@ export function decodeUplcProgramV3FromFlat(bytes, options = {}) {
         decodeFlatProgram(bytes, UPLC_VERSION, builtinsV3),
         options
     )
+}
+
+/**
+ * @param {UplcProgramV3} program
+ * @returns {number[]}
+ */
+export function encodeFullUplcProgramV3(program) {
+    if (program.alt) {
+        const altSourceMap = makeUplcSourceMap({ term: program.alt.root })
+
+        return encodeTuple([
+            program.toCbor(),
+            program.alt.toCbor(),
+            encodeUplcSourceMap(altSourceMap)
+        ])
+    } else {
+        return program.toCbor()
+    }
 }
 
 /**

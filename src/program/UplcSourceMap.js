@@ -3,12 +3,14 @@ import {
     decodeList,
     decodeMap,
     decodeString,
+    decodeTuple,
     encodeInt,
     encodeList,
     encodeMap,
-    encodeString
+    encodeString,
+    encodeTuple
 } from "@helios-lang/cbor"
-import { bytesToHex } from "@helios-lang/codec-utils"
+import { bytesToHex, makeByteStream } from "@helios-lang/codec-utils"
 import {
     isDummySite,
     makeDummySite,
@@ -24,6 +26,7 @@ import {
 import { traverse } from "../terms/index.js"
 
 /**
+ * @import { BytesLike } from "@helios-lang/codec-utils"
  * @import { Site } from "@helios-lang/compiler-utils"
  * @import { JsonSafe } from "@helios-lang/type-utils"
  * @import { UplcBuiltin, UplcCall, UplcSourceMap, UplcSourceMapJsonSafe, UplcSourceMapProps, UplcTerm } from "../index.js"
@@ -39,6 +42,60 @@ export function makeUplcSourceMap(props) {
     } else {
         return new UplcSourceMapImpl(props)
     }
+}
+
+/**
+ *
+ * @param {BytesLike} bytes
+ * @returns {UplcSourceMap}
+ */
+export function decodeUplcSourceMap(bytes) {
+    const stream = makeByteStream(bytes)
+
+    const [sourceNames, indices, variableNames, termDescriptions] = decodeTuple(
+        stream,
+        [
+            (s) => decodeList(s, decodeString),
+            (s) => decodeList(s, (s) => Number(decodeInt(s))),
+            (s) => decodeMap(s, (s) => Number(decodeInt(s)), decodeString),
+            (s) => decodeMap(s, (s) => Number(decodeInt(s)), decodeString)
+        ]
+    )
+
+    return new UplcSourceMapImpl({
+        sourceNames,
+        indices,
+        variableNames,
+        termDescriptions
+    })
+}
+
+/**
+ * @param {UplcSourceMap | undefined} sourceMap
+ * @returns {number[]}
+ */
+export function encodeUplcSourceMap(sourceMap) {
+    const sourceNames = sourceMap?.sourceNames ?? []
+    const indices = sourceMap?.indices ?? []
+    const variableNames = sourceMap?.variableNames ?? []
+    const termDescriptions = sourceMap?.termDescriptions ?? []
+
+    return encodeTuple([
+        encodeList(sourceNames.map((name) => encodeString(name))),
+        encodeList(indices.map((idx) => encodeInt(idx))),
+        encodeMap(
+            variableNames.map(([key, value]) => [
+                encodeInt(key),
+                encodeString(value)
+            ])
+        ),
+        encodeMap(
+            termDescriptions.map(([key, value]) => [
+                encodeInt(key),
+                encodeString(value)
+            ])
+        )
+    ])
 }
 
 /**
@@ -148,7 +205,6 @@ function extractUplcSourceMap(root) {
 class UplcSourceMapImpl {
     /**
      * Eg. file names or helios header names
-     * @private
      * @readonly
      * @type {string[]}
      */
@@ -160,7 +216,6 @@ class UplcSourceMapImpl {
      *   - Second index in each tuple is the source index (i.e. index in `this.sourceNames`)
      *   - Third index in each tuple is the line number (0-based)
      *   - Fourth index in each tuple is the column number (0-based)
-     * @private
      * @readonly
      * @type {number[]}
      */
@@ -168,7 +223,6 @@ class UplcSourceMapImpl {
 
     /**
      * Tuple of uplc lambda term index and variable name
-     * @private
      * @readonly
      * @type {[number, string][]}
      */
@@ -176,7 +230,6 @@ class UplcSourceMapImpl {
 
     /**
      * Tuple of uplc term index and description string
-     * @private
      * @readonly
      * @type {[number, string][]}
      */

@@ -2,17 +2,20 @@ export { isUplcVersion } from "./UplcProgram.js"
 export {
     decodeUplcProgramV1FromCbor,
     decodeUplcProgramV1FromFlat,
+    encodeFullUplcProgramV1,
     makeUplcProgramV1
 } from "./UplcProgramV1.js"
 export {
     decodeUplcProgramV2FromCbor,
     decodeUplcProgramV2FromFlat,
+    encodeFullUplcProgramV2,
     makeUplcProgramV2
 } from "./UplcProgramV2.js"
 export {
     decodeUplcProgramV3FromCbor,
     decodeUplcProgramV3FromFlat,
     decodeUplcProgramV2OrV3FromCbor,
+    encodeFullUplcProgramV3,
     makeUplcProgramV3
 } from "./UplcProgramV3.js"
 export { deserializeUplcSourceMap, makeUplcSourceMap } from "./UplcSourceMap.js"

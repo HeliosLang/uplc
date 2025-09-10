@@ -1,3 +1,5 @@
+import { decodeTuple, encodeTuple, isBytes, isTuple } from "@helios-lang/cbor"
+import { makeByteStream } from "@helios-lang/codec-utils"
 import { builtinsV1 } from "../builtins/index.js"
 import {
     makeCostModel,
@@ -14,7 +16,12 @@ import {
     evalProgram,
     hashProgram
 } from "./UplcProgram.js"
-import { deserializeUplcSourceMap } from "./UplcSourceMap.js"
+import {
+    decodeUplcSourceMap,
+    deserializeUplcSourceMap,
+    encodeUplcSourceMap,
+    makeUplcSourceMap
+} from "./UplcSourceMap.js"
 
 /**
  * @import { BytesLike } from "@helios-lang/codec-utils"
@@ -77,10 +84,32 @@ export function makeUplcProgramV1(...args) {
  * @returns {UplcProgramV1}
  */
 export function decodeUplcProgramV1FromCbor(bytes, options = {}) {
-    return new UplcProgramV1Impl(
-        decodeCborProgram(bytes, UPLC_VERSION, builtinsV1),
-        options
-    )
+    const stream = makeByteStream(bytes)
+
+    if (isBytes(stream)) {
+        return new UplcProgramV1Impl(
+            decodeCborProgram(stream, UPLC_VERSION, builtinsV1),
+            options
+        )
+    } else if (isTuple(stream)) {
+        // the tuple contains the program, the alt program, and the alt program source map
+        const [program, altProgram, altSourceMap] = decodeTuple(stream, [
+            (s) => decodeCborProgram(s, UPLC_VERSION, builtinsV1),
+            (s) => decodeCborProgram(s, UPLC_VERSION, builtinsV1),
+            (s) => decodeUplcSourceMap(s)
+        ])
+
+        return new UplcProgramV1Impl(program, {
+            alt: new UplcProgramV1Impl(altProgram, {
+                sourceMap: altSourceMap.toJsonSafe(),
+                ir: options.alt?.ir
+            }),
+            ir: options.ir,
+            sourceMap: options.sourceMap
+        })
+    } else {
+        throw new Error("unexpected")
+    }
 }
 
 /**
@@ -93,6 +122,24 @@ export function decodeUplcProgramV1FromFlat(bytes, options = {}) {
         decodeFlatProgram(bytes, UPLC_VERSION, builtinsV1),
         options
     )
+}
+
+/**
+ * @param {UplcProgramV1} program
+ * @returns {number[]}
+ */
+export function encodeFullUplcProgramV1(program) {
+    if (program.alt) {
+        const altSourceMap = makeUplcSourceMap({ term: program.alt.root })
+
+        return encodeTuple([
+            program.toCbor(),
+            program.alt.toCbor(),
+            encodeUplcSourceMap(altSourceMap)
+        ])
+    } else {
+        return program.toCbor()
+    }
 }
 
 /**
